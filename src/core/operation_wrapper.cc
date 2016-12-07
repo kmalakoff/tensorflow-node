@@ -3,25 +3,26 @@
 
 Nan::Persistent<v8::FunctionTemplate> OperationWrapper::constructor;
 
-void OperationWrapper::Init(v8::Local<v8::Object> target) {
+void OperationWrapper::Init(v8::Local<v8::Object> exports) {
   Nan::HandleScope scope;
 
   //Class
   v8::Local<v8::FunctionTemplate> ctor = Nan::New<v8::FunctionTemplate>(OperationWrapper::New);
-  constructor.Reset(ctor);
   ctor->InstanceTemplate()->SetInternalFieldCount(1);
-  ctor->SetClassName(Nan::New("OperationWrapper").ToLocalChecked());
-  target->Set(Nan::New("OperationWrapper").ToLocalChecked(), ctor->GetFunction());
+  ctor->SetClassName(Nan::New("Operation").ToLocalChecked());
+
+  constructor.Reset(ctor);
+  exports->Set(Nan::New("Operation  ").ToLocalChecked(), ctor->GetFunction());
 };
 
-void OperationWrapper::New(const Nan::FunctionCallbackInfo<v8::Value>& args) {
+void OperationWrapper::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   Nan::HandleScope scope;
-  // if (info.This()->InternalFieldCount() == 0) { Nan::ThrowTypeError("Cannot instantiate without new"); }
 
-  OperationWrapper *instance = new OperationWrapper();
+  TF_Operation* arg0 = Nan::ObjectWrap::Unwrap<OperationWrapper>(info[0]->ToObject())->m_operation;
+  OperationWrapper *instance = new OperationWrapper(arg0);
 
-  instance->Wrap(args.Holder());
-  args.GetReturnValue().Set(args.Holder());
+  instance->Wrap(info.Holder());
+  info.GetReturnValue().Set(info.Holder());
 }
 
 OperationWrapper::OperationWrapper(TF_Operation* operation) : m_operation(operation) {};
