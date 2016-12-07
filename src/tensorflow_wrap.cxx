@@ -1109,7 +1109,7 @@ SWIGRUNTIME int SWIG_V8_ConvertPtr(v8::Handle<v8::Value> valRef, void **ptr, swi
   }
   if(!valRef->IsObject()) {
     return SWIG_TypeError;
-  }
+  } 
   v8::Handle<v8::Object> objRef = valRef->ToObject();
   return SWIG_V8_ConvertInstancePtr(objRef, ptr, info, flags);
 }
@@ -1483,8 +1483,11 @@ SWIGRUNTIME void JS_veto_set_variable(v8::Local<v8::String> property, v8::Local<
 #define SWIGTYPE_p_Graph swig_types[0]
 #define SWIGTYPE_p_TF_Operation swig_types[1]
 #define SWIGTYPE_p_char swig_types[2]
-static swig_type_info *swig_types[4];
-static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
+#define SWIGTYPE_p_size_type swig_types[3]
+#define SWIGTYPE_p_std__vectorT_int_t swig_types[4]
+#define SWIGTYPE_p_value_type swig_types[5]
+static swig_type_info *swig_types[7];
+static swig_module_info swig_module = {swig_types, 6, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1550,7 +1553,193 @@ SWIG_FromCharPtr(const char *cptr)
 }
 
 
-#include "core/graph.cc"
+#include <stdexcept>
+
+
+#include <vector>
+#include <stdexcept>
+
+
+SWIGINTERN
+int SWIG_AsVal_double (v8::Handle<v8::Value> obj, double *val)
+{
+  if(!obj->IsNumber()) {
+    return SWIG_TypeError;
+  }
+  if(val) *val = obj->NumberValue();
+
+  return SWIG_OK;
+}
+
+
+#include <float.h>
+
+
+#include <math.h>
+
+
+SWIGINTERNINLINE int
+SWIG_CanCastAsInteger(double *d, double min, double max) {
+  double x = *d;
+  if ((min <= x && x <= max)) {
+   double fx = floor(x);
+   double cx = ceil(x);
+   double rd =  ((x - fx) < 0.5) ? fx : cx; /* simple rint */
+   if ((errno == EDOM) || (errno == ERANGE)) {
+     errno = 0;
+   } else {
+     double summ, reps, diff;
+     if (rd < x) {
+       diff = x - rd;
+     } else if (rd > x) {
+       diff = rd - x;
+     } else {
+       return 1;
+     }
+     summ = rd + x;
+     reps = diff/summ;
+     if (reps < 8*DBL_EPSILON) {
+       *d = rd;
+       return 1;
+     }
+   }
+  }
+  return 0;
+}
+
+
+SWIGINTERN
+int SWIG_AsVal_unsigned_SS_long (v8::Handle<v8::Value> obj, unsigned long *val)
+{
+  if(!obj->IsNumber()) {
+    return SWIG_TypeError;
+  }
+
+  long longVal = (long) obj->NumberValue();
+
+  if(longVal < 0) {
+      return SWIG_OverflowError;
+  }
+
+  if(val) *val = longVal;
+
+  return SWIG_OK;
+}
+
+
+#include <limits.h>
+#if !defined(SWIG_NO_LLONG_MAX)
+# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
+#   define LLONG_MAX __LONG_LONG_MAX__
+#   define LLONG_MIN (-LLONG_MAX - 1LL)
+#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
+# endif
+#endif
+
+
+#if defined(LLONG_MAX) && !defined(SWIG_LONG_LONG_AVAILABLE)
+#  define SWIG_LONG_LONG_AVAILABLE
+#endif
+
+
+#ifdef SWIG_LONG_LONG_AVAILABLE
+SWIGINTERN
+int SWIG_AsVal_unsigned_SS_long_SS_long (v8::Handle<v8::Value> obj, unsigned long long *val)
+{
+  if(!obj->IsNumber()) {
+    return SWIG_TypeError;
+  }
+
+  long long longVal = (long long) obj->NumberValue();
+
+  if(longVal < 0) {
+      return SWIG_OverflowError;
+  }
+
+  if(val) *val = longVal;
+
+  return SWIG_OK;
+}
+#endif
+
+
+SWIGINTERNINLINE int
+SWIG_AsVal_size_t (v8::Handle<v8::Value> obj, size_t *val)
+{
+  int res = SWIG_TypeError;
+#ifdef SWIG_LONG_LONG_AVAILABLE
+  if (sizeof(size_t) <= sizeof(unsigned long)) {
+#endif
+    unsigned long v;
+    res = SWIG_AsVal_unsigned_SS_long (obj, val ? &v : 0);
+    if (SWIG_IsOK(res) && val) *val = (size_t)(v);
+#ifdef SWIG_LONG_LONG_AVAILABLE
+  } else if (sizeof(size_t) <= sizeof(unsigned long long)) {
+    unsigned long long v;
+    res = SWIG_AsVal_unsigned_SS_long_SS_long (obj, val ? &v : 0);
+    if (SWIG_IsOK(res) && val) *val = (size_t)(v);
+  }
+#endif
+  return res;
+}
+
+
+SWIGINTERNINLINE
+v8::Handle<v8::Value> SWIG_From_long  (long value)
+{
+  return SWIGV8_NUMBER_NEW(value);
+}
+
+
+SWIGINTERNINLINE
+v8::Handle<v8::Value> SWIG_From_unsigned_SS_long  (unsigned long value)
+{
+  return (value > LONG_MAX) ?
+    SWIGV8_INTEGER_NEW_UNS(value) : SWIGV8_INTEGER_NEW((long)(value));
+}
+
+
+#ifdef SWIG_LONG_LONG_AVAILABLE
+SWIGINTERNINLINE
+v8::Handle<v8::Value> SWIG_From_long_SS_long  (long long value)
+{
+  return SWIGV8_NUMBER_NEW(value);
+}
+#endif
+
+
+#ifdef SWIG_LONG_LONG_AVAILABLE
+SWIGINTERNINLINE
+v8::Handle<v8::Value> SWIG_From_unsigned_SS_long_SS_long  (unsigned long long value)
+{
+  return (value > LONG_MAX) ?
+    SWIGV8_INTEGER_NEW_UNS(value) : SWIGV8_INTEGER_NEW((long)(value));
+}
+#endif
+
+
+SWIGINTERNINLINE v8::Handle<v8::Value>
+SWIG_From_size_t  (size_t value)
+{    
+#ifdef SWIG_LONG_LONG_AVAILABLE
+  if (sizeof(size_t) <= sizeof(unsigned long)) {
+#endif
+    return SWIG_From_unsigned_SS_long  ((unsigned long)(value));
+#ifdef SWIG_LONG_LONG_AVAILABLE
+  } else {
+    /* assume sizeof(size_t) <= sizeof(unsigned long long) */
+    return SWIG_From_unsigned_SS_long_SS_long  ((unsigned long long)(value));
+  }
+#endif
+}
+
+
+SWIGINTERNINLINE
+v8::Handle<v8::Value>
+SWIG_From_bool  (bool value)
+{
+  return SWIGV8_BOOLEAN_NEW(value);
+}
 
 
 SWIGINTERN
@@ -1564,6 +1753,23 @@ int SWIG_AsVal_int (v8::Handle<v8::Value> valRef, int* val)
   return SWIG_OK;
 }
 
+SWIGINTERN std::vector< int >::const_reference std_vector_Sl_int_Sg__get(std::vector< int > *self,int i){
+                int size = int(self->size());
+                if (i>=0 && i<size)
+                    return (*self)[i];
+                else
+                    throw std::out_of_range("vector index out of range");
+            }
+SWIGINTERN void std_vector_Sl_int_Sg__set(std::vector< int > *self,int i,std::vector< int >::value_type const &val){
+                int size = int(self->size());
+                if (i>=0 && i<size)
+                    (*self)[i] = val;
+                else
+                    throw std::out_of_range("vector index out of range");
+            }
+
+#include "core/graph.cc"
+
 
 #include "core/types.h"
 
@@ -1571,6 +1777,7 @@ int SWIG_AsVal_int (v8::Handle<v8::Value> valRef, int* val)
 #define SWIGV8_INIT tensorflow_initialize
 
 
+SWIGV8_ClientData _exports_IntVector_clientData;
 SWIGV8_ClientData _exports_Graph_clientData;
 
 
@@ -1777,6 +1984,415 @@ fail:
 }
 
 
+static SwigV8ReturnValue _wrap_new_IntVector__SWIG_0(const SwigV8Arguments &args, V8ErrorHandler &SWIGV8_ErrorHandler) {
+  SWIGV8_HANDLESCOPE();
+  
+  v8::Handle<v8::Object> self = args.Holder();
+  std::vector< int > *result;
+  if(args.Length() != 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_new_IntVector__SWIG_0.");
+  result = (std::vector< int > *)new std::vector< int >();
+  
+  
+  
+  SWIGV8_SetPrivateData(self, result, SWIGTYPE_p_std__vectorT_int_t, SWIG_POINTER_OWN);
+  SWIGV8_RETURN(self);
+  
+  goto fail;
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
+}
+
+
+static SwigV8ReturnValue _wrap_new_IntVector__SWIG_1(const SwigV8Arguments &args, V8ErrorHandler &SWIGV8_ErrorHandler) {
+  SWIGV8_HANDLESCOPE();
+  
+  v8::Handle<v8::Object> self = args.Holder();
+  std::vector< int >::size_type arg1 ;
+  size_t val1 ;
+  int ecode1 = 0 ;
+  std::vector< int > *result;
+  if(args.Length() != 1) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_new_IntVector__SWIG_1.");
+  ecode1 = SWIG_AsVal_size_t(args[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_IntVector" "', argument " "1"" of type '" "std::vector< int >::size_type""'");
+  } 
+  arg1 = (std::vector< int >::size_type)(val1);
+  result = (std::vector< int > *)new std::vector< int >(arg1);
+  
+  
+  
+  
+  SWIGV8_SetPrivateData(self, result, SWIGTYPE_p_std__vectorT_int_t, SWIG_POINTER_OWN);
+  SWIGV8_RETURN(self);
+  
+  goto fail;
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
+}
+
+
+static SwigV8ReturnValue _wrap_new_IntVector(const SwigV8Arguments &args) {
+  SWIGV8_HANDLESCOPE();
+  
+  OverloadErrorHandler errorHandler;
+  v8::Handle<v8::Value> self;
+  
+  // switch all cases by means of series of if-returns.
+  
+  if(args.Length() == 0) {
+    errorHandler.err.Clear();
+#if (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < 0x031903)
+    self = _wrap_new_IntVector__SWIG_0(args, errorHandler);
+    if(errorHandler.err.IsEmpty()) {
+      SWIGV8_ESCAPE(self);
+    }
+#else
+    _wrap_new_IntVector__SWIG_0(args, errorHandler);
+    if(errorHandler.err.IsEmpty()) {
+      return;
+    }
+#endif
+  }
+  
+  if(args.Length() == 1) {
+    errorHandler.err.Clear();
+#if (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < 0x031903)
+    self = _wrap_new_IntVector__SWIG_1(args, errorHandler);
+    if(errorHandler.err.IsEmpty()) {
+      SWIGV8_ESCAPE(self);
+    }
+#else
+    _wrap_new_IntVector__SWIG_1(args, errorHandler);
+    if(errorHandler.err.IsEmpty()) {
+      return;
+    }
+#endif
+  }
+  
+  
+  // default:
+  SWIG_exception_fail(SWIG_ERROR, "Illegal arguments for construction of _exports_IntVector");
+  
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
+}
+
+
+static SwigV8ReturnValue _wrap_IntVector_size(const SwigV8Arguments &args) {
+  SWIGV8_HANDLESCOPE();
+  
+  v8::Handle<v8::Value> jsresult;
+  std::vector< int > *arg1 = (std::vector< int > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  std::vector< int >::size_type result;
+  
+  if(args.Length() != 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_IntVector_size.");
+  
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_std__vectorT_int_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IntVector_size" "', argument " "1"" of type '" "std::vector< int > const *""'"); 
+  }
+  arg1 = (std::vector< int > *)(argp1);
+  result = ((std::vector< int > const *)arg1)->size();
+  jsresult = SWIG_From_size_t((size_t)(result));
+  
+  
+  SWIGV8_RETURN(jsresult);
+  
+  goto fail;
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
+}
+
+
+static SwigV8ReturnValue _wrap_IntVector_capacity(const SwigV8Arguments &args) {
+  SWIGV8_HANDLESCOPE();
+  
+  v8::Handle<v8::Value> jsresult;
+  std::vector< int > *arg1 = (std::vector< int > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  std::vector< int >::size_type result;
+  
+  if(args.Length() != 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_IntVector_capacity.");
+  
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_std__vectorT_int_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IntVector_capacity" "', argument " "1"" of type '" "std::vector< int > const *""'"); 
+  }
+  arg1 = (std::vector< int > *)(argp1);
+  result = ((std::vector< int > const *)arg1)->capacity();
+  jsresult = SWIG_From_size_t((size_t)(result));
+  
+  
+  SWIGV8_RETURN(jsresult);
+  
+  goto fail;
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
+}
+
+
+static SwigV8ReturnValue _wrap_IntVector_reserve(const SwigV8Arguments &args) {
+  SWIGV8_HANDLESCOPE();
+  
+  v8::Handle<v8::Value> jsresult;
+  std::vector< int > *arg1 = (std::vector< int > *) 0 ;
+  std::vector< int >::size_type arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  
+  if(args.Length() != 1) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_IntVector_reserve.");
+  
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_std__vectorT_int_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IntVector_reserve" "', argument " "1"" of type '" "std::vector< int > *""'"); 
+  }
+  arg1 = (std::vector< int > *)(argp1);
+  ecode2 = SWIG_AsVal_size_t(args[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "IntVector_reserve" "', argument " "2"" of type '" "std::vector< int >::size_type""'");
+  } 
+  arg2 = (std::vector< int >::size_type)(val2);
+  (arg1)->reserve(arg2);
+  jsresult = SWIGV8_UNDEFINED();
+  
+  
+  
+  SWIGV8_RETURN(jsresult);
+  
+  goto fail;
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
+}
+
+
+static SwigV8ReturnValue _wrap_IntVector_isEmpty(const SwigV8Arguments &args) {
+  SWIGV8_HANDLESCOPE();
+  
+  v8::Handle<v8::Value> jsresult;
+  std::vector< int > *arg1 = (std::vector< int > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool result;
+  
+  if(args.Length() != 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_IntVector_isEmpty.");
+  
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_std__vectorT_int_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IntVector_isEmpty" "', argument " "1"" of type '" "std::vector< int > const *""'"); 
+  }
+  arg1 = (std::vector< int > *)(argp1);
+  result = (bool)((std::vector< int > const *)arg1)->empty();
+  jsresult = SWIG_From_bool((bool)(result));
+  
+  
+  SWIGV8_RETURN(jsresult);
+  
+  goto fail;
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
+}
+
+
+static SwigV8ReturnValue _wrap_IntVector_clear(const SwigV8Arguments &args) {
+  SWIGV8_HANDLESCOPE();
+  
+  v8::Handle<v8::Value> jsresult;
+  std::vector< int > *arg1 = (std::vector< int > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  
+  if(args.Length() != 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_IntVector_clear.");
+  
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_std__vectorT_int_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IntVector_clear" "', argument " "1"" of type '" "std::vector< int > *""'"); 
+  }
+  arg1 = (std::vector< int > *)(argp1);
+  (arg1)->clear();
+  jsresult = SWIGV8_UNDEFINED();
+  
+  
+  SWIGV8_RETURN(jsresult);
+  
+  goto fail;
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
+}
+
+
+static SwigV8ReturnValue _wrap_IntVector_add(const SwigV8Arguments &args) {
+  SWIGV8_HANDLESCOPE();
+  
+  v8::Handle<v8::Value> jsresult;
+  std::vector< int > *arg1 = (std::vector< int > *) 0 ;
+  std::vector< int >::value_type *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  std::vector< int >::value_type temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  
+  if(args.Length() != 1) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_IntVector_add.");
+  
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_std__vectorT_int_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IntVector_add" "', argument " "1"" of type '" "std::vector< int > *""'"); 
+  }
+  arg1 = (std::vector< int > *)(argp1);
+  ecode2 = SWIG_AsVal_int(args[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "IntVector_add" "', argument " "2"" of type '" "std::vector< int >::value_type""'");
+  } 
+  temp2 = (std::vector< int >::value_type)(val2);
+  arg2 = &temp2;
+  (arg1)->push_back((std::vector< int >::value_type const &)*arg2);
+  jsresult = SWIGV8_UNDEFINED();
+  
+  
+  
+  SWIGV8_RETURN(jsresult);
+  
+  goto fail;
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
+}
+
+
+static SwigV8ReturnValue _wrap_IntVector_get(const SwigV8Arguments &args) {
+  SWIGV8_HANDLESCOPE();
+  
+  v8::Handle<v8::Value> jsresult;
+  std::vector< int > *arg1 = (std::vector< int > *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  std::vector< int >::value_type *result = 0 ;
+  
+  if(args.Length() != 1) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_IntVector_get.");
+  
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_std__vectorT_int_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IntVector_get" "', argument " "1"" of type '" "std::vector< int > *""'"); 
+  }
+  arg1 = (std::vector< int > *)(argp1);
+  ecode2 = SWIG_AsVal_int(args[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "IntVector_get" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = (int)(val2);
+  try {
+    result = (std::vector< int >::value_type *) &std_vector_Sl_int_Sg__get(arg1,arg2);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
+  }
+  
+  jsresult = SWIG_From_int((int)(*result));
+  
+  
+  
+  SWIGV8_RETURN(jsresult);
+  
+  goto fail;
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
+}
+
+
+static SwigV8ReturnValue _wrap_IntVector_set(const SwigV8Arguments &args) {
+  SWIGV8_HANDLESCOPE();
+  
+  v8::Handle<v8::Value> jsresult;
+  std::vector< int > *arg1 = (std::vector< int > *) 0 ;
+  int arg2 ;
+  std::vector< int >::value_type *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  std::vector< int >::value_type temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  
+  if(args.Length() != 2) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_IntVector_set.");
+  
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_std__vectorT_int_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IntVector_set" "', argument " "1"" of type '" "std::vector< int > *""'"); 
+  }
+  arg1 = (std::vector< int > *)(argp1);
+  ecode2 = SWIG_AsVal_int(args[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "IntVector_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = (int)(val2);
+  ecode3 = SWIG_AsVal_int(args[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "IntVector_set" "', argument " "3"" of type '" "std::vector< int >::value_type""'");
+  } 
+  temp3 = (std::vector< int >::value_type)(val3);
+  arg3 = &temp3;
+  try {
+    std_vector_Sl_int_Sg__set(arg1,arg2,(int const &)*arg3);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
+  }
+  
+  jsresult = SWIGV8_UNDEFINED();
+  
+  
+  
+  
+  SWIGV8_RETURN(jsresult);
+  
+  goto fail;
+fail:
+  SWIGV8_RETURN(SWIGV8_UNDEFINED());
+}
+
+
+#if (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < 0x031710)
+static void _wrap_delete_IntVector(v8::Persistent<v8::Value> object, void *parameter) {
+  SWIGV8_Proxy *proxy = static_cast<SWIGV8_Proxy *>(parameter);
+#elif (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < 0x031900)
+  static void _wrap_delete_IntVector(v8::Isolate *isolate, v8::Persistent<v8::Value> object, void *parameter) {
+    SWIGV8_Proxy *proxy = static_cast<SWIGV8_Proxy *>(parameter);
+#elif (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < SWIGV8_SETWEAK_VERSION)
+    static void _wrap_delete_IntVector(v8::Isolate *isolate, v8::Persistent< v8::Object> *object, SWIGV8_Proxy *proxy) {
+#else
+      static void _wrap_delete_IntVector(const v8::WeakCallbackData<v8::Object, SWIGV8_Proxy> &data) {
+        v8::Local<v8::Object> object = data.GetValue();
+        SWIGV8_Proxy *proxy = data.GetParameter();
+#endif
+        
+        if(proxy->swigCMemOwn && proxy->swigCObject) {
+          std::vector< int > * arg1 = (std::vector< int > *)proxy->swigCObject;
+          delete arg1;
+        }
+        delete proxy;
+        
+#if (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < 0x031710)
+        object.Dispose();
+#elif (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < 0x031900)
+        object.Dispose(isolate);
+#elif (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < 0x032100)
+        object->Dispose(isolate);
+#elif (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < SWIGV8_SETWEAK_VERSION)
+        object->Dispose();
+#else
+        object.Clear();
+#endif
+      }
+
+
 static SwigV8ReturnValue _wrap_new_Graph(const SwigV8Arguments &args) {
   SWIGV8_HANDLESCOPE();
   
@@ -1912,14 +2528,14 @@ static SwigV8ReturnValue _wrap_Graph_Run(const SwigV8Arguments &args) {
   
   v8::Handle<v8::Value> jsresult;
   Graph *arg1 = (Graph *) 0 ;
-  TF_Operation *arg2 = (TF_Operation *) 0 ;
-  TF_Operation *arg3 = (TF_Operation *) 0 ;
+  std::vector< int > arg2 ;
+  int arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
+  void *argp2 ;
   int res2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
   int result;
   
   if(args.Length() != 2) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Graph_Run.");
@@ -1929,19 +2545,24 @@ static SwigV8ReturnValue _wrap_Graph_Run(const SwigV8Arguments &args) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Graph_Run" "', argument " "1"" of type '" "Graph *""'"); 
   }
   arg1 = (Graph *)(argp1);
-  res2 = SWIG_ConvertPtr(args[0], &argp2,SWIGTYPE_p_TF_Operation, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Graph_Run" "', argument " "2"" of type '" "TF_Operation *""'"); 
+  {
+    res2 = SWIG_ConvertPtr(args[0], &argp2, SWIGTYPE_p_std__vectorT_int_t,  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Graph_Run" "', argument " "2"" of type '" "std::vector< int > const""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Graph_Run" "', argument " "2"" of type '" "std::vector< int > const""'");
+    } else {
+      arg2 = *((std::vector< int > *)(argp2));
+    }
   }
-  arg2 = (TF_Operation *)(argp2);
-  res3 = SWIG_ConvertPtr(args[1], &argp3,SWIGTYPE_p_TF_Operation, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Graph_Run" "', argument " "3"" of type '" "TF_Operation *""'"); 
-  }
-  arg3 = (TF_Operation *)(argp3);
+  ecode3 = SWIG_AsVal_int(args[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Graph_Run" "', argument " "3"" of type '" "int""'");
+  } 
+  arg3 = (int)(val3);
   result = (int)(arg1)->Run(arg2,arg3);
   jsresult = SWIG_From_int((int)(result));
-  
   
   
   
@@ -2022,21 +2643,33 @@ fail:
 static swig_type_info _swigt__p_Graph = {"_p_Graph", "p_Graph|Graph *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_TF_Operation = {"_p_TF_Operation", "TF_Operation *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_size_type = {"_p_size_type", "size_type *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_std__vectorT_int_t = {"_p_std__vectorT_int_t", "p_std__vectorT_int_t|std::vector< int > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_value_type = {"_p_value_type", "value_type *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_Graph,
   &_swigt__p_TF_Operation,
   &_swigt__p_char,
+  &_swigt__p_size_type,
+  &_swigt__p_std__vectorT_int_t,
+  &_swigt__p_value_type,
 };
 
 static swig_cast_info _swigc__p_Graph[] = {  {&_swigt__p_Graph, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_TF_Operation[] = {  {&_swigt__p_TF_Operation, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_size_type[] = {  {&_swigt__p_size_type, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_std__vectorT_int_t[] = {  {&_swigt__p_std__vectorT_int_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_value_type[] = {  {&_swigt__p_value_type, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_Graph,
   _swigc__p_TF_Operation,
   _swigc__p_char,
+  _swigc__p_size_type,
+  _swigc__p_std__vectorT_int_t,
+  _swigc__p_value_type,
 };
 
 
@@ -2340,7 +2973,14 @@ void SWIGV8_INIT (v8::Handle<v8::Object> exports, v8::Handle<v8::Object> /*modul
   
 
   /* create class templates */
-  /* Name: _exports_Graph, Type: p_Graph, Dtor: _wrap_delete_Graph */
+  /* Name: _exports_IntVector, Type: p_std__vectorT_int_t, Dtor: _wrap_delete_IntVector */
+v8::Handle<v8::FunctionTemplate> _exports_IntVector_class = SWIGV8_CreateClassTemplate("_exports_IntVector");
+SWIGV8_SET_CLASS_TEMPL(_exports_IntVector_clientData.class_templ, _exports_IntVector_class);
+_exports_IntVector_clientData.dtor = _wrap_delete_IntVector;
+if (SWIGTYPE_p_std__vectorT_int_t->clientdata == 0) {
+  SWIGTYPE_p_std__vectorT_int_t->clientdata = &_exports_IntVector_clientData;
+}
+/* Name: _exports_Graph, Type: p_Graph, Dtor: _wrap_delete_Graph */
 v8::Handle<v8::FunctionTemplate> _exports_Graph_class = SWIGV8_CreateClassTemplate("_exports_Graph");
 SWIGV8_SET_CLASS_TEMPL(_exports_Graph_clientData.class_templ, _exports_Graph_class);
 _exports_Graph_clientData.dtor = _wrap_delete_Graph;
@@ -2361,6 +3001,14 @@ SWIGV8_AddStaticVariable(exports_obj, "TF_GRAPH_DEF_VERSION", _wrap_TF_GRAPH_DEF
 SWIGV8_AddStaticVariable(exports_obj, "TF_CHECKPOINT_VERSION_MIN_PRODUCER", _wrap_TF_CHECKPOINT_VERSION_MIN_PRODUCER, JS_veto_set_variable);
 SWIGV8_AddStaticVariable(exports_obj, "TF_CHECKPOINT_VERSION_MIN_CONSUMER", _wrap_TF_CHECKPOINT_VERSION_MIN_CONSUMER, JS_veto_set_variable);
 SWIGV8_AddStaticVariable(exports_obj, "TF_CHECKPOINT_VERSION", _wrap_TF_CHECKPOINT_VERSION, JS_veto_set_variable);
+SWIGV8_AddMemberFunction(_exports_IntVector_class, "size", _wrap_IntVector_size);
+SWIGV8_AddMemberFunction(_exports_IntVector_class, "capacity", _wrap_IntVector_capacity);
+SWIGV8_AddMemberFunction(_exports_IntVector_class, "reserve", _wrap_IntVector_reserve);
+SWIGV8_AddMemberFunction(_exports_IntVector_class, "isEmpty", _wrap_IntVector_isEmpty);
+SWIGV8_AddMemberFunction(_exports_IntVector_class, "clear", _wrap_IntVector_clear);
+SWIGV8_AddMemberFunction(_exports_IntVector_class, "add", _wrap_IntVector_add);
+SWIGV8_AddMemberFunction(_exports_IntVector_class, "get", _wrap_IntVector_get);
+SWIGV8_AddMemberFunction(_exports_IntVector_class, "set", _wrap_IntVector_set);
 SWIGV8_AddMemberFunction(_exports_Graph_class, "Placeholder", _wrap_Graph_Placeholder);
 SWIGV8_AddMemberFunction(_exports_Graph_class, "ScalarConst", _wrap_Graph_ScalarConst);
 SWIGV8_AddMemberFunction(_exports_Graph_class, "Add", _wrap_Graph_Add);
@@ -2373,7 +3021,13 @@ SWIGV8_AddStaticVariable(exports_obj, "Types_float64", _wrap_tensorflow_js_Types
   
 
   /* class instances */
-  /* Class: Graph (_exports_Graph) */
+  /* Class: IntVector (_exports_IntVector) */
+v8::Handle<v8::FunctionTemplate> _exports_IntVector_class_0 = SWIGV8_CreateClassTemplate("IntVector");
+_exports_IntVector_class_0->SetCallHandler(_wrap_new_IntVector);
+_exports_IntVector_class_0->Inherit(_exports_IntVector_class);
+_exports_IntVector_class_0->SetHiddenPrototype(true);
+v8::Handle<v8::Object> _exports_IntVector_obj = _exports_IntVector_class_0->GetFunction();
+/* Class: Graph (_exports_Graph) */
 v8::Handle<v8::FunctionTemplate> _exports_Graph_class_0 = SWIGV8_CreateClassTemplate("Graph");
 _exports_Graph_class_0->SetCallHandler(_wrap_new_Graph);
 _exports_Graph_class_0->Inherit(_exports_Graph_class);
@@ -2387,7 +3041,8 @@ SWIGV8_AddStaticFunction(exports_obj, "tf_git_version", _wrap_tf_git_version);
 
 
   /* register classes */
-  exports_obj->Set(SWIGV8_SYMBOL_NEW("Graph"), _exports_Graph_obj);
+  exports_obj->Set(SWIGV8_SYMBOL_NEW("IntVector"), _exports_IntVector_obj);
+exports_obj->Set(SWIGV8_SYMBOL_NEW("Graph"), _exports_Graph_obj);
 
 
   /* create and register namespace objects */

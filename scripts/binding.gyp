@@ -1,7 +1,11 @@
 {
   'targets': [{ 
     'target_name': 'tensorflow', 
-    'sources': ['../src/tensorflow_wrap.cxx'],
+    'sources': [
+      '../src/core/graph.cc', '../src/core/graph_wrapper.cc',
+      '../src/core/operation.cc', '../src/core/operation_wrapper.cc',
+      '../src/core/addons.cc'
+    ],
     
     'libraries' : [
       '<!(pwd)/../vendor/bazel-out/host/bin/external/protobuf/libprotobuf.a',

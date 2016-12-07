@@ -3,11 +3,11 @@ var tf = require('../index');
 
 describe("Tensorflow", function() {
 
-  describe("Version", function() {
-    it("has a version", function() {
-      assert.equal(tf.version, '(0.11.0)');
-    });
-  });
+  // describe("Version", function() {
+  //   it("has a version", function() {
+  //     assert.equal(tf.version, '(0.11.0)');
+  //   });
+  // });
 
   describe("Run something", function() {
     it("can be run", function() {
@@ -15,7 +15,7 @@ describe("Tensorflow", function() {
       const input = graph.Placeholder();
       const two = graph.ScalarConst(2);
       const add = graph.Add(input, two);
-      const result = graph.Run(input, add);
+      const result = graph.Run(3);
       assert.equal(result, 5);
     });
   });
