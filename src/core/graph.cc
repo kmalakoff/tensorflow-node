@@ -2,7 +2,6 @@
 #include "graph.h"
 
 using tensorflow::int32;
-
 static void Int32Deallocator(void* data, size_t, void* arg) {
   delete[] static_cast<int32*>(data);
 }
@@ -14,9 +13,9 @@ static TF_Tensor* Int32Tensor(int32 v) {
   return TF_NewTensor(TF_INT32, nullptr, 0, values, num_bytes, &Int32Deallocator, nullptr);
 }
 
-TF_Graph* createGraph() { return TF_NewGraph(); }
-
-TF_Operation* Placeholder(TF_Graph* graph) {
+Graph::Graph() { graph = TF_NewGraph(); }
+  
+TF_Operation* Graph::Placeholder() {
   TF_Status* s = TF_NewStatus();
   TF_OperationDescription* desc = TF_NewOperation(graph, "Placeholder", "feed");
   TF_SetAttrType(desc, "dtype", TF_INT32);
@@ -26,7 +25,7 @@ TF_Operation* Placeholder(TF_Graph* graph) {
   return result;
 }
 
-TF_Operation* ScalarConst(TF_Graph* graph, int v) {
+TF_Operation* Graph::ScalarConst(int v) {
   TF_Status* s = TF_NewStatus();
   TF_OperationDescription* desc = TF_NewOperation(graph, "Const", "scalar");
   TF_SetAttrTensor(desc, "value", Int32Tensor(v), s);
@@ -38,7 +37,7 @@ TF_Operation* ScalarConst(TF_Graph* graph, int v) {
   return result;
 }
 
-TF_Operation* Add(TF_Graph* graph, TF_Operation* l, TF_Operation* r) {
+TF_Operation* Graph::Add(TF_Operation* l, TF_Operation* r) {
   TF_Status* s = TF_NewStatus();
   TF_OperationDescription* desc = TF_NewOperation(graph, "AddN", "add");
   TF_Port add_inputs[2] = {{l, 0}, {r, 0}};
@@ -49,7 +48,7 @@ TF_Operation* Add(TF_Graph* graph, TF_Operation* l, TF_Operation* r) {
   return result;
 }
 
-int run(TF_Graph* graph, TF_Operation* op1, TF_Operation* op2) {
+int Graph::Run(TF_Operation* op1, TF_Operation* op2) {
   int result = 0;
 
   TF_Status* s = TF_NewStatus();

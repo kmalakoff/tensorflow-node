@@ -1480,7 +1480,7 @@ SWIGRUNTIME void JS_veto_set_variable(v8::Local<v8::String> property, v8::Local<
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define SWIGTYPE_p_TF_Graph swig_types[0]
+#define SWIGTYPE_p_Graph swig_types[0]
 #define SWIGTYPE_p_TF_Operation swig_types[1]
 #define SWIGTYPE_p_char swig_types[2]
 static swig_type_info *swig_types[4];
@@ -1571,6 +1571,7 @@ int SWIG_AsVal_int (v8::Handle<v8::Value> valRef, int* val)
 #define SWIGV8_INIT tensorflow_initialize
 
 
+SWIGV8_ClientData _exports_Graph_clientData;
 
 
 static SwigV8ReturnValue _wrap_TF_MAJOR_VERSION(v8::Local<v8::String> property, const SwigV8PropertyCallbackInfo &info) {
@@ -1776,18 +1777,18 @@ fail:
 }
 
 
-static SwigV8ReturnValue _wrap_createGraph(const SwigV8Arguments &args) {
+static SwigV8ReturnValue _wrap_new_Graph(const SwigV8Arguments &args) {
   SWIGV8_HANDLESCOPE();
   
-  v8::Handle<v8::Value> jsresult;
-  TF_Graph *result = 0 ;
+  v8::Handle<v8::Object> self = args.Holder();
+  Graph *result;
+  if(args.Length() != 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_new_Graph.");
+  result = (Graph *)new Graph();
   
-  if(args.Length() != 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_createGraph.");
   
-  result = (TF_Graph *)createGraph();
-  jsresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_TF_Graph, 0 |  0 );
   
-  SWIGV8_RETURN(jsresult);
+  SWIGV8_SetPrivateData(self, result, SWIGTYPE_p_Graph, SWIG_POINTER_OWN);
+  SWIGV8_RETURN(self);
   
   goto fail;
 fail:
@@ -1795,23 +1796,23 @@ fail:
 }
 
 
-static SwigV8ReturnValue _wrap_Placeholder(const SwigV8Arguments &args) {
+static SwigV8ReturnValue _wrap_Graph_Placeholder(const SwigV8Arguments &args) {
   SWIGV8_HANDLESCOPE();
   
   v8::Handle<v8::Value> jsresult;
-  TF_Graph *arg1 = (TF_Graph *) 0 ;
+  Graph *arg1 = (Graph *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   TF_Operation *result = 0 ;
   
-  if(args.Length() != 1) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Placeholder.");
+  if(args.Length() != 0) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Graph_Placeholder.");
   
-  res1 = SWIG_ConvertPtr(args[0], &argp1,SWIGTYPE_p_TF_Graph, 0 |  0 );
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_Graph, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Placeholder" "', argument " "1"" of type '" "TF_Graph *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Graph_Placeholder" "', argument " "1"" of type '" "Graph *""'"); 
   }
-  arg1 = (TF_Graph *)(argp1);
-  result = (TF_Operation *)Placeholder(arg1);
+  arg1 = (Graph *)(argp1);
+  result = (TF_Operation *)(arg1)->Placeholder();
   jsresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_TF_Operation, 0 |  0 );
   
   
@@ -1823,11 +1824,11 @@ fail:
 }
 
 
-static SwigV8ReturnValue _wrap_ScalarConst(const SwigV8Arguments &args) {
+static SwigV8ReturnValue _wrap_Graph_ScalarConst(const SwigV8Arguments &args) {
   SWIGV8_HANDLESCOPE();
   
   v8::Handle<v8::Value> jsresult;
-  TF_Graph *arg1 = (TF_Graph *) 0 ;
+  Graph *arg1 = (Graph *) 0 ;
   int arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -1835,19 +1836,19 @@ static SwigV8ReturnValue _wrap_ScalarConst(const SwigV8Arguments &args) {
   int ecode2 = 0 ;
   TF_Operation *result = 0 ;
   
-  if(args.Length() != 2) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_ScalarConst.");
+  if(args.Length() != 1) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Graph_ScalarConst.");
   
-  res1 = SWIG_ConvertPtr(args[0], &argp1,SWIGTYPE_p_TF_Graph, 0 |  0 );
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_Graph, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ScalarConst" "', argument " "1"" of type '" "TF_Graph *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Graph_ScalarConst" "', argument " "1"" of type '" "Graph *""'"); 
   }
-  arg1 = (TF_Graph *)(argp1);
-  ecode2 = SWIG_AsVal_int(args[1], &val2);
+  arg1 = (Graph *)(argp1);
+  ecode2 = SWIG_AsVal_int(args[0], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ScalarConst" "', argument " "2"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Graph_ScalarConst" "', argument " "2"" of type '" "int""'");
   } 
   arg2 = (int)(val2);
-  result = (TF_Operation *)ScalarConst(arg1,arg2);
+  result = (TF_Operation *)(arg1)->ScalarConst(arg2);
   jsresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_TF_Operation, 0 |  0 );
   
   
@@ -1860,11 +1861,11 @@ fail:
 }
 
 
-static SwigV8ReturnValue _wrap_Add(const SwigV8Arguments &args) {
+static SwigV8ReturnValue _wrap_Graph_Add(const SwigV8Arguments &args) {
   SWIGV8_HANDLESCOPE();
   
   v8::Handle<v8::Value> jsresult;
-  TF_Graph *arg1 = (TF_Graph *) 0 ;
+  Graph *arg1 = (Graph *) 0 ;
   TF_Operation *arg2 = (TF_Operation *) 0 ;
   TF_Operation *arg3 = (TF_Operation *) 0 ;
   void *argp1 = 0 ;
@@ -1875,24 +1876,24 @@ static SwigV8ReturnValue _wrap_Add(const SwigV8Arguments &args) {
   int res3 = 0 ;
   TF_Operation *result = 0 ;
   
-  if(args.Length() != 3) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Add.");
+  if(args.Length() != 2) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Graph_Add.");
   
-  res1 = SWIG_ConvertPtr(args[0], &argp1,SWIGTYPE_p_TF_Graph, 0 |  0 );
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_Graph, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Add" "', argument " "1"" of type '" "TF_Graph *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Graph_Add" "', argument " "1"" of type '" "Graph *""'"); 
   }
-  arg1 = (TF_Graph *)(argp1);
-  res2 = SWIG_ConvertPtr(args[1], &argp2,SWIGTYPE_p_TF_Operation, 0 |  0 );
+  arg1 = (Graph *)(argp1);
+  res2 = SWIG_ConvertPtr(args[0], &argp2,SWIGTYPE_p_TF_Operation, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Add" "', argument " "2"" of type '" "TF_Operation *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Graph_Add" "', argument " "2"" of type '" "TF_Operation *""'"); 
   }
   arg2 = (TF_Operation *)(argp2);
-  res3 = SWIG_ConvertPtr(args[2], &argp3,SWIGTYPE_p_TF_Operation, 0 |  0 );
+  res3 = SWIG_ConvertPtr(args[1], &argp3,SWIGTYPE_p_TF_Operation, 0 |  0 );
   if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Add" "', argument " "3"" of type '" "TF_Operation *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Graph_Add" "', argument " "3"" of type '" "TF_Operation *""'"); 
   }
   arg3 = (TF_Operation *)(argp3);
-  result = (TF_Operation *)Add(arg1,arg2,arg3);
+  result = (TF_Operation *)(arg1)->Add(arg2,arg3);
   jsresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_TF_Operation, 0 |  0 );
   
   
@@ -1906,11 +1907,11 @@ fail:
 }
 
 
-static SwigV8ReturnValue _wrap_run(const SwigV8Arguments &args) {
+static SwigV8ReturnValue _wrap_Graph_Run(const SwigV8Arguments &args) {
   SWIGV8_HANDLESCOPE();
   
   v8::Handle<v8::Value> jsresult;
-  TF_Graph *arg1 = (TF_Graph *) 0 ;
+  Graph *arg1 = (Graph *) 0 ;
   TF_Operation *arg2 = (TF_Operation *) 0 ;
   TF_Operation *arg3 = (TF_Operation *) 0 ;
   void *argp1 = 0 ;
@@ -1921,24 +1922,24 @@ static SwigV8ReturnValue _wrap_run(const SwigV8Arguments &args) {
   int res3 = 0 ;
   int result;
   
-  if(args.Length() != 3) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_run.");
+  if(args.Length() != 2) SWIG_exception_fail(SWIG_ERROR, "Illegal number of arguments for _wrap_Graph_Run.");
   
-  res1 = SWIG_ConvertPtr(args[0], &argp1,SWIGTYPE_p_TF_Graph, 0 |  0 );
+  res1 = SWIG_ConvertPtr(args.Holder(), &argp1,SWIGTYPE_p_Graph, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "run" "', argument " "1"" of type '" "TF_Graph *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Graph_Run" "', argument " "1"" of type '" "Graph *""'"); 
   }
-  arg1 = (TF_Graph *)(argp1);
-  res2 = SWIG_ConvertPtr(args[1], &argp2,SWIGTYPE_p_TF_Operation, 0 |  0 );
+  arg1 = (Graph *)(argp1);
+  res2 = SWIG_ConvertPtr(args[0], &argp2,SWIGTYPE_p_TF_Operation, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "run" "', argument " "2"" of type '" "TF_Operation *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Graph_Run" "', argument " "2"" of type '" "TF_Operation *""'"); 
   }
   arg2 = (TF_Operation *)(argp2);
-  res3 = SWIG_ConvertPtr(args[2], &argp3,SWIGTYPE_p_TF_Operation, 0 |  0 );
+  res3 = SWIG_ConvertPtr(args[1], &argp3,SWIGTYPE_p_TF_Operation, 0 |  0 );
   if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "run" "', argument " "3"" of type '" "TF_Operation *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Graph_Run" "', argument " "3"" of type '" "TF_Operation *""'"); 
   }
   arg3 = (TF_Operation *)(argp3);
-  result = (int)run(arg1,arg2,arg3);
+  result = (int)(arg1)->Run(arg2,arg3);
   jsresult = SWIG_From_int((int)(result));
   
   
@@ -1950,6 +1951,40 @@ static SwigV8ReturnValue _wrap_run(const SwigV8Arguments &args) {
 fail:
   SWIGV8_RETURN(SWIGV8_UNDEFINED());
 }
+
+
+#if (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < 0x031710)
+static void _wrap_delete_Graph(v8::Persistent<v8::Value> object, void *parameter) {
+  SWIGV8_Proxy *proxy = static_cast<SWIGV8_Proxy *>(parameter);
+#elif (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < 0x031900)
+  static void _wrap_delete_Graph(v8::Isolate *isolate, v8::Persistent<v8::Value> object, void *parameter) {
+    SWIGV8_Proxy *proxy = static_cast<SWIGV8_Proxy *>(parameter);
+#elif (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < SWIGV8_SETWEAK_VERSION)
+    static void _wrap_delete_Graph(v8::Isolate *isolate, v8::Persistent< v8::Object> *object, SWIGV8_Proxy *proxy) {
+#else
+      static void _wrap_delete_Graph(const v8::WeakCallbackData<v8::Object, SWIGV8_Proxy> &data) {
+        v8::Local<v8::Object> object = data.GetValue();
+        SWIGV8_Proxy *proxy = data.GetParameter();
+#endif
+        
+        if(proxy->swigCMemOwn && proxy->swigCObject) {
+          Graph * arg1 = (Graph *)proxy->swigCObject;
+          delete arg1;
+        }
+        delete proxy;
+        
+#if (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < 0x031710)
+        object.Dispose();
+#elif (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < 0x031900)
+        object.Dispose(isolate);
+#elif (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < 0x032100)
+        object->Dispose(isolate);
+#elif (V8_MAJOR_VERSION-0) < 4 && (SWIG_V8_VERSION < SWIGV8_SETWEAK_VERSION)
+        object->Dispose();
+#else
+        object.Clear();
+#endif
+      }
 
 
 static SwigV8ReturnValue _wrap_tensorflow_js_Types_float32(v8::Local<v8::String> property, const SwigV8PropertyCallbackInfo &info) {
@@ -1984,22 +2019,22 @@ fail:
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static swig_type_info _swigt__p_TF_Graph = {"_p_TF_Graph", "TF_Graph *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_Graph = {"_p_Graph", "p_Graph|Graph *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_TF_Operation = {"_p_TF_Operation", "TF_Operation *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
-  &_swigt__p_TF_Graph,
+  &_swigt__p_Graph,
   &_swigt__p_TF_Operation,
   &_swigt__p_char,
 };
 
-static swig_cast_info _swigc__p_TF_Graph[] = {  {&_swigt__p_TF_Graph, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Graph[] = {  {&_swigt__p_Graph, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_TF_Operation[] = {  {&_swigt__p_TF_Operation, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
-  _swigc__p_TF_Graph,
+  _swigc__p_Graph,
   _swigc__p_TF_Operation,
   _swigc__p_char,
 };
@@ -2305,7 +2340,14 @@ void SWIGV8_INIT (v8::Handle<v8::Object> exports, v8::Handle<v8::Object> /*modul
   
 
   /* create class templates */
-  
+  /* Name: _exports_Graph, Type: p_Graph, Dtor: _wrap_delete_Graph */
+v8::Handle<v8::FunctionTemplate> _exports_Graph_class = SWIGV8_CreateClassTemplate("_exports_Graph");
+SWIGV8_SET_CLASS_TEMPL(_exports_Graph_clientData.class_templ, _exports_Graph_class);
+_exports_Graph_clientData.dtor = _wrap_delete_Graph;
+if (SWIGTYPE_p_Graph->clientdata == 0) {
+  SWIGTYPE_p_Graph->clientdata = &_exports_Graph_clientData;
+}
+
 
   /* register wrapper functions */
   SWIGV8_AddStaticVariable(exports_obj, "TF_MAJOR_VERSION", _wrap_TF_MAJOR_VERSION, JS_veto_set_variable);
@@ -2319,6 +2361,10 @@ SWIGV8_AddStaticVariable(exports_obj, "TF_GRAPH_DEF_VERSION", _wrap_TF_GRAPH_DEF
 SWIGV8_AddStaticVariable(exports_obj, "TF_CHECKPOINT_VERSION_MIN_PRODUCER", _wrap_TF_CHECKPOINT_VERSION_MIN_PRODUCER, JS_veto_set_variable);
 SWIGV8_AddStaticVariable(exports_obj, "TF_CHECKPOINT_VERSION_MIN_CONSUMER", _wrap_TF_CHECKPOINT_VERSION_MIN_CONSUMER, JS_veto_set_variable);
 SWIGV8_AddStaticVariable(exports_obj, "TF_CHECKPOINT_VERSION", _wrap_TF_CHECKPOINT_VERSION, JS_veto_set_variable);
+SWIGV8_AddMemberFunction(_exports_Graph_class, "Placeholder", _wrap_Graph_Placeholder);
+SWIGV8_AddMemberFunction(_exports_Graph_class, "ScalarConst", _wrap_Graph_ScalarConst);
+SWIGV8_AddMemberFunction(_exports_Graph_class, "Add", _wrap_Graph_Add);
+SWIGV8_AddMemberFunction(_exports_Graph_class, "Run", _wrap_Graph_Run);
 SWIGV8_AddStaticVariable(exports_obj, "Types_float32", _wrap_tensorflow_js_Types_float32, JS_veto_set_variable);
 SWIGV8_AddStaticVariable(exports_obj, "Types_float64", _wrap_tensorflow_js_Types_float64, JS_veto_set_variable);
 
@@ -2327,20 +2373,22 @@ SWIGV8_AddStaticVariable(exports_obj, "Types_float64", _wrap_tensorflow_js_Types
   
 
   /* class instances */
-  
+  /* Class: Graph (_exports_Graph) */
+v8::Handle<v8::FunctionTemplate> _exports_Graph_class_0 = SWIGV8_CreateClassTemplate("Graph");
+_exports_Graph_class_0->SetCallHandler(_wrap_new_Graph);
+_exports_Graph_class_0->Inherit(_exports_Graph_class);
+_exports_Graph_class_0->SetHiddenPrototype(true);
+v8::Handle<v8::Object> _exports_Graph_obj = _exports_Graph_class_0->GetFunction();
+
 
   /* add static class functions and variables */
   SWIGV8_AddStaticFunction(exports_obj, "tf_compiler_version", _wrap_tf_compiler_version);
 SWIGV8_AddStaticFunction(exports_obj, "tf_git_version", _wrap_tf_git_version);
-SWIGV8_AddStaticFunction(exports_obj, "createGraph", _wrap_createGraph);
-SWIGV8_AddStaticFunction(exports_obj, "Placeholder", _wrap_Placeholder);
-SWIGV8_AddStaticFunction(exports_obj, "ScalarConst", _wrap_ScalarConst);
-SWIGV8_AddStaticFunction(exports_obj, "Add", _wrap_Add);
-SWIGV8_AddStaticFunction(exports_obj, "run", _wrap_run);
 
 
   /* register classes */
-  
+  exports_obj->Set(SWIGV8_SYMBOL_NEW("Graph"), _exports_Graph_obj);
+
 
   /* create and register namespace objects */
   
