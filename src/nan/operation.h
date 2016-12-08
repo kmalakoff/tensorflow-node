@@ -9,10 +9,10 @@ namespace nan {
 class Operation: public Nan::ObjectWrap {
   public:
     Operation(TF_Operation* operation = nullptr);
+    TF_Operation* ref() { return m_operation; }
 
   private:
     friend class AddOns;
-    friend class Graph;
 
     TF_Operation* m_operation;
    

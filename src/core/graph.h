@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "tensorflow/c/c_api.h"
-#include "tensorflow/core/platform/types.h"
 
 namespace tensorflow {
 

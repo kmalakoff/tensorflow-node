@@ -1,7 +1,7 @@
 #include <iostream>
+#include "nan.h"
 #include "graph.h"
 #include "../core/graph.h"
-#include "tensorflow/c/c_api.h"
 #include "operation.h"
 
 namespace nan {
@@ -12,28 +12,25 @@ Graph::~Graph() {}
 NAN_METHOD(Graph::Placeholder) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
   
-  v8::Local<v8::Object> result = Nan::NewInstance(Nan::New(Operation::constructor)->GetFunction()).ToLocalChecked();
-  (new Operation(obj->m_graph->Placeholder()))->Wrap(result);
-  info.GetReturnValue().Set(result);
+  TF_Operation* result = obj->m_graph->Placeholder();
+  info.GetReturnValue().Set(NAN_WRAP_RESULT(Operation, TF_Operation*, result));
 }
 
 NAN_METHOD(Graph::ScalarConst) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
   int arg0 = info[0]->IsUndefined() ? 0 : info[0]->NumberValue();
 
-  v8::Local<v8::Object> result = Nan::NewInstance(Nan::New(Operation::constructor)->GetFunction()).ToLocalChecked();
-  (new Operation(obj->m_graph->ScalarConst(arg0)))->Wrap(result);
-  info.GetReturnValue().Set(result);
+  TF_Operation* result = obj->m_graph->ScalarConst(arg0);
+  info.GetReturnValue().Set(NAN_WRAP_RESULT(Operation, TF_Operation*, result));
 }
 
 NAN_METHOD(Graph::Add) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
-  TF_Operation* arg0 = Nan::ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->m_operation;
-  TF_Operation* arg1 = Nan::ObjectWrap::Unwrap<Operation>(info[1]->ToObject())->m_operation;
+  TF_Operation* arg0 = Nan::ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref();
+  TF_Operation* arg1 = Nan::ObjectWrap::Unwrap<Operation>(info[1]->ToObject())->ref();
 
-  v8::Local<v8::Object> result = Nan::NewInstance(Nan::New(Operation::constructor)->GetFunction()).ToLocalChecked();
-  (new Operation(obj->m_graph->Add(arg0, arg1)))->Wrap(result);
-  info.GetReturnValue().Set(result);
+  TF_Operation* result = obj->m_graph->Add(arg0, arg1);
+  info.GetReturnValue().Set(NAN_WRAP_RESULT(Operation, TF_Operation*, result));
 }
 
 NAN_METHOD(Graph::Run) {

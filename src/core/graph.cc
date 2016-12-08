@@ -1,4 +1,5 @@
 #include <iostream>
+#include "tensorflow/core/platform/types.h"
 #include "graph.h"
 
 namespace tensorflow {

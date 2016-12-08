@@ -11,6 +11,7 @@ class Graph: public Nan::ObjectWrap {
   public:
     Graph();
     ~Graph();
+    tensorflow::Graph* ref() { return m_graph; }
 
     static NAN_METHOD(Placeholder);
     static NAN_METHOD(ScalarConst);
@@ -20,14 +21,14 @@ class Graph: public Nan::ObjectWrap {
   private:
     friend class AddOns;
 
+    tensorflow::Graph* m_graph;
+
     /////////////////////////////////
     // Nan Lifecycle
     /////////////////////////////////
     static Nan::Persistent<v8::FunctionTemplate> constructor;
     static NAN_MODULE_INIT(Init);
     static void New(const Nan::FunctionCallbackInfo<v8::Value>& args);
-
-    tensorflow::Graph* m_graph;
 };
 
 }
