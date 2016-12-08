@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "node scripts/clean.js",
     "configure": "node scripts/configure_tensorflow.js && node scripts/build_tensorflow.js",
-    "build": "node scripts/build_nodejs.js",
+    "build": "node-gyp configure build --directory=scripts",
     "test": "./node_modules/.bin/mocha"
   },
   "repository": {

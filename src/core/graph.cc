@@ -50,8 +50,7 @@ TF_Operation* Graph::Add(TF_Operation* l, TF_Operation* r) {
   return result;
 }
 
-// int Graph::Run(const std::vector<int> ops, int v) {
-int Graph::Run(int v) {
+int Graph::Run(const std::vector<int>& ops, int v) {
   int result = 0;
 
   TF_Status* s = TF_NewStatus();

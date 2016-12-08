@@ -11,8 +11,7 @@ class Graph {
     TF_Operation* Placeholder();
     TF_Operation* ScalarConst(int v);
     TF_Operation* Add(TF_Operation* l, TF_Operation* r);
-    int Run(int v);
-    // int Run(const std::vector<int> ops, int v);
+    int Run(const std::vector<int>& ops, int v);
 
   private:
     TF_Graph* m_graph = nullptr;

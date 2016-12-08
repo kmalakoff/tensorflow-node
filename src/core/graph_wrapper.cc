@@ -1,3 +1,4 @@
+#include <iostream>
 #include "graph_wrapper.h"
 #include "graph.h"
 #include "tensorflow/c/c_api.h"
@@ -36,22 +37,19 @@ void GraphWrapper::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 
 void GraphWrapper::Placeholder(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   GraphWrapper* obj = ObjectWrap::Unwrap<GraphWrapper>(info.Holder());
-  TF_Operation* result = obj->m_graph->Placeholder();
   
-  v8::Local<v8::Object> n = Nan::New(OperationWrapper::constructor)->GetFunction()->NewInstance();
-  OperationWrapper *i = new OperationWrapper(result);
-  i->DoWrap(n);
-  info.GetReturnValue().Set(n);
+  OperationWrapper *i = new OperationWrapper(obj->m_graph->Placeholder());
+  v8::MaybeLocal<v8::Object> n = Nan::NewInstance(Nan::New(OperationWrapper::constructor)->GetFunction()); i->DoWrap(n);
+  info.GetReturnValue().Set(n.ToLocalChecked());
 }
 
 void GraphWrapper::ScalarConst(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   GraphWrapper* obj = ObjectWrap::Unwrap<GraphWrapper>(info.Holder());
   int arg0 = info[0]->IsUndefined() ? 0 : info[0]->NumberValue();
-  TF_Operation* result = obj->m_graph->ScalarConst(arg0);
-  v8::Local<v8::Object> n = Nan::New(OperationWrapper::constructor)->GetFunction()->NewInstance();
-  OperationWrapper *i = new OperationWrapper(result);
-  i->DoWrap(n);
-  info.GetReturnValue().Set(n);
+
+  OperationWrapper *i = new OperationWrapper(obj->m_graph->ScalarConst(arg0));
+  v8::MaybeLocal<v8::Object> n = Nan::NewInstance(Nan::New(OperationWrapper::constructor)->GetFunction()); i->DoWrap(n);
+  info.GetReturnValue().Set(n.ToLocalChecked());
 }
 
 void GraphWrapper::Add(const Nan::FunctionCallbackInfo<v8::Value>& info) {
@@ -59,15 +57,18 @@ void GraphWrapper::Add(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   TF_Operation* arg0 = Nan::ObjectWrap::Unwrap<OperationWrapper>(info[0]->ToObject())->m_operation;
   TF_Operation* arg1 = Nan::ObjectWrap::Unwrap<OperationWrapper>(info[1]->ToObject())->m_operation;
 
-  TF_Operation* result = obj->m_graph->Add(arg0, arg1);
-  v8::Local<v8::Object> n = Nan::New(OperationWrapper::constructor)->GetFunction()->NewInstance();
-  OperationWrapper *i = new OperationWrapper(result);
-  i->DoWrap(n);
-  info.GetReturnValue().Set(n);
+  OperationWrapper *i = new OperationWrapper(obj->m_graph->Add(arg0, arg1));
+  v8::MaybeLocal<v8::Object> n = Nan::NewInstance(Nan::New(OperationWrapper::constructor)->GetFunction()); i->DoWrap(n);
+  info.GetReturnValue().Set(n.ToLocalChecked());
 }
 
 void GraphWrapper::Run(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   GraphWrapper* obj = ObjectWrap::Unwrap<GraphWrapper>(info.Holder());
-  int arg0 = info[0]->IsUndefined() ? 0 : info[0]->NumberValue();
-  info.GetReturnValue().Set(Nan::New(obj->m_graph->Run(arg0)));
+
+  std::vector<int> arg0;
+  v8::Handle<v8::Array> jsArray = v8::Handle<v8::Array>::Cast(info[0]);
+  for (unsigned int i = 0; i < jsArray->Length(); i++) { arg0.push_back(jsArray->Get(i)->NumberValue()); }
+  int arg1 = info[0]->IsUndefined() ? 0 : info[1]->NumberValue();
+
+  info.GetReturnValue().Set(Nan::New(obj->m_graph->Run(arg0, arg1)));
 }

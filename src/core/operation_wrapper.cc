@@ -18,8 +18,8 @@ void OperationWrapper::Init(v8::Local<v8::Object> exports) {
 void OperationWrapper::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   Nan::HandleScope scope;
 
-  TF_Operation* arg0 = Nan::ObjectWrap::Unwrap<OperationWrapper>(info[0]->ToObject())->m_operation;
-  OperationWrapper *instance = new OperationWrapper(arg0);
+  // TF_Operation* arg0 = Nan::ObjectWrap::Unwrap<OperationWrapper>(info[0]->ToObject())->m_operation;
+  OperationWrapper *instance = new OperationWrapper();
 
   instance->Wrap(info.Holder());
   info.GetReturnValue().Set(info.Holder());
@@ -27,4 +27,4 @@ void OperationWrapper::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 
 OperationWrapper::OperationWrapper(TF_Operation* operation) : m_operation(operation) {};
 
-void OperationWrapper::DoWrap(v8::Local<v8::Object> n) { Wrap(n); }
+void OperationWrapper::DoWrap(v8::MaybeLocal<v8::Object>& n) { Wrap(n.ToLocalChecked()); }

@@ -15,7 +15,7 @@ describe("Tensorflow", function() {
       const input = graph.Placeholder();
       const two = graph.ScalarConst(2);
       const add = graph.Add(input, two);
-      const result = graph.Run(3);
+      const result = graph.Run([1, 4, 5], 3);
       assert.equal(result, 5);
     });
   });
