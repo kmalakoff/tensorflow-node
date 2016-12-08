@@ -1,6 +1,8 @@
 #include <iostream>
 #include "graph.h"
 
+namespace tensorflow {
+
 using tensorflow::int32;
 static void Int32Deallocator(void* data, size_t, void* arg) {
   delete[] static_cast<int32*>(data);
@@ -92,3 +94,5 @@ int Graph::Run(const std::vector<int>& ops, int v) {
 
   return result;
 }
+
+} // namespace tensorflow

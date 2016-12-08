@@ -1,9 +1,11 @@
-#ifndef TENSORFLOW_JS_GRAPH_H_
-#define TENSORFLOW_JS_GRAPH_H_
+#ifndef CORE_GRAPH_H
+#define CORE_GRAPH_H
 
 #include <vector>
 #include "tensorflow/c/c_api.h"
 #include "tensorflow/core/platform/types.h"
+
+namespace tensorflow {
 
 class Graph {
   public:
@@ -19,4 +21,6 @@ class Graph {
     std::vector<TF_Operation*> m_outputs;
 };
 
-#endif  // TENSORFLOW_JS_GRAPH_H_
+} // namespace tensorflow
+
+#endif  // CORE_GRAPH_H

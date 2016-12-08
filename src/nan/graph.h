@@ -1,19 +1,21 @@
-#ifndef GraphWrapper_H
-#define GraphWrapper_H
+#ifndef NAN_GRAPH_H
+#define NAN_GRAPH_H
 
 #include <nan.h>
 
-class Graph;
+namespace tensorflow { class Graph; }
 
-class GraphWrapper: public Nan::ObjectWrap {
+namespace nan {
+
+class Graph: public Nan::ObjectWrap {
   public:
     static Nan::Persistent<v8::FunctionTemplate> constructor;
     static void Init(v8::Local<v8::Object> exports);
     static void New(const Nan::FunctionCallbackInfo<v8::Value>& args);
 
-    GraphWrapper();
-    ~GraphWrapper();
-    Graph* m_graph;
+    Graph();
+    ~Graph();
+    tensorflow::Graph* m_graph;
 
     static void Placeholder(const Nan::FunctionCallbackInfo<v8::Value>& args);
     static void ScalarConst(const Nan::FunctionCallbackInfo<v8::Value>& args);
@@ -21,4 +23,6 @@ class GraphWrapper: public Nan::ObjectWrap {
     static void Run(const Nan::FunctionCallbackInfo<v8::Value>& args);
 };
 
-#endif // GraphWrapper_H
+}
+
+#endif // NAN_GRAPH_H

@@ -1,5 +1,5 @@
-#ifndef TENSORFLOW_JS_TYPES_H_
-#define TENSORFLOW_JS_TYPES_H_
+#ifndef CORE_TYPES_H
+#define CORE_TYPES_H
 
 #include "tensorflow/core/framework/types.pb.h"
 
@@ -14,7 +14,7 @@ enum class Types {
 } // js
 } // tensorflow
 
-#endif  // TENSORFLOW_JS_TYPES_H_
+#endif  // CORE_TYPES_H
 
 
   // DT_FLOAT = 1;

@@ -2,9 +2,8 @@
   'targets': [{ 
     'target_name': 'tensorflow', 
     'sources': [
-      '../src/core/graph.cc', '../src/core/graph_wrapper.cc',
-      '../src/core/operation.cc', '../src/core/operation_wrapper.cc',
-      '../src/core/addons.cc'
+      '../src/core/graph.cc', '../src/core/operation.cc',
+      '../src/nan/graph.cc', '../src/nan/operation.cc', '../src/nan/addons.cc'
     ],
     
     'libraries' : [
