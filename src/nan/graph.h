@@ -1,8 +1,9 @@
 #ifndef NAN_GRAPH_H
 #define NAN_GRAPH_H
 
-#include <nan.h>
+#include "nan.h"
 
+// forward declarations
 namespace tensorflow { class Graph; }
 
 namespace nan {
@@ -19,16 +20,15 @@ class Graph: public Nan::ObjectWrap {
     static NAN_METHOD(Run);
 
   private:
-    friend class AddOns;
-
     tensorflow::Graph* m_graph;
 
     /////////////////////////////////
     // Nan Lifecycle
     /////////////////////////////////
-    static Nan::Persistent<v8::FunctionTemplate> constructor;
+    friend class AddOns;
+    static NAN_CONSTRUCTOR(constructor);
     static NAN_MODULE_INIT(Init);
-    static void New(const Nan::FunctionCallbackInfo<v8::Value>& args);
+    static NAN_NEW(New);
 };
 
 }

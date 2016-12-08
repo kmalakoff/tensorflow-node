@@ -1,8 +1,11 @@
 #include <iostream>
 #include "tensorflow/core/platform/types.h"
 #include "graph.h"
+#include <nan.h> // remove dependency
 
 namespace tensorflow {
+
+using namespace v8;
 
 using tensorflow::int32;
 static void Int32Deallocator(void* data, size_t, void* arg) {
@@ -53,9 +56,7 @@ TF_Operation* Graph::Add(TF_Operation* l, TF_Operation* r) {
   return result;
 }
 
-int Graph::Run(const std::vector<int>& ops, int v) {
-  int result = 0;
-
+void Graph::Run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Handle<v8::Object>& inputs) {
   TF_Status* s = TF_NewStatus();
   TF_SessionOptions* opts = TF_NewSessionOptions();
   TF_SessionWithGraph* session = TF_NewSessionWithGraph(m_graph, opts, s);
@@ -65,35 +66,27 @@ int Graph::Run(const std::vector<int>& ops, int v) {
 
   for(auto const& value: this->m_inputs) {
     input_ports.push_back(TF_Port({value, 0}));
-    input_tensors.push_back(Int32Tensor(v));
+    input_tensors.push_back(Int32Tensor(inputs->Get(Nan::New("input").ToLocalChecked())->NumberValue()));
   }
 
   std::vector<TF_Port> output_ports;
-  std::vector<TF_Tensor*> output_tensors;
 
-  for(auto const& value: this->m_outputs) {
+  for(auto const& value: ops) {
     output_ports.push_back(TF_Port({value, 0}));
-    output_tensors.push_back(nullptr);
+    o_results.push_back(nullptr);
   }
 
   TF_SessionRun(
     session, nullptr,
     &input_ports[0], &input_tensors[0], input_ports.size(),
-    &output_ports[0], &output_tensors[0], output_ports.size(),
+    &output_ports[0], &o_results[0], output_ports.size(),
     nullptr, 0,
     nullptr, s
   );
 
-  TF_Tensor* out = output_tensors[0];
-  int32* output_contents = static_cast<int32*>(TF_TensorData(out));
-
-  result = *output_contents;
-
   TF_DeleteSessionOptions(opts);
   TF_CloseSessionWithGraph(session, s);
   TF_DeleteStatus(s);
-
-  return result;
 }
 
 } // namespace tensorflow

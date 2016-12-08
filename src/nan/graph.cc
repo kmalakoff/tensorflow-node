@@ -1,10 +1,14 @@
 #include <iostream>
 #include "nan.h"
+#include "tensorflow/core/platform/types.h"
 #include "graph.h"
 #include "../core/graph.h"
 #include "operation.h"
 
 namespace nan {
+
+using namespace tensorflow;
+using namespace v8;
 
 Graph::Graph() { m_graph = new tensorflow::Graph(); }
 Graph::~Graph() {}
@@ -36,24 +40,31 @@ NAN_METHOD(Graph::Add) {
 NAN_METHOD(Graph::Run) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
 
-  std::vector<int> arg0;
-  v8::Handle<v8::Array> jsArray = v8::Handle<v8::Array>::Cast(info[0]);
-  for (unsigned int i = 0; i < jsArray->Length(); i++) { arg0.push_back(jsArray->Get(i)->NumberValue()); }
-  int arg1 = info[0]->IsUndefined() ? 0 : info[1]->NumberValue();
+  std::vector<TF_Operation*> arg0;
+  Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
+  TF_Operation* value0;
+  for (unsigned int i = 0; i < jsArray->Length(); i++) {
+    value0 = Nan::ObjectWrap::Unwrap<Operation>(jsArray->Get(i)->ToObject())->ref();
+    arg0.push_back(value0);
+  }
+  Handle<Object> arg1 = Handle<Object>::Cast(info[1]);
 
-  info.GetReturnValue().Set(Nan::New(obj->m_graph->Run(arg0, arg1)));
+  std::vector<TF_Tensor*> results;
+  obj->m_graph->Run(results, arg0, arg1);
+
+  TF_Tensor* out = results[0];
+  info.GetReturnValue().Set(Nan::New(*static_cast<int32*>(TF_TensorData(out))));
 }
 
 /////////////////////////////////
 // Nan Lifecycle
 /////////////////////////////////
-Nan::Persistent<v8::FunctionTemplate> Graph::constructor;
-
+NAN_CONSTRUCTOR(Graph::constructor);
 NAN_MODULE_INIT(Graph::Init) {
   Nan::HandleScope scope;
 
   // Class
-  v8::Local<v8::FunctionTemplate> ctor = Nan::New<v8::FunctionTemplate>(Graph::New);
+  Local<v8::FunctionTemplate> ctor = Nan::New<v8::FunctionTemplate>(Graph::New);
   ctor->InstanceTemplate()->SetInternalFieldCount(1);
   ctor->SetClassName(Nan::New("Graph").ToLocalChecked());
   constructor.Reset(ctor);
@@ -67,7 +78,7 @@ NAN_MODULE_INIT(Graph::Init) {
   target->Set(Nan::New("Graph").ToLocalChecked(), ctor->GetFunction());
 }
 
-void Graph::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
+NAN_NEW(Graph::New) {
   Nan::HandleScope scope;
 
   Graph *instance = new Graph();

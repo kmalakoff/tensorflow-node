@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "tensorflow/c/c_api.h"
+#include <nan.h> // remove dependency
 
 namespace tensorflow {
 
@@ -12,10 +13,10 @@ class Graph {
     TF_Operation* Placeholder();
     TF_Operation* ScalarConst(int v);
     TF_Operation* Add(TF_Operation* l, TF_Operation* r);
-    int Run(const std::vector<int>& ops, int v);
+    void Run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Handle<v8::Object>& inputs);
 
   private:
-    TF_Graph* m_graph = nullptr;
+    TF_Graph* m_graph;
     std::vector<TF_Operation*> m_inputs;
     std::vector<TF_Operation*> m_outputs;
 };

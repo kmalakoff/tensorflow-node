@@ -4,7 +4,9 @@
 
 namespace nan {
 
-void AddOns::Init(v8::Local<v8::Object> exports) {
+using namespace v8;
+
+void AddOns::Init(Local<Object> exports) {
   nan::Graph::Init(exports);
   nan::Operation::Init(exports);
 }
