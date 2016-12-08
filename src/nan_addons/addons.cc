@@ -36,12 +36,12 @@ void AddOns::Init(Local<Object> exports) {
   nan_addons::Operation::Init(exports);
 }
 
-TF_Tensor* AddOns::_NAN_IN_TO_TENSOR(const v8::Local<v8::Value>& info) {
+TF_Tensor* AddOns::_NAN_IN_TO_TENSOR(const Local<Value>& info) {
   if (info->IsNumber()) {
-    // const int num_bytes = sizeof(float);
-    // float* values = new float[1];
-    // values[0] = info->NumberValue();
-    // return TF_NewTensor(TF_FLOAT, nullptr, 0, values, num_bytes, &Float32Deallocator, nullptr);
+    const int num_bytes = sizeof(float);
+    float* values = new float[1];
+    values[0] = info->NumberValue();
+    return TF_NewTensor(TF_FLOAT, nullptr, 0, values, num_bytes, &Float32Deallocator, nullptr);
   }
   else if (info->IsArray()) {
     // std::cout << "\ntensor";
@@ -50,20 +50,16 @@ TF_Tensor* AddOns::_NAN_IN_TO_TENSOR(const v8::Local<v8::Value>& info) {
     const int num_bytes = 2 * sizeof(float);
     float* values = reinterpret_cast<float*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, num_bytes));
 
-    // std::cout << num_bytes;
-    // std::cout << jsArray->Length();    
-    // std::cout << "\n";
-
     if (jsArray->Length() == 1) {
       values[0] = 3.f;
       values[1] = 3.f;
-      int64_t dims[] = {2};
+      int64_t dims[] = {1, 2};
       return TF_NewTensor(TF_FLOAT, dims, sizeof(dims) / sizeof(int64_t), values, num_bytes, &Deallocator, nullptr);
     }
     else {
       values[0] = 2.f;
       values[1] = 2.f;
-      int64_t dims[] = {1, 1};
+      int64_t dims[] = {2, 1};
       return TF_NewTensor(TF_FLOAT, dims, sizeof(dims) / sizeof(int64_t), values, num_bytes, &Deallocator, nullptr);
     }
   }
@@ -71,6 +67,22 @@ TF_Tensor* AddOns::_NAN_IN_TO_TENSOR(const v8::Local<v8::Value>& info) {
   return nullptr;
 }
 
+Local<Value> AddOns::_NAN_OUT_TO_BUFFER(TF_Tensor* value) {
+  Local<Object> buf = Nan::NewBuffer(TF_TensorByteSize(value)).ToLocalChecked();
+  uint8* data = (uint8*) node::Buffer::Data(buf);
+  memcpy(data, TF_TensorData(value), TF_TensorByteSize(value));
+
+  Local<v8::Object> globalObj = Nan::GetCurrentContext()->Global();
+  Local<v8::Function> bufferConstructor = Local<v8::Function> ::Cast(globalObj->Get(Nan::New<String>("Buffer").ToLocalChecked()));
+  Local<Value> constructorArgs[3] = {buf, Nan::New<v8::Integer>((unsigned)TF_TensorByteSize(value)), Nan::New<v8::Integer>(0)};
+  return Nan::NewInstance(bufferConstructor, 3, constructorArgs).ToLocalChecked();
+}
+
 } // namespace nan_addons
 
 NODE_MODULE(Tensorflow, nan_addons::AddOns::Init)
+
+// IN_TO_BUFFER
+// char* buf = NAN_IN_BUFFER_DATA(info[0]);
+// size_t len = NAN_IN_BUFFER_LENGTH(info[0]);
+// int arg0 = *((int32*) buf);

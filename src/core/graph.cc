@@ -13,6 +13,19 @@ static void Int32Deallocator(void* data, size_t, void* arg) {
   delete[] static_cast<int32*>(data);
 }
 
+void gen_random(char *s, const int len) {
+  for (int i = 0; i < len; ++i) {
+    int randomChar = rand()%(26+26+10);
+    if (randomChar < 26)
+      s[i] = 'a' + randomChar;
+    else if (randomChar < 26+26)
+      s[i] = 'A' + randomChar - 26;
+    else
+      s[i] = '0' + randomChar - 26 - 26;
+  }
+  s[len] = 0;
+}
+
 static TF_Tensor* Int32Tensor(int32 v) {
   const int num_bytes = sizeof(int32);
   int32* values = new int32[1];
@@ -24,24 +37,19 @@ Graph::Graph() { m_graph = TF_NewGraph(); }
 
 TF_Operation* Graph::constant(TF_Tensor* value) {
   TF_DataType dtype = value->dtype;
-  // std::cout << "TYPE";
-  // std::cout << value->dtype;
-  // std::cout << dtype;
-  // std::cout << "\n";
+
+  char name[10];
+  gen_random(name, 4); name[4] = '\0';
 
   TF_Status* s = TF_NewStatus();
-  TF_OperationDescription* desc = TF_NewOperation(m_graph, "Const", "const");
+  TF_OperationDescription* desc = TF_NewOperation(m_graph, "Const", name);
   TF_SetAttrTensor(desc, "value", value, s);
-
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
   if (TF_GetCode(s) != TF_OK) return nullptr; // TODO: general error handling
   TF_SetAttrType(desc, "dtype", dtype);
 
-  // std::cout << "TYPE";
-  // std::cout << value->dtype;
-  // std::cout << dtype;
-  // std::cout << "\n";
-
   TF_Operation* result = TF_FinishOperation(desc, s);
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
   TF_DeleteStatus(s);
   return result;
 }
@@ -49,10 +57,16 @@ TF_Operation* Graph::constant(TF_Tensor* value) {
 TF_Operation* Graph::matmul(TF_Operation* l, TF_Operation* r) {
   TF_Status* s = TF_NewStatus();
   TF_OperationDescription* desc = TF_NewOperation(m_graph, "MatMul", "matmul");
-  TF_Port inputs[2] = {{l, 0}, {r, 0}};
-  TF_AddInputList(desc, inputs, 2);
+  TF_Port l_input = {l, 0};
+  TF_AddInput(desc, l_input);
+  TF_Port r_input = {r, 0};
+  TF_AddInput(desc, r_input);
+  TF_SetAttrType(desc, "T", TF_FLOAT);
+  TF_SetAttrBool(desc, "transpose_a", false);
+  TF_SetAttrBool(desc, "transpose_b", false);
 
   TF_Operation* result = TF_FinishOperation(desc, s);
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
   TF_DeleteStatus(s);
   return result;
 }
@@ -71,10 +85,6 @@ void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operati
   // }
 
   std::vector<TF_Port> output_ports;
-
-  std::cout << "HERE";
-  std::cout << ops.size();
-  std::cout << ops[0];
 
   for (std::size_t i = 0; i < ops.size(); i++) {
     output_ports.push_back(TF_Port({ops[i], static_cast<int>(i)}));

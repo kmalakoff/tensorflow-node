@@ -8,7 +8,7 @@
     
     'libraries' : [
       '<!(pwd)/vendor/libprotobuf.a',
-      '<!(pwd)/vendor/libtensorflow.so'
+      '<!(pwd)/vendor/libtensorflow.dylib'
     ],
 
     'include_dirs' : [ 
@@ -16,7 +16,6 @@
       'vendor/bazel-org_tensorflow/external/protobuf/src',
       'vendor/bazel-org_tensorflow/external/eigen_archive',
       'vendor/bazel-genfiles',
-      'vendor',
       "<!(node -e \"require('nan')\")"
     ],
 
