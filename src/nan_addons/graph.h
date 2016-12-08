@@ -10,8 +10,6 @@ namespace nan_addons {
 
 class Graph: public Nan::ObjectWrap {
   public:
-    Graph();
-    ~Graph();
     tensorflow::Graph* ref() { return m_graph; }
 
     static NAN_METHOD(constant);
@@ -24,6 +22,9 @@ class Graph: public Nan::ObjectWrap {
     static NAN_METHOD(Run);
 
   private:
+    Graph();
+    ~Graph();
+
     tensorflow::Graph* m_graph;
 
     /////////////////////////////////

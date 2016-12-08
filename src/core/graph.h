@@ -16,7 +16,7 @@ class Graph {
     void run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Handle<v8::Object>& inputs);
 
     TF_Operation* Placeholder();
-    TF_Operation* ScalarConst(int v);
+    TF_Operation* ScalarConst(TF_Tensor* value);
     TF_Operation* Add(TF_Operation* l, TF_Operation* r);
     void Run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Handle<v8::Object>& inputs);
 

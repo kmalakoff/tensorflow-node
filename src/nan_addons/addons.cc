@@ -36,7 +36,7 @@ void AddOns::Init(Local<Object> exports) {
   nan_addons::Operation::Init(exports);
 }
 
-TF_Tensor* AddOns::_NAN_IN_TO_TENSOR(const Local<Value>& info) {
+TF_Tensor* AddOns::_VALUE_TO_TENSOR(const Local<Value>& info) {
   if (info->IsNumber()) {
     const int num_bytes = sizeof(float);
     float* values = new float[1];
@@ -67,7 +67,7 @@ TF_Tensor* AddOns::_NAN_IN_TO_TENSOR(const Local<Value>& info) {
   return nullptr;
 }
 
-Local<Value> AddOns::_NAN_OUT_TO_BUFFER(TF_Tensor* value) {
+Local<Value> AddOns::_TENSOR_TO_BUFFER_VALUE(TF_Tensor* value) {
   Local<Object> buf = Nan::NewBuffer(TF_TensorByteSize(value)).ToLocalChecked();
   uint8* data = (uint8*) node::Buffer::Data(buf);
   memcpy(data, TF_TensorData(value), TF_TensorByteSize(value));
@@ -83,6 +83,6 @@ Local<Value> AddOns::_NAN_OUT_TO_BUFFER(TF_Tensor* value) {
 NODE_MODULE(Tensorflow, nan_addons::AddOns::Init)
 
 // IN_TO_BUFFER
-// char* buf = NAN_IN_BUFFER_DATA(info[0]);
-// size_t len = NAN_IN_BUFFER_LENGTH(info[0]);
+// char* buf = VALUE_TO_BUFFER_DATA(info[0]);
+// size_t len = VALUE_TO_BUFFER_LENGTH(info[0]);
 // int arg0 = *((int32*) buf);

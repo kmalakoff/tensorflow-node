@@ -15,20 +15,21 @@ Graph::~Graph() {}
 
 NAN_METHOD(Graph::constant) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
-  
-  TF_Operation* result = obj->m_graph->constant(NAN_IN_TO_TENSOR(info[0]));
-  info.GetReturnValue().Set(NAN_OUT_WRAP_OBJECT(Operation, TF_Operation*, result));
+
+  TF_Tensor* arg0 = VALUE_TO_TENSOR(info[0]); 
+  TF_Operation* result = obj->m_graph->constant(arg0);
+
+  info.GetReturnValue().Set(WRAPPER_OBJECT_TO_VALUE(new Operation(result)));
 }
 
 NAN_METHOD(Graph::matmul) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
   
-  TF_Operation* arg0 = NAN_IN_WRAP_OBJECT(Operation, info[0])->ref(); 
-  TF_Operation* arg1 = NAN_IN_WRAP_OBJECT(Operation, info[1])->ref(); 
-
+  TF_Operation* arg0 = VALUE_TO_WRAPPER_OBJECT(Operation, info[0])->ref(); 
+  TF_Operation* arg1 = VALUE_TO_WRAPPER_OBJECT(Operation, info[1])->ref(); 
   TF_Operation* result = obj->m_graph->matmul(arg0, arg1);
 
-  info.GetReturnValue().Set(NAN_OUT_WRAP_OBJECT(Operation, TF_Operation*, result));
+  info.GetReturnValue().Set(WRAPPER_OBJECT_TO_VALUE(new Operation(result)));
 }
 
 NAN_METHOD(Graph::run) {
@@ -37,7 +38,7 @@ NAN_METHOD(Graph::run) {
   std::vector<TF_Operation*> arg0;
   Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
   for (unsigned int i = 0; i < jsArray->Length(); i++) {
-    TF_Operation* value0 = NAN_IN_WRAP_OBJECT(Operation, jsArray->Get(i))->ref();
+    TF_Operation* value0 = VALUE_TO_WRAPPER_OBJECT(Operation, jsArray->Get(i))->ref();
     arg0.push_back(value0);
   }
   Handle<Object> arg1 = Handle<Object>::Cast(info[1]);
@@ -49,7 +50,7 @@ NAN_METHOD(Graph::run) {
   v8::Local<v8::Array> arr = Nan::New<v8::Array>(results.size());
   for (std::size_t i = 0; i < results.size(); i++) {
     TF_Tensor* value = results[i];
-    Nan::Set(arr, i, NAN_OUT_TO_BUFFER(value));
+    Nan::Set(arr, i, TENSOR_TO_BUFFER_VALUE(value));
   }
   info.GetReturnValue().Set(arr);
 }
@@ -58,25 +59,25 @@ NAN_METHOD(Graph::Placeholder) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
 
   TF_Operation* result = obj->m_graph->Placeholder();
-  info.GetReturnValue().Set(NAN_OUT_WRAP_OBJECT(Operation, TF_Operation*, result));
+  info.GetReturnValue().Set(WRAPPER_OBJECT_TO_VALUE(new Operation(result)));
 }
 
 NAN_METHOD(Graph::ScalarConst) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
 
-  int arg0 = Nan::To<int>(info[0]).FromJust();
-
+  TF_Tensor* arg0 = VALUE_TO_TENSOR(info[0]); 
   TF_Operation* result = obj->m_graph->ScalarConst(arg0);
-  info.GetReturnValue().Set(NAN_OUT_WRAP_OBJECT(Operation, TF_Operation*, result));
+
+  info.GetReturnValue().Set(WRAPPER_OBJECT_TO_VALUE(new Operation(result)));
 }
 
 NAN_METHOD(Graph::Add) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
-  TF_Operation* arg0 = NAN_IN_WRAP_OBJECT(Operation, info[0])->ref(); 
-  TF_Operation* arg1 = NAN_IN_WRAP_OBJECT(Operation, info[1])->ref(); 
+  TF_Operation* arg0 = VALUE_TO_WRAPPER_OBJECT(Operation, info[0])->ref(); 
+  TF_Operation* arg1 = VALUE_TO_WRAPPER_OBJECT(Operation, info[1])->ref(); 
 
   TF_Operation* result = obj->m_graph->Add(arg0, arg1);
-  info.GetReturnValue().Set(NAN_OUT_WRAP_OBJECT(Operation, TF_Operation*, result));
+  info.GetReturnValue().Set(WRAPPER_OBJECT_TO_VALUE(new Operation(result)));
 }
 
 NAN_METHOD(Graph::Run) {
@@ -85,7 +86,7 @@ NAN_METHOD(Graph::Run) {
   std::vector<TF_Operation*> arg0;
   Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
   for (unsigned int i = 0; i < jsArray->Length(); i++) {
-    TF_Operation* value0 = NAN_IN_WRAP_OBJECT(Operation, jsArray->Get(i))->ref();
+    TF_Operation* value0 = VALUE_TO_WRAPPER_OBJECT(Operation, jsArray->Get(i))->ref();
     arg0.push_back(value0);
   }
   Handle<Object> arg1 = Handle<Object>::Cast(info[1]);
@@ -95,7 +96,7 @@ NAN_METHOD(Graph::Run) {
   v8::Local<v8::Array> arr = Nan::New<v8::Array>(results.size());
   for (std::size_t i = 0; i < results.size(); i++) {
     TF_Tensor* value = results[i];
-    Nan::Set(arr, i, Nan::New(*static_cast<int32*>(TF_TensorData(value))));
+    Nan::Set(arr, i, TENSOR_TO_BUFFER_VALUE(value));
   }
   info.GetReturnValue().Set(arr);
 }

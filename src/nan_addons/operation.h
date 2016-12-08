@@ -15,7 +15,7 @@ class Operation: public Nan::ObjectWrap {
 
   private:
     TF_Operation* m_operation;
-   
+
     /////////////////////////////////
     // Nan Lifecycle
     /////////////////////////////////
