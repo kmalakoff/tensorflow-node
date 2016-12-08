@@ -1,3 +1,3 @@
-const _tf = require('../native_bindings');
+const _tf = require('../nan/addons');
 
 module.exports = _tf.Graph;

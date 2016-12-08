@@ -3,9 +3,14 @@
 
 namespace nan {
 
+Operation::Operation(TF_Operation* operation) : m_operation(operation) {};
+
+/////////////////////////////////
+// Nan Lifecycle
+/////////////////////////////////
 Nan::Persistent<v8::FunctionTemplate> Operation::constructor;
 
-void Operation::Init(v8::Local<v8::Object> exports) {
+NAN_MODULE_INIT(Operation::Init) {
   Nan::HandleScope scope;
 
   // Class
@@ -14,7 +19,7 @@ void Operation::Init(v8::Local<v8::Object> exports) {
   ctor->SetClassName(Nan::New("Operation").ToLocalChecked());
   constructor.Reset(ctor);
 
-  exports->Set(Nan::New("Operation  ").ToLocalChecked(), ctor->GetFunction());
+  target->Set(Nan::New("Operation  ").ToLocalChecked(), ctor->GetFunction());
 };
 
 void Operation::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
@@ -26,9 +31,5 @@ void Operation::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   instance->Wrap(info.Holder());
   info.GetReturnValue().Set(info.Holder());
 }
-
-Operation::Operation(TF_Operation* operation) : m_operation(operation) {};
-
-void Operation::DoWrap(v8::MaybeLocal<v8::Object>& n) { Wrap(n.ToLocalChecked()); }
 
 } // namespace nan

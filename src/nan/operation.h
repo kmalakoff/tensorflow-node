@@ -8,14 +8,20 @@ namespace nan {
 
 class Operation: public Nan::ObjectWrap {
   public:
-    static Nan::Persistent<v8::FunctionTemplate> constructor;
-    static void Init(v8::Local<v8::Object> exports);
-    static void New(const Nan::FunctionCallbackInfo<v8::Value>& args);
-
     Operation(TF_Operation* operation = nullptr);
-    TF_Operation* m_operation;
 
-    void DoWrap(v8::MaybeLocal<v8::Object>& n);
+  private:
+    friend class AddOns;
+    friend class Graph;
+
+    TF_Operation* m_operation;
+   
+    /////////////////////////////////
+    // Nan Lifecycle
+    /////////////////////////////////
+    static Nan::Persistent<v8::FunctionTemplate> constructor;
+    static NAN_MODULE_INIT(Init);
+    static void New(const Nan::FunctionCallbackInfo<v8::Value>& args);
 };
 
 } // namespace nan

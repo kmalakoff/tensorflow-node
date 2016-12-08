@@ -9,18 +9,25 @@ namespace nan {
 
 class Graph: public Nan::ObjectWrap {
   public:
-    static Nan::Persistent<v8::FunctionTemplate> constructor;
-    static void Init(v8::Local<v8::Object> exports);
-    static void New(const Nan::FunctionCallbackInfo<v8::Value>& args);
-
     Graph();
     ~Graph();
-    tensorflow::Graph* m_graph;
 
-    static void Placeholder(const Nan::FunctionCallbackInfo<v8::Value>& args);
-    static void ScalarConst(const Nan::FunctionCallbackInfo<v8::Value>& args);
-    static void Add(const Nan::FunctionCallbackInfo<v8::Value>& args);
-    static void Run(const Nan::FunctionCallbackInfo<v8::Value>& args);
+    static NAN_METHOD(Placeholder);
+    static NAN_METHOD(ScalarConst);
+    static NAN_METHOD(Add);
+    static NAN_METHOD(Run);
+
+  private:
+    friend class AddOns;
+
+    /////////////////////////////////
+    // Nan Lifecycle
+    /////////////////////////////////
+    static Nan::Persistent<v8::FunctionTemplate> constructor;
+    static NAN_MODULE_INIT(Init);
+    static void New(const Nan::FunctionCallbackInfo<v8::Value>& args);
+
+    tensorflow::Graph* m_graph;
 };
 
 }

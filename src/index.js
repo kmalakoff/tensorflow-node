@@ -1,4 +1,4 @@
-const _tf = require('./native_bindings');
+const _tf = require('./nan/addons');
 
 let tf = {
   // version: _tf.TF_VERSION_STRING,

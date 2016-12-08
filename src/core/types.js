@@ -1,4 +1,4 @@
-const _tf = require('../native_bindings');
+const _tf = require('../nan/addons');
 
 module.exports = {
   float32: _tf.Types_float32,

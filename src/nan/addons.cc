@@ -2,9 +2,16 @@
 #include "graph.h"
 #include "operation.h"
 
-void InitAll(v8::Local<v8::Object> exports) {
-  nan::Graph::Init(exports);
-  nan::Operation::Init(exports);
-}
+namespace nan {
 
-NODE_MODULE(Tensorflow, InitAll)
+class AddOns {
+  public:
+    static void Init(v8::Local<v8::Object> exports) {
+      nan::Graph::Init(exports);
+      nan::Operation::Init(exports);
+    }
+};
+
+NODE_MODULE(Tensorflow, AddOns::Init)
+
+} // namespace nan
