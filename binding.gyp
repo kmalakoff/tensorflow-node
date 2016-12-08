@@ -7,8 +7,8 @@
     ],
     
     'libraries' : [
-      '<!(pwd)/vendor/libprotobuf.a',
-      '<!(pwd)/vendor/libtensorflow.dylib'
+      '<!(pwd)/vendor/bazel-out/host/bin/external/protobuf/libprotobuf.a',
+      '<!(pwd)/vendor/bazel-out/local-opt/bin/tensorflow/libtensorflow.dylib'
     ],
 
     'include_dirs' : [ 

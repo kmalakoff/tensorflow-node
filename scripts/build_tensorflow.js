@@ -31,6 +31,11 @@ tensorflowDirectory((err, tensorflow_directory) => {
   .then(() => {
     try { fs.linkSync(path.join(VENDOR_DIRECTORY, 'bazel-out', 'local-opt'), path.resolve(path.join(__dirname, '..', 'bazel-out', 'local-opt'))); }
     catch (err) { if (err.code != 'EEXIST') console.log(err); }
+
+    let lib_dir = path.resolve(path.join(__dirname, '..', 'bazel-out', 'local-opt', 'bin', 'tensorflow'))
+    try { fs.linkSync(path.join(lib_dir, 'libtensorflow.so'), path.join(lib_dir, 'libtensorflow.dylib')) }
+    catch (err) { if (err.code != 'EEXIST') console.log(err); }
+
     console.log('Linked shared library: ' + path.join('bazel-out', 'local-opt'));
   })
 

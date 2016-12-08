@@ -91,8 +91,6 @@ void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operati
     o_results.push_back(nullptr);
   }
 
-  std::cout << output_ports.size();
-
   TF_SessionRun(
     session, nullptr,
     nullptr, nullptr, 0,
