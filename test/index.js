@@ -13,10 +13,11 @@ describe("Tensorflow", function() {
     it("can be run", function() {
       let graph = new tf.Graph();
       const input = graph.Placeholder();
-      const two = graph.ScalarConst(2);
+      var buf = new Buffer(4); buf.writeInt32LE(2);
+      const two = graph.ScalarConst(buf);
       const add = graph.Add(input, two);
       const result = graph.Run([add], {input: 3});
-      assert.equal(result, 5);
+      assert.equal(result[0].readInt32LE(), 5);
     });
   });
 });

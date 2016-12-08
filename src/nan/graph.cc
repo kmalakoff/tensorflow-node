@@ -22,7 +22,9 @@ NAN_METHOD(Graph::Placeholder) {
 
 NAN_METHOD(Graph::ScalarConst) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
-  int arg0 = info[0]->IsUndefined() ? 0 : info[0]->NumberValue();
+  uint8_t *buf = (uint8_t*) node::Buffer::Data(info[0]->ToObject());
+  // unsigned len = node::Buffer::Length(info[0]->ToObject());
+  int arg0 = *((int32*) buf);
 
   TF_Operation* result = obj->m_graph->ScalarConst(arg0);
   info.GetReturnValue().Set(NAN_WRAP_RESULT(Operation, TF_Operation*, result));
@@ -48,12 +50,25 @@ NAN_METHOD(Graph::Run) {
     arg0.push_back(value0);
   }
   Handle<Object> arg1 = Handle<Object>::Cast(info[1]);
-
   std::vector<TF_Tensor*> results;
   obj->m_graph->Run(results, arg0, arg1);
 
-  TF_Tensor* out = results[0];
-  info.GetReturnValue().Set(Nan::New(*static_cast<int32*>(TF_TensorData(out))));
+
+  v8::Local<v8::Array> arr = Nan::New<v8::Array>(results.size());
+  for (std::size_t i = 0; i < results.size(); i++) {
+    TF_Tensor* value = results[i];
+
+    Local<Object> buf = Nan::NewBuffer(TF_TensorByteSize(value)).ToLocalChecked();
+    uint8* data = (uint8*) node::Buffer::Data(buf);
+    memcpy(data, TF_TensorData(value), TF_TensorByteSize(value));
+
+    v8::Local<v8::Object> globalObj = Nan::GetCurrentContext()->Global();
+    v8::Local<v8::Function> bufferConstructor = v8::Local<v8::Function> ::Cast(globalObj->Get(Nan::New<String>("Buffer").ToLocalChecked()));
+    v8::Local<v8::Value> constructorArgs[3] = {buf, Nan::New<v8::Integer>((unsigned)TF_TensorByteSize(value)), Nan::New<v8::Integer>(0)};
+    v8::Local<v8::Object> bufferValue = Nan::NewInstance(bufferConstructor, 3, constructorArgs).ToLocalChecked();
+    Nan::Set(arr, i, bufferValue);
+  }
+  info.GetReturnValue().Set(arr);
 }
 
 /////////////////////////////////
