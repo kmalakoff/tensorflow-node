@@ -2,20 +2,21 @@
   'targets': [{ 
     'target_name': 'tensorflow', 
     'sources': [
-      '../src/core/graph.cc', '../src/core/operation.cc',
-      '../src/nan/graph.cc', '../src/nan/operation.cc', '../src/nan/addons.cc'
+      'src/core/graph.cc',
+      'src/nan_addons/graph.cc', 'src/nan_addons/operation.cc', 'src/nan_addons/addons.cc'
     ],
     
     'libraries' : [
-      '<!(pwd)/../vendor/bazel-out/host/bin/external/protobuf/libprotobuf.a',
-      '<!(pwd)/../vendor/bazel-out/local-opt/bin/tensorflow/libtensorflow.so'
+      '<!(pwd)/vendor/libprotobuf.a',
+      '<!(pwd)/vendor/libtensorflow.so'
     ],
 
     'include_dirs' : [ 
-      '../vendor/bazel-org_tensorflow',
-      '../vendor/bazel-org_tensorflow/external/protobuf/src',
-      '../vendor/bazel-org_tensorflow/external/eigen_archive',
-      '../vendor/bazel-genfiles',
+      'vendor/bazel-org_tensorflow',
+      'vendor/bazel-org_tensorflow/external/protobuf/src',
+      'vendor/bazel-org_tensorflow/external/eigen_archive',
+      'vendor/bazel-genfiles',
+      'vendor',
       "<!(node -e \"require('nan')\")"
     ],
 

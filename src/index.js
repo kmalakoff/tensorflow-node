@@ -1,4 +1,4 @@
-const _tf = require('./nan/addons');
+const _tf = require('./nan_addons');
 
 let tf = {
   // version: _tf.TF_VERSION_STRING,

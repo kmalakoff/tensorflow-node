@@ -10,6 +10,17 @@ describe("Tensorflow", function() {
   // });
 
   describe("Run something", function() {
+
+    it("simple", function() {
+      let graph = new tf.Graph();
+
+      matrix1 = graph.constant([[3., 3.]]);
+      matrix2 = graph.constant([[2.],[2.]]);
+      product = graph.matmul(matrix1, matrix2);
+      result = graph.run([product], {});
+      assert.deepEqual(result, [[12.]]);
+    });
+
     it("can be run", function() {
       let graph = new tf.Graph();
       const input = graph.Placeholder();
@@ -17,7 +28,7 @@ describe("Tensorflow", function() {
       const two = graph.ScalarConst(buf);
       const add = graph.Add(input, two);
       const result = graph.Run([add], {input: 3});
-      assert.equal(result[0].readInt32LE(), 5);
+      assert.deepEqual(result, [5]);
     });
   });
 });

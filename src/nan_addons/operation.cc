@@ -1,7 +1,7 @@
 #include <nan.h>
 #include "operation.h"
 
-namespace nan {
+namespace nan_addons {
 
 using namespace v8;
 
@@ -33,4 +33,4 @@ NAN_NEW(Operation::New) {
   info.GetReturnValue().Set(info.Holder());
 }
 
-} // namespace nan
+} // namespace nan_addons
