@@ -5,6 +5,8 @@ let tf = {
   Graph: require('./core/graph')
 }
 
-Object.assign(tf, require('./core/types'));
+Object.assign(tf, _tf.CONSTANTS);
+Object.assign(tf, _tf.TYPES);
 
 module.exports = tf;
+ 

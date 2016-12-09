@@ -5,7 +5,7 @@
 
 namespace nan_bridge {
 
-class Types: public Nan::ObjectWrap {
+class TYPES: public Nan::ObjectWrap {
   public:
     static NAN_MODULE_INIT(Init);
 };
