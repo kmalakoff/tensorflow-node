@@ -20,13 +20,6 @@ describe("Tensorflow", function() {
       assert.deepEqual(result, [[4, 1], [2, 2]]);
     });
 
-    // it("can multiply constants", function() {
-    //   const g = new tf.Graph();
-    //   const a = [[1, 0], [0, 1]];
-    //   const b = [[4, 1], [2, 2]];
-    //   assert.deepEqual(g.matmul(a, b)(), [[4, 1], [2, 2]]);
-    // });
-
     it("can use inputs", function() {
       const g = new tf.Graph();
       const input = g.input();
@@ -35,27 +28,6 @@ describe("Tensorflow", function() {
       const result = g.run(add, [[input, 3]]);
       assert.deepEqual(result, 5);
     });
-
-    // it("can use inputs", function() {
-    //   const g = new tf.Graph();
-    //   const input = g.input();
-    //   assert.deepEqual(g.add(input, 2)([[input, 3]]), 5);
-    // });
-
-    // it("can use inputs", function() {
-    //   const g = new tf.Graph();
-    //   const input = g.input();
-    //   const add = g.add(input, 2);
-    //   const result = g.run(add, input(3));
-    //   assert.deepEqual(result, 5);
-    // });
-
-    // it("can use inputs", function() {
-    //   const g = new tf.Graph();
-    //   const input = g.input();
-    //   const result = g.add(input, 2)(input(3));
-    //   assert.deepEqual(result, 5);
-    // });
   });
 });
 

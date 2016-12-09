@@ -1,6 +1,6 @@
-workspace(name = "org_nodejs")
+workspace(name = "node_tensorflow")
 
-load("//src:workspace.bzl", "workspace")
+load("//:workspace.bzl", "workspace")
 workspace()
 
 load("@org_tensorflow//tensorflow:workspace.bzl", "tf_workspace")

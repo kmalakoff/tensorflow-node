@@ -4,8 +4,8 @@
   "description": "Tensorflow for node.js",
   "main": "index.js",
   "scripts": {
-    "clean": "node scripts/clean.js",
-    "configure": "node scripts/configure_tensorflow.js && node scripts/build_tensorflow.js",
+    "preinstall": "scripts/build_tensorflow.sh",
+    "postinstall": "node-gyp build",
     "build": "node-gyp build",
     "test": "node test/index.js"
   },

@@ -7,15 +7,22 @@
     ],
     
     'libraries' : [
-      '<!(pwd)/vendor/bazel-out/host/bin/external/protobuf/libprotobuf.a',
-      '<!(pwd)/vendor/bazel-out/local-opt/bin/tensorflow/libtensorflow.dylib'
+      '<!(pwd)/vendor/protobuf/libprotobuf.a',
+      '<!(pwd)/vendor/tensorflow/libtensorflow.dylib'
+      # '<!(pwd)/vendor/bazel-out/host/bin/external/protobuf/libprotobuf.a',
+      # '<!(pwd)/vendor/bazel-out/local-opt/bin/tensorflow/libtensorflow.dylib'
     ],
 
     'include_dirs' : [ 
-      'vendor/bazel-org_tensorflow',
-      'vendor/bazel-org_tensorflow/external/protobuf/src',
-      'vendor/bazel-org_tensorflow/external/eigen_archive',
-      'vendor/bazel-genfiles',
+      'vendor/tensorflow/Headers',
+      'vendor/tensorflow/Generated',
+      'vendor/protobuf/Headers',
+      'vendor/eigen/Headers',
+      'vendor/eigen/Generated',
+      # 'vendor/bazel-org_tensorflow',
+      # 'vendor/bazel-org_tensorflow/external/protobuf/src',
+      # 'vendor/bazel-org_tensorflow/external/eigen_archive',
+      # 'vendor/bazel-genfiles',
       "<!(node -e \"require('nan')\")"
     ],
 

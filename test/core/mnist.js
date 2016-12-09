@@ -30,17 +30,16 @@ describe("Tensorflow", function() {
       // const y = g.nn.softmax(g.matmul(x, W) + b)
       const y_ = g.input('float32', [-1, 10]);
 
-      cross_entropy = g.reduce_mean(-g.reduce_sum(y_ * g.log(y), {reduction_indices: [1]}))
-      train_step = g.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+      // cross_entropy = g.reduce_mean(-g.reduce_sum(y_ * g.log(y), {reduction_indices: [1]}))
+      // train_step = g.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
 
       // init = tf.initialize_all_variables()
       // sess = tf.Session()
       // sess.run(init)
 
       _.times(10, () => {
-        console.log(mnist.train.next_batch);
-        [batch_xs, batch_ys] = mnist.train.next_batch(100);
-        // g.run(train_step, [[x, batch_xs], [y_, batch_ys]]);
+        // [batch_xs, batch_ys] = mnist.train.next_batch(100);
+        // g.run(train_step); //, [[x, batch_xs], [y_, batch_ys]]);
  
       // correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
       // accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
