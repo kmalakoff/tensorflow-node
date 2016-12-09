@@ -1,4 +1,4 @@
-const _tf = require('../nan_addons');
+const _tf = require('../nan_bridge');
 
 class NeuralNetwork {
   constructor(graph) { this.graph = graph; }

@@ -6,7 +6,7 @@
 // forward declarations
 struct TF_Operation;
 
-namespace nan_addons {
+namespace nan_bridge {
 
 class Operation: public Nan::ObjectWrap {
   public:
@@ -29,6 +29,6 @@ class Operation: public Nan::ObjectWrap {
     static NAN_NEW(New);
 };
 
-} // namespace nan_addons
+} // namespace nan_bridge
 
 #endif // NAN_OPERATION_H

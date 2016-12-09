@@ -6,7 +6,7 @@
 // forward declarations
 namespace tensorflow { class Graph; }
 
-namespace nan_addons {
+namespace nan_bridge {
 
 class Graph: public Nan::ObjectWrap {
   public:

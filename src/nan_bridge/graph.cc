@@ -1,14 +1,16 @@
 #include <iostream>
 #include "nan.h"
 #include "tensorflow/core/platform/types.h"
+#include "conversions.h"
 #include "graph.h"
 #include "../core/graph.h"
 #include "operation.h"
 
-namespace nan_addons {
+namespace nan_bridge {
 
 using namespace tensorflow;
 using namespace v8;
+using namespace nan_bridge;
 
 Graph::Graph() { m_graph = new tensorflow::Graph(); }
 Graph::~Graph() { delete m_graph; m_graph = nullptr; }
@@ -99,4 +101,4 @@ NAN_NEW(Graph::New) {
   info.GetReturnValue().Set(info.Holder());
 }
 
-} // namespace nan_addons
+} // namespace nan_bridge

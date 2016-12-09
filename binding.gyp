@@ -3,7 +3,8 @@
     'target_name': 'tensorflow', 
     'sources': [
       'src/core/graph.cc',
-      'src/nan_addons/graph.cc', 'src/nan_addons/operation.cc', 'src/nan_addons/addons.cc'
+      'src/nan_bridge/graph.cc', 'src/nan_bridge/operation.cc',
+      'src/nan_bridge/conversions.cc', 'src/nan_bridge/addons.cc'
     ],
     
     'libraries' : [

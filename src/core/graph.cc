@@ -4,8 +4,8 @@
 #include "tensorflow/c/c_api.h"
 #include "graph.h"
 #include <nan.h> // remove dependency
-#include "../nan_addons/addons.h"
-#include "../nan_addons/operation.h"
+#include "../nan_bridge/conversions.h"
+#include "../nan_bridge/operation.h"
 
 std::map<tensorflow::string, int> unique_ids;
 
@@ -19,6 +19,7 @@ namespace tensorflow {
 
 using namespace v8;
 using namespace Nan;
+using namespace nan_bridge;
 
 Graph::Graph() { m_graph = TF_NewGraph(); }
 
@@ -99,7 +100,7 @@ void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operati
     for (unsigned int i = 0; i < jsArray->Length(); i++) {
       Handle<Array> pair = Handle<Array>::Cast(jsArray->Get(i));
 
-      TF_Operation* in = ObjectWrap::Unwrap<nan_addons::Operation>(pair->Get(0)->ToObject())->ref();
+      TF_Operation* in = ObjectWrap::Unwrap<nan_bridge::Operation>(pair->Get(0)->ToObject())->ref();
       TF_Tensor* va = VALUE_TO_TENSOR(pair->Get(1));
       input_ports.push_back(TF_Port({in, static_cast<int>(i)}));
       input_tensors.push_back(va);
