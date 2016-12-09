@@ -23,9 +23,9 @@ describe("Tensorflow", function() {
 
     it("can be run", function() {
       let graph = new tf.Graph();
-      const input = graph.Placeholder();
-      const two = graph.ScalarConst(2.);
-      const add = graph.Add(input, two);
+      const input = graph.input();
+      const two = graph.constant(2.);
+      const add = graph.add(input, two);
       const [result] = graph.run([add], [input, 3.]);
       assert.deepEqual(result.readFloatLE(), 5.);
     });

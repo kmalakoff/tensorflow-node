@@ -13,12 +13,28 @@ using namespace v8;
 Graph::Graph() { m_graph = new tensorflow::Graph(); }
 Graph::~Graph() {}
 
+NAN_METHOD(Graph::input) {
+  Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
+
+  TF_Operation* result = obj->m_graph->input();
+  info.GetReturnValue().Set(WRAPPER_OBJECT_TO_VALUE(new Operation(result)));
+}
+
 NAN_METHOD(Graph::constant) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
 
   TF_Tensor* arg0 = VALUE_TO_TENSOR(info[0]); 
   TF_Operation* result = obj->m_graph->constant(arg0);
 
+  info.GetReturnValue().Set(WRAPPER_OBJECT_TO_VALUE(new Operation(result)));
+}
+
+NAN_METHOD(Graph::add) {
+  Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
+  TF_Operation* arg0 = VALUE_TO_WRAPPER_OBJECT(Operation, info[0])->ref(); 
+  TF_Operation* arg1 = VALUE_TO_WRAPPER_OBJECT(Operation, info[1])->ref(); 
+
+  TF_Operation* result = obj->m_graph->add(arg0, arg1);
   info.GetReturnValue().Set(WRAPPER_OBJECT_TO_VALUE(new Operation(result)));
 }
 
@@ -52,32 +68,6 @@ NAN_METHOD(Graph::run) {
   }
   info.GetReturnValue().Set(arr);
 }
-
-NAN_METHOD(Graph::Placeholder) {
-  Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
-
-  TF_Operation* result = obj->m_graph->Placeholder();
-  info.GetReturnValue().Set(WRAPPER_OBJECT_TO_VALUE(new Operation(result)));
-}
-
-NAN_METHOD(Graph::ScalarConst) {
-  Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
-
-  TF_Tensor* arg0 = VALUE_TO_TENSOR(info[0]); 
-  TF_Operation* result = obj->m_graph->ScalarConst(arg0);
-
-  info.GetReturnValue().Set(WRAPPER_OBJECT_TO_VALUE(new Operation(result)));
-}
-
-NAN_METHOD(Graph::Add) {
-  Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
-  TF_Operation* arg0 = VALUE_TO_WRAPPER_OBJECT(Operation, info[0])->ref(); 
-  TF_Operation* arg1 = VALUE_TO_WRAPPER_OBJECT(Operation, info[1])->ref(); 
-
-  TF_Operation* result = obj->m_graph->Add(arg0, arg1);
-  info.GetReturnValue().Set(WRAPPER_OBJECT_TO_VALUE(new Operation(result)));
-}
-
 /////////////////////////////////
 // Nan Lifecycle
 /////////////////////////////////
@@ -92,12 +82,11 @@ NAN_MODULE_INIT(Graph::Init) {
   constructor.Reset(ctor);
 
   // Prototype
+  Nan::SetPrototypeMethod(ctor, "input", input);
   Nan::SetPrototypeMethod(ctor, "constant", constant);
+  Nan::SetPrototypeMethod(ctor, "add", add);
   Nan::SetPrototypeMethod(ctor, "matmul", matmul);
   Nan::SetPrototypeMethod(ctor, "run", run);
-  Nan::SetPrototypeMethod(ctor, "Placeholder", Placeholder);
-  Nan::SetPrototypeMethod(ctor, "ScalarConst", ScalarConst);
-  Nan::SetPrototypeMethod(ctor, "Add", Add);
 
   target->Set(Nan::New("Graph").ToLocalChecked(), ctor->GetFunction());
 }

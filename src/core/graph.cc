@@ -25,6 +25,19 @@ void gen_random(char *s, const int len) {
 
 Graph::Graph() { m_graph = TF_NewGraph(); }
 
+TF_Operation* Graph::input() {
+  TF_Status* s = TF_NewStatus();
+
+  char name[10]; gen_random(name, 4); name[4] = '\0';
+  TF_OperationDescription* desc = TF_NewOperation(m_graph, "Placeholder", name);
+  TF_SetAttrType(desc, "dtype", TF_FLOAT);
+
+  TF_Operation* result = TF_FinishOperation(desc, s);
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  TF_DeleteStatus(s);
+  return result;
+}
+
 TF_Operation* Graph::constant(TF_Tensor* value) {
   TF_DataType dtype = value->dtype;
 
@@ -39,6 +52,23 @@ TF_Operation* Graph::constant(TF_Tensor* value) {
   TF_Operation* result = TF_FinishOperation(desc, s);
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
 
+  TF_DeleteStatus(s);
+  return result;
+}
+
+TF_Operation* Graph::add(TF_Operation* l, TF_Operation* r) {
+  TF_Status* s = TF_NewStatus();
+
+  char name[10]; gen_random(name, 4); name[4] = '\0';
+  TF_OperationDescription* desc = TF_NewOperation(m_graph, "Add", name);
+  TF_SetAttrType(desc, "T", TF_FLOAT);
+  TF_Port l_input = {l, 0};
+  TF_AddInput(desc, l_input);
+  TF_Port r_input = {r, 0};
+  TF_AddInput(desc, r_input);
+
+  TF_Operation* result = TF_FinishOperation(desc, s);
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
   TF_DeleteStatus(s);
   return result;
 }
@@ -63,7 +93,7 @@ TF_Operation* Graph::matmul(TF_Operation* l, TF_Operation* r) {
   return result;
 }
 
-    void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Handle<v8::Array>& inputs) {
+void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Handle<v8::Array>& inputs) {
   TF_Status* s = TF_NewStatus();
   TF_SessionOptions* opts = TF_NewSessionOptions();
   TF_SessionWithGraph* session = TF_NewSessionWithGraph(m_graph, opts, s);
@@ -100,54 +130,6 @@ TF_Operation* Graph::matmul(TF_Operation* l, TF_Operation* r) {
   TF_CloseSessionWithGraph(session, s);
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
   TF_DeleteStatus(s);
-}
-
-TF_Operation* Graph::Placeholder() {
-  TF_Status* s = TF_NewStatus();
-
-  char name[10]; gen_random(name, 4); name[4] = '\0';
-  TF_OperationDescription* desc = TF_NewOperation(m_graph, "Placeholder", name);
-  TF_SetAttrType(desc, "dtype", TF_FLOAT);
-
-  TF_Operation* result = TF_FinishOperation(desc, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
-  TF_DeleteStatus(s);
-  return result;
-}
-
-TF_Operation* Graph::ScalarConst(TF_Tensor* value) {
-  TF_DataType dtype = value->dtype;
-  TF_Status* s = TF_NewStatus();
-
-  char name[10]; gen_random(name, 4); name[4] = '\0';
-  TF_OperationDescription* desc = TF_NewOperation(m_graph, "Const", name);
-
-  TF_SetAttrTensor(desc, "value", value, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
-  if (TF_GetCode(s) != TF_OK) return nullptr;
-  TF_SetAttrType(desc, "dtype", dtype);
-
-  TF_Operation* result = TF_FinishOperation(desc, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
-  TF_DeleteStatus(s);
-  return result;
-}
-
-TF_Operation* Graph::Add(TF_Operation* l, TF_Operation* r) {
-  TF_Status* s = TF_NewStatus();
-
-  char name[10]; gen_random(name, 4); name[4] = '\0';
-  TF_OperationDescription* desc = TF_NewOperation(m_graph, "Add", name);
-  TF_SetAttrType(desc, "T", TF_FLOAT);
-  TF_Port l_input = {l, 0};
-  TF_AddInput(desc, l_input);
-  TF_Port r_input = {r, 0};
-  TF_AddInput(desc, r_input);
-
-  TF_Operation* result = TF_FinishOperation(desc, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
-  TF_DeleteStatus(s);
-  return result;
 }
 
 } // namespace tensorflow

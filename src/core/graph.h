@@ -11,13 +11,11 @@ namespace tensorflow {
 class Graph {
   public:
     Graph();
+    TF_Operation* input();
     TF_Operation* constant(TF_Tensor* value);
+    TF_Operation* add(TF_Operation* l, TF_Operation* r);
     TF_Operation* matmul(TF_Operation* l, TF_Operation* r);
     void run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Local<v8::Array>& inputs);
-
-    TF_Operation* Placeholder();
-    TF_Operation* ScalarConst(TF_Tensor* value);
-    TF_Operation* Add(TF_Operation* l, TF_Operation* r);
 
   private:
     TF_Graph* m_graph;

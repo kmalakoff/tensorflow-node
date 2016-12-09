@@ -12,13 +12,11 @@ class Graph: public Nan::ObjectWrap {
   public:
     tensorflow::Graph* ref() { return m_graph; }
 
+    static NAN_METHOD(input);
     static NAN_METHOD(constant);
+    static NAN_METHOD(add);
     static NAN_METHOD(matmul);
     static NAN_METHOD(run);
-
-    static NAN_METHOD(Placeholder);
-    static NAN_METHOD(ScalarConst);
-    static NAN_METHOD(Add);
 
   private:
     Graph();
