@@ -14,7 +14,7 @@ class Mnist {
     this.test = new MnistData(mnist_data.testing(test_count));
   }
 }
- 
+
 describe("Tensorflow", function() {
 
   describe("mnist", function() {

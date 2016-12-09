@@ -44,11 +44,6 @@ Local<Value> tfCollectValues(TF_Tensor* value, std::vector<int64_t>& dims, int d
   return results;
 }
 
-void AddOns::Init(Local<Object> exports) {
-  nan_addons::Graph::Init(exports);
-  nan_addons::Operation::Init(exports);
-}
-
 TF_Tensor* AddOns::_VALUE_TO_TENSOR(const Local<Value>& info) {
   if (info->IsNumber()) {
     const int byte_count = 1 * sizeof(float);
@@ -101,7 +96,12 @@ Local<Value> AddOns::_TENSOR_TO_BUFFER_VALUE(TF_Tensor* value) {
 
 } // namespace nan_addons
 
-NODE_MODULE(Tensorflow, nan_addons::AddOns::Init)
+void Init(v8::Local<v8::Object> exports) {
+  nan_addons::Graph::Init(exports);
+  nan_addons::Operation::Init(exports);
+}
+
+NODE_MODULE(Tensorflow, Init)
 
 // IN_TO_BUFFER
 // char* buf = VALUE_TO_BUFFER_DATA(info[0]);

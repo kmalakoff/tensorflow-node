@@ -6,11 +6,11 @@ namespace nan_addons {
 using namespace v8;
 
 Operation::Operation(TF_Operation* operation) : m_operation(operation) {};
+Operation::~Operation() { m_operation = nullptr; }
 
 /////////////////////////////////
 // Nan Lifecycle
 /////////////////////////////////
-NAN_CONSTRUCTOR(Operation::constructor);
 NAN_MODULE_INIT(Operation::Init) {
   Nan::HandleScope scope;
 
@@ -23,12 +23,13 @@ NAN_MODULE_INIT(Operation::Init) {
   target->Set(Nan::New("Operation").ToLocalChecked(), ctor->GetFunction());
 };
 
+NAN_CONSTRUCTOR(Operation::constructor);
+
 NAN_NEW(Operation::New) {
   Nan::HandleScope scope;
 
   // TF_Operation* arg0 = Nan::ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->m_operation;
   Operation *instance = new Operation();
-
   instance->Wrap(info.Holder());
   info.GetReturnValue().Set(info.Holder());
 }

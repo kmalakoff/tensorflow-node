@@ -18,6 +18,7 @@ tensorflow::string uniqueId(const char* key) {
 namespace tensorflow {
 
 using namespace v8;
+using namespace Nan;
 
 Graph::Graph() { m_graph = TF_NewGraph(); }
 
@@ -98,7 +99,7 @@ void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operati
     for (unsigned int i = 0; i < jsArray->Length(); i++) {
       Handle<Array> pair = Handle<Array>::Cast(jsArray->Get(i));
 
-      TF_Operation* in = VALUE_TO_WRAPPER_OBJECT(nan_addons::Operation, pair->Get(0))->ref();
+      TF_Operation* in = ObjectWrap::Unwrap<nan_addons::Operation>(pair->Get(0)->ToObject())->ref();
       TF_Tensor* va = VALUE_TO_TENSOR(pair->Get(1));
       input_ports.push_back(TF_Port({in, static_cast<int>(i)}));
       input_tensors.push_back(va);
