@@ -1,5 +1,5 @@
-var assert = require('chai').assert;
-var tf = require('../../index');
+const assert = require('chai').assert;
+const tf = require('../../index');
 
 describe("Tensorflow", function() {
 
