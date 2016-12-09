@@ -52,25 +52,20 @@ NAN_METHOD(Graph::run) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
 
   std::vector<TF_Operation*> arg0;
-  Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
-  for (unsigned int i = 0; i < jsArray->Length(); i++) {
-    arg0.push_back(VALUE_TO_WRAPPER_OBJECT(Operation, jsArray->Get(i))->ref());
+  if (info[0]->IsArray()) {
+    Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
+    for (unsigned int i = 0; i < jsArray->Length(); i++) {
+      arg0.push_back(VALUE_TO_WRAPPER_OBJECT(Operation, jsArray->Get(i))->ref());
+    }
+  }
+  else {
+    arg0.push_back(VALUE_TO_WRAPPER_OBJECT(Operation, info[0])->ref());
   }
 
   std::vector<TF_Tensor*> results;
   obj->m_graph->run(results, arg0, info[1]);
 
-  v8::Local<v8::Array> arr = Nan::New<v8::Array>(results.size());
-  for (std::size_t i = 0; i < results.size(); i++) {
-
-    if (TF_NumDims(results[i]) == 0) {
-      Nan::Set(arr, i, Nan::New(*((float*) TF_TensorData(results[i])))); // TF_TensorType(results[i]) == DT_Float32 // TODO: check type
-    }
-    else {
-      Nan::Set(arr, i, TENSOR_TO_BUFFER_VALUE(results[i]));
-    }
-  }
-  info.GetReturnValue().Set(arr);
+  info.GetReturnValue().Set(info[0]->IsArray() ? TENSOR_TO_ARRAY_VALUE(results) : TENSOR_TO_VALUE(results[0]));
 }
 /////////////////////////////////
 // Nan Lifecycle

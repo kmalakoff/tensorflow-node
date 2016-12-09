@@ -12,6 +12,9 @@ class AddOns {
     static void Init(v8::Local<v8::Object> exports);
 
     static TF_Tensor* _VALUE_TO_TENSOR(const v8::Local<v8::Value>& info);
+
+    static v8::Local<v8::Value> _TENSOR_TO_VALUE(TF_Tensor* value);
+    static v8::Local<v8::Value> _TENSOR_TO_ARRAY_VALUE(const std::vector<TF_Tensor*>& value);
     static v8::Local<v8::Value> _TENSOR_TO_BUFFER_VALUE(TF_Tensor* value);
 
     template<typename T>
@@ -29,6 +32,8 @@ class AddOns {
 #define VALUE_TO_BUFFER_LENGTH(_i) node::Buffer::Length(_i->ToObject())
 #define VALUE_TO_WRAPPER_OBJECT(OW, _i) Nan::ObjectWrap::Unwrap<OW>(_i->ToObject())
 
+#define TENSOR_TO_VALUE(_v) nan_addons::AddOns::_TENSOR_TO_VALUE(_v)
+#define TENSOR_TO_ARRAY_VALUE(_v) nan_addons::AddOns::_TENSOR_TO_ARRAY_VALUE(_v)
 #define TENSOR_TO_BUFFER_VALUE(_v) nan_addons::AddOns::_TENSOR_TO_BUFFER_VALUE(_v)
 #define WRAPPER_OBJECT_TO_VALUE(_v) nan_addons::AddOns::_WRAPPER_OBJECT_TO_VALUE(_v)
 
