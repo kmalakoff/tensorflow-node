@@ -7,13 +7,16 @@ struct TF_Tensor;
 
 namespace nan_bridge {
 
-TF_Tensor* VALUE_TO_TENSOR(const v8::Local<v8::Value>& info);
-#define VALUE_TO_BUFFER_DATA(_i) node::Buffer::Data(_i->ToObject())
-#define VALUE_TO_BUFFER_LENGTH(_i) node::Buffer::Length(_i->ToObject())
+using namespace v8;
 
-v8::Local<v8::Value> TENSOR_TO_VALUE(TF_Tensor* value);
-v8::Local<v8::Value> TENSOR_TO_ARRAY_VALUE(const std::vector<TF_Tensor*>& value);
-v8::Local<v8::Value> TENSOR_TO_BUFFER_VALUE(TF_Tensor* value);
+void Deallocator(void* data, size_t, void* arg);
+void jsCollectDimensions(std::vector<int64_t>& o_dims, Handle<Array> jsArray);
+int jsCollectValues(float* o_values, Handle<Array> jsArray, int index);
+
+TF_Tensor* ToTensor(const Local<Value>& info);
+v8::Local<v8::Value> ToValue(TF_Tensor* value);
+v8::Local<v8::Value> ToArrayValue(const std::vector<TF_Tensor*>& value);
+v8::Local<v8::Value> ToBufferValue(TF_Tensor* value);
 
 } // namespace nan_bridge
 

@@ -1,9 +1,11 @@
 #include <iostream>
 #include <string>
-#include "tensorflow/core/platform/types.h"
-#include "tensorflow/c/c_api.h"
-#include "graph.h"
+#include <map>
 #include <nan.h> // remove dependency
+#include "tensorflow/c/c_api.h"
+#include "tensorflow/core/platform/types.h"
+#include "../tensorflow/tensor.h"
+#include "graph.h"
 #include "../nan_bridge/conversions.h"
 #include "../nan_bridge/operation.h"
 
@@ -101,7 +103,7 @@ void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operati
       Handle<Array> pair = Handle<Array>::Cast(jsArray->Get(i));
 
       TF_Operation* in = ObjectWrap::Unwrap<nan_bridge::Operation>(pair->Get(0)->ToObject())->ref();
-      TF_Tensor* va = VALUE_TO_TENSOR(pair->Get(1));
+      TF_Tensor* va = ToTensor(pair->Get(1));
       input_ports.push_back(TF_Port({in, static_cast<int>(i)}));
       input_tensors.push_back(va);
     }

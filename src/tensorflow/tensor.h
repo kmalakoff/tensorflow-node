@@ -1,5 +1,5 @@
-#ifndef TENSORFLOW_H
-#define TENSORFLOW_H
+#ifndef TENSOR_H
+#define TENSOR_H
 
 #include "tensorflow/c/c_api.h"
 #include "tensorflow/core/framework/tensor.h"
@@ -11,4 +11,4 @@ struct TF_Tensor {
   tensorflow::TensorBuffer* buffer;
 };
 
-#endif // TENSORFLOW_H
+#endif // TENSOR_H

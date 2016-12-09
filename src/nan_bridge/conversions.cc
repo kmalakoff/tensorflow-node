@@ -1,7 +1,7 @@
 #include <nan.h>
-#include "tensorflow/core/platform/types.h"
 #include "tensorflow/c/c_api.h"
-#include "../tensorflow/tensorflow.h"
+#include "tensorflow/core/platform/types.h"
+#include "tensorflow/core/framework/tensor.h"
 #include "conversions.h"
 #include "graph.h"
 #include "operation.h"
@@ -29,22 +29,7 @@ int jsCollectValues(float* o_values, Handle<Array> jsArray, int index) {
   return index;
 }
 
-Local<Value> tfCollectValues(TF_Tensor* value, std::vector<int64_t>& dims, int dim_index, size_t& offset) {
-  int dim_count = (int) dims.size();
-  if (dim_index >= dim_count) return Nan::Undefined();
-  int64_t dim = TF_Dim(value, dim_index);
-  Local<Array> results = Nan::New<v8::Array>(dim);
-  for (int64_t i = 0; i < dim; i++) {
-    if (dim_index == dim_count - 1) {
-      results->Set((int) i, Nan::New(*((float*) TF_TensorData(value) + offset)));
-      offset++;
-    }
-    else results->Set((int) i, tfCollectValues(value, dims, dim_index + 1, offset));
-  }
-  return results;
-}
-
-TF_Tensor* VALUE_TO_TENSOR(const Local<Value>& info) {
+TF_Tensor* ToTensor(const Local<Value>& info) {
   if (info->IsNumber()) {
     const int byte_count = 1 * sizeof(float);
     float* values = reinterpret_cast<float*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, byte_count));
@@ -66,7 +51,22 @@ TF_Tensor* VALUE_TO_TENSOR(const Local<Value>& info) {
   return nullptr;
 }
 
-Local<Value> TENSOR_TO_VALUE(TF_Tensor* value) {
+Local<Value> tfCollectValues(TF_Tensor* value, std::vector<int64_t>& dims, int dim_index, size_t& offset) {
+  int dim_count = (int) dims.size();
+  if (dim_index >= dim_count) return Nan::Undefined();
+  int64_t dim = TF_Dim(value, dim_index);
+  Local<Array> results = Nan::New<v8::Array>(dim);
+  for (int64_t i = 0; i < dim; i++) {
+    if (dim_index == dim_count - 1) {
+      results->Set((int) i, Nan::New(*((float*) TF_TensorData(value) + offset)));
+      offset++;
+    }
+    else results->Set((int) i, tfCollectValues(value, dims, dim_index + 1, offset));
+  }
+  return results;
+}
+
+Local<Value> ToValue(TF_Tensor* value) {
   size_t dim_count = TF_NumDims(value);
   if (dim_count == 0) return Nan::New(*((float*) TF_TensorData(value))); // TF_TensorType(results[i]) == DT_Float32 // TODO: check type
 
@@ -77,13 +77,13 @@ Local<Value> TENSOR_TO_VALUE(TF_Tensor* value) {
   return tfCollectValues(value, dims, 0, offset);
 }
 
-Local<Value> TENSOR_TO_ARRAY_VALUE(const std::vector<TF_Tensor*>& value) {
+Local<Value> ToArrayValue(const std::vector<TF_Tensor*>& value) {
   Local<Array> results = Nan::New<v8::Array>(value.size());
-  for (size_t i = 0; i < value.size(); i++) results->Set((int) i, TENSOR_TO_VALUE(value[i]));
+  for (size_t i = 0; i < value.size(); i++) results->Set((int) i, ToValue(value[i]));
   return results;
 }
 
-Local<Value> TENSOR_TO_BUFFER_VALUE(TF_Tensor* value) {
+Local<Value> ToBufferValue(TF_Tensor* value) {
   Local<Object> buf = Nan::NewBuffer((uint32_t) TF_TensorByteSize(value)).ToLocalChecked();
   uint8* data = (uint8*) node::Buffer::Data(buf);
   memcpy(data, TF_TensorData(value), TF_TensorByteSize(value));
@@ -97,6 +97,6 @@ Local<Value> TENSOR_TO_BUFFER_VALUE(TF_Tensor* value) {
 } // namespace nan_bridge
 
 // IN_TO_BUFFER
-// char* buf = VALUE_TO_BUFFER_DATA(info[0]);
-// size_t len = VALUE_TO_BUFFER_LENGTH(info[0]);
+// char* buf = node::Buffer::Data(info[0]->ToObject());
+// size_t len = node::Buffer::Length(info[0]->ToObject());
 // int arg0 = *((int32*) buf);

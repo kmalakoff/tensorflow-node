@@ -25,7 +25,7 @@ NAN_METHOD(Graph::input) {
 NAN_METHOD(Graph::constant) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
 
-  TF_Tensor* arg0 = VALUE_TO_TENSOR(info[0]); 
+  TF_Tensor* arg0 = ToTensor(info[0]); 
   TF_Operation* result = obj->m_graph->constant(arg0);
 
   info.GetReturnValue().Set((new Operation(result))->ToValue());
@@ -67,7 +67,7 @@ NAN_METHOD(Graph::run) {
   std::vector<TF_Tensor*> results;
   obj->m_graph->run(results, arg0, info[1]);
 
-  info.GetReturnValue().Set(info[0]->IsArray() ? TENSOR_TO_ARRAY_VALUE(results) : TENSOR_TO_VALUE(results[0]));
+  info.GetReturnValue().Set(info[0]->IsArray() ? ToArrayValue(results) : nan_bridge::ToValue(results[0]));
 }
 /////////////////////////////////
 // Nan Lifecycle

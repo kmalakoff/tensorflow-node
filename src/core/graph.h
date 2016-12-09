@@ -2,9 +2,12 @@
 #define CORE_GRAPH_H
 
 #include <vector>
-#include "tensorflow/c/c_api.h"
 #include <nan.h> // remove dependency
-#include "../tensorflow/tensorflow.h"
+
+// forward declarations
+struct TF_Operation;
+struct TF_Tensor;
+struct TF_Graph;
 
 namespace tensorflow {
 
