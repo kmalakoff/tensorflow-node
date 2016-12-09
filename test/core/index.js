@@ -13,20 +13,20 @@ describe("Tensorflow", function() {
 
     it("simple", function() {
       const g = new tf.Graph();
-      const matrix1 = g.constant([[3., 3.]]);
-      const matrix2 = g.constant([[2.],[2.]]);
+      const matrix1 = g.constant([[5., 4.]]);
+      const matrix2 = g.constant([[3.], [2.]]);
       const product = g.matmul(matrix1, matrix2);
       const [result] = g.run([product]);
-      assert.deepEqual([[result.readFloatLE()]], [[12.]]);
+      assert.deepEqual([[result.readFloatLE()]], [[23.]]);
     });
 
     it("can be run", function() {
       const g = new tf.Graph();
       const input = g.input();
-      const two = g.constant(2.);
+      const two = g.constant(2);
       const add = g.add(input, two);
-      const [result] = g.run([add], [[input, 3.]]);
-      assert.deepEqual(result, 5.);
+      const [result] = g.run([add], [[input, 3]]);
+      assert.deepEqual(result, 5);
     });
   });
 });

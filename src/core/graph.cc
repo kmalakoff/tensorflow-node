@@ -102,9 +102,9 @@ void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operati
   std::vector<TF_Port> input_ports;
   std::vector<TF_Tensor*> input_tensors;
   if (input_pairs->IsArray()) {
-    Handle<Array> value = Handle<Array>::Cast(input_pairs);
-    for (unsigned int i = 0; i < value->Length(); i++) {
-      Handle<Array> pair = Handle<Array>::Cast(value->Get(i));
+    Handle<Array> jsArray = Handle<Array>::Cast(input_pairs);
+    for (unsigned int i = 0; i < jsArray->Length(); i++) {
+      Handle<Array> pair = Handle<Array>::Cast(jsArray->Get(i));
 
       TF_Operation* in = VALUE_TO_WRAPPER_OBJECT(nan_addons::Operation, pair->Get(0))->ref();
       TF_Tensor* va = VALUE_TO_TENSOR(pair->Get(1));

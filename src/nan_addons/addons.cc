@@ -13,6 +13,29 @@ using namespace tensorflow;
 
 static void Deallocator(void* data, size_t, void* arg) { tensorflow::cpu_allocator()->DeallocateRaw(data); }
 
+static void Dimensions(std::vector<int64_t>& o_dims, Handle<Array> jsArray) {
+  o_dims.push_back(jsArray->Length());
+  for (unsigned int i = 0; i < jsArray->Length(); i++) {
+    if (jsArray->Get(i)->IsArray()) {
+      Dimensions(o_dims, Handle<Array>::Cast(jsArray->Get(i)));
+    }
+    break;
+  }
+}
+
+static int Values(float* o_values, Handle<Array> jsArray, int index) {
+  for (unsigned int i = 0; i < jsArray->Length(); i++) {
+    if (jsArray->Get(i)->IsArray()) {
+      index = Values(o_values, Handle<Array>::Cast(jsArray->Get(i)), index);
+    }
+    else {
+      o_values[index] = jsArray->Get(i)->NumberValue();
+      index++;
+    }
+  }
+  return index;
+}
+
 void AddOns::Init(Local<Object> exports) {
   nan_addons::Graph::Init(exports);
   nan_addons::Operation::Init(exports);
@@ -27,21 +50,14 @@ TF_Tensor* AddOns::_VALUE_TO_TENSOR(const Local<Value>& info) {
   }
   else if (info->IsArray()) {
     Handle<Array> jsArray = Handle<Array>::Cast(info);
-    const int num_bytes = 2 * sizeof(float);
-    float* values = reinterpret_cast<float*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, num_bytes));
+    std::vector<int64_t> dims;
+    Dimensions(dims, jsArray);
 
-    if (jsArray->Length() == 1) {
-      values[0] = 3.f;
-      values[1] = 3.f;
-      int64_t dims[] = {1, 2};
-      return TF_NewTensor(TF_FLOAT, dims, sizeof(dims) / sizeof(int64_t), values, num_bytes, &Deallocator, nullptr);
-    }
-    else {
-      values[0] = 2.f;
-      values[1] = 2.f;
-      int64_t dims[] = {2, 1};
-      return TF_NewTensor(TF_FLOAT, dims, sizeof(dims) / sizeof(int64_t), values, num_bytes, &Deallocator, nullptr);
-    }
+    const int num_bytes = (int) std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<int64_t>()) * sizeof(float);
+    float* values = reinterpret_cast<float*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, num_bytes));
+    Values(values, jsArray, 0);
+
+    return TF_NewTensor(TF_FLOAT, &dims[0], dims.size(), values, num_bytes, &Deallocator, nullptr);
   }
 
   return nullptr;
