@@ -15,6 +15,7 @@ class Graph {
   public:
     Graph();
     TF_Operation* input();
+    TF_Operation* variable(TF_Tensor* value);
     TF_Operation* constant(TF_Tensor* value);
     TF_Operation* add(TF_Operation* l, TF_Operation* r);
     TF_Operation* matmul(TF_Operation* l, TF_Operation* r);

@@ -28,6 +28,7 @@ class Graph: public Nan::ObjectWrap {
     static NAN_CONSTRUCTOR(constructor);
     static NAN_NEW(New);
     static NAN_METHOD(input);
+    static NAN_METHOD(variable);
     static NAN_METHOD(constant);
     static NAN_METHOD(add);
     static NAN_METHOD(matmul);

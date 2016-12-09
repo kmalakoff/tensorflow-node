@@ -19,6 +19,13 @@ NAN_METHOD(Graph::input) {
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
+NAN_METHOD(Graph::variable) {
+  Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
+
+  TF_Operation* result = obj->m_graph->variable(nullptr);
+  info.GetReturnValue().Set((new Operation(result))->ToValue());
+}
+
 NAN_METHOD(Graph::constant) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
 
@@ -80,6 +87,7 @@ NAN_MODULE_INIT(Graph::Init) {
 
   // Prototype
   Nan::SetPrototypeMethod(ctor, "input", input);
+  Nan::SetPrototypeMethod(ctor, "variable", variable);
   Nan::SetPrototypeMethod(ctor, "constant", constant);
   Nan::SetPrototypeMethod(ctor, "add", add);
   Nan::SetPrototypeMethod(ctor, "matmul", matmul);

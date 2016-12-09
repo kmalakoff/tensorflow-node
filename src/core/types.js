@@ -1,6 +1,3 @@
-const _tf = require('../nan/addons');
+const _tf = require('../nan_bridge');
 
-module.exports = {
-  float32: _tf.Types_float32,
-  float64: _tf.Types_float64
-}
+module.exports = _tf.TYPES;

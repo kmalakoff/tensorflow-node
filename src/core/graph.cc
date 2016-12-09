@@ -49,6 +49,23 @@ TF_Operation* Graph::constant(TF_Tensor* value) {
   return result;
 }
 
+TF_Operation* Graph::variable(TF_Tensor* value) {
+  TF_DataType dtype = value->dtype;
+
+  TF_Status* s = TF_NewStatus();
+
+  TF_OperationDescription* desc = TF_NewOperation(m_graph, "Variable", uniqueId("Variable").c_str());
+  TF_SetAttrTensor(desc, "value", value, s);
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_GetCode(s) != TF_OK) return nullptr; // TODO: general error handling
+  TF_SetAttrType(desc, "dtype", dtype);
+  TF_Operation* result = TF_FinishOperation(desc, s);
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+
+  TF_DeleteStatus(s);
+  return result;
+}
+
 TF_Operation* Graph::add(TF_Operation* l, TF_Operation* r) {
   TF_Status* s = TF_NewStatus();
 

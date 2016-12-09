@@ -26,7 +26,7 @@ module.exports = class Graph {
   }
 
   input() { return this._.input(); }
-  variable(v) { return this._.constant(v); }
+  variable(v) { return this._.variable(v); }
   constant(v) { return this._.constant(v); }
   run(ops, input_pairs) { return this._.run(ops, input_pairs); }
 
