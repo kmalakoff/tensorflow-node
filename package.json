@@ -33,14 +33,12 @@
   "homepage": "https://github.com/kmalakoff/tensorflow.js#readme",
   "devDependencies": {
     "chai": "^3.5.0",
-    "fs-extra": "^1.0.0",
     "lodash": "^4.17.2",
     "mnist-data": "^1.2.6",
     "mocha": "^3.2.0",
     "pyextjs": "^0.1.2"
   },
   "dependencies": {
-    "execa": "^0.5.0",
     "nan": "^2.4.0",
     "node-gyp": "^3.4.0",
     "segfault-handler": "^1.0.0"
