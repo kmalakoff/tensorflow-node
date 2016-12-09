@@ -11,10 +11,6 @@ namespace nan_addons {
 using namespace v8;
 using namespace tensorflow;
 
-static void Int32Deallocator(void* data, size_t, void* arg) {
-  delete[] static_cast<int32*>(data);
-}
-
 static void Float32Deallocator(void* data, size_t, void* arg) {
   delete[] static_cast<float*>(data);
 }
@@ -22,13 +18,6 @@ static void Float32Deallocator(void* data, size_t, void* arg) {
 static void Deallocator(void* data, size_t, void* arg) {
   tensorflow::cpu_allocator()->DeallocateRaw(data);
   // *reinterpret_cast<bool*>(arg) = true;
-}
-
-static TF_Tensor* Int32Tensor(int32 v) {
-  const int num_bytes = sizeof(int32);
-  int32* values = new int32[1];
-  values[0] = v;
-  return TF_NewTensor(TF_INT32, nullptr, 0, values, num_bytes, &Int32Deallocator, nullptr);
 }
 
 void AddOns::Init(Local<Object> exports) {

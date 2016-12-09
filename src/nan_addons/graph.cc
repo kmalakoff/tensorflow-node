@@ -38,19 +38,17 @@ NAN_METHOD(Graph::run) {
   std::vector<TF_Operation*> arg0;
   Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
   for (unsigned int i = 0; i < jsArray->Length(); i++) {
-    TF_Operation* value0 = VALUE_TO_WRAPPER_OBJECT(Operation, jsArray->Get(i))->ref();
-    arg0.push_back(value0);
+    arg0.push_back(VALUE_TO_WRAPPER_OBJECT(Operation, jsArray->Get(i))->ref());
   }
-  Handle<Object> arg1 = Handle<Object>::Cast(info[1]);
+
+  Handle<Array> arg1 = Handle<Array>::Cast(info[1]);
+
   std::vector<TF_Tensor*> results;
   obj->m_graph->run(results, arg0, arg1);
 
-  void* data = TF_TensorData(results[0]);
-
   v8::Local<v8::Array> arr = Nan::New<v8::Array>(results.size());
   for (std::size_t i = 0; i < results.size(); i++) {
-    TF_Tensor* value = results[i];
-    Nan::Set(arr, i, TENSOR_TO_BUFFER_VALUE(value));
+    Nan::Set(arr, i, TENSOR_TO_BUFFER_VALUE(results[i]));
   }
   info.GetReturnValue().Set(arr);
 }
@@ -80,27 +78,6 @@ NAN_METHOD(Graph::Add) {
   info.GetReturnValue().Set(WRAPPER_OBJECT_TO_VALUE(new Operation(result)));
 }
 
-NAN_METHOD(Graph::Run) {
-  Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
-
-  std::vector<TF_Operation*> arg0;
-  Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
-  for (unsigned int i = 0; i < jsArray->Length(); i++) {
-    TF_Operation* value0 = VALUE_TO_WRAPPER_OBJECT(Operation, jsArray->Get(i))->ref();
-    arg0.push_back(value0);
-  }
-  Handle<Object> arg1 = Handle<Object>::Cast(info[1]);
-  std::vector<TF_Tensor*> results;
-  obj->m_graph->Run(results, arg0, arg1);
-
-  v8::Local<v8::Array> arr = Nan::New<v8::Array>(results.size());
-  for (std::size_t i = 0; i < results.size(); i++) {
-    TF_Tensor* value = results[i];
-    Nan::Set(arr, i, TENSOR_TO_BUFFER_VALUE(value));
-  }
-  info.GetReturnValue().Set(arr);
-}
-
 /////////////////////////////////
 // Nan Lifecycle
 /////////////////////////////////
@@ -121,7 +98,6 @@ NAN_MODULE_INIT(Graph::Init) {
   Nan::SetPrototypeMethod(ctor, "Placeholder", Placeholder);
   Nan::SetPrototypeMethod(ctor, "ScalarConst", ScalarConst);
   Nan::SetPrototypeMethod(ctor, "Add", Add);
-  Nan::SetPrototypeMethod(ctor, "Run", Run);
 
   target->Set(Nan::New("Graph").ToLocalChecked(), ctor->GetFunction());
 }

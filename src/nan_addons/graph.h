@@ -19,7 +19,6 @@ class Graph: public Nan::ObjectWrap {
     static NAN_METHOD(Placeholder);
     static NAN_METHOD(ScalarConst);
     static NAN_METHOD(Add);
-    static NAN_METHOD(Run);
 
   private:
     Graph();

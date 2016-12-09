@@ -17,7 +17,7 @@ describe("Tensorflow", function() {
       const matrix1 = graph.constant([[3., 3.]]);
       const matrix2 = graph.constant([[2.],[2.]]);
       const product = graph.matmul(matrix1, matrix2);
-      const [result] = graph.run([product], {});
+      const [result] = graph.run([product], []);
       assert.deepEqual([[result.readFloatLE()]], [[12.]]);
     });
 
@@ -26,7 +26,7 @@ describe("Tensorflow", function() {
       const input = graph.Placeholder();
       const two = graph.ScalarConst(2.);
       const add = graph.Add(input, two);
-      const [result] = graph.Run([add], {input: 3.});
+      const [result] = graph.run([add], [input, 3.]);
       assert.deepEqual(result.readFloatLE(), 5.);
     });
   });

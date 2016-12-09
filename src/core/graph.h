@@ -13,12 +13,11 @@ class Graph {
     Graph();
     TF_Operation* constant(TF_Tensor* value);
     TF_Operation* matmul(TF_Operation* l, TF_Operation* r);
-    void run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Handle<v8::Object>& inputs);
+    void run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Local<v8::Array>& inputs);
 
     TF_Operation* Placeholder();
     TF_Operation* ScalarConst(TF_Tensor* value);
     TF_Operation* Add(TF_Operation* l, TF_Operation* r);
-    void Run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Handle<v8::Object>& inputs);
 
   private:
     TF_Graph* m_graph;

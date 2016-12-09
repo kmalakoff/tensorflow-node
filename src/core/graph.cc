@@ -4,6 +4,7 @@
 #include "graph.h"
 #include <nan.h> // remove dependency
 #include "../nan_addons/addons.h"
+#include "../nan_addons/operation.h"
 
 namespace tensorflow {
 
@@ -62,7 +63,7 @@ TF_Operation* Graph::matmul(TF_Operation* l, TF_Operation* r) {
   return result;
 }
 
-void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Handle<v8::Object>& inputs) {
+    void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Handle<v8::Array>& inputs) {
   TF_Status* s = TF_NewStatus();
   TF_SessionOptions* opts = TF_NewSessionOptions();
   TF_SessionWithGraph* session = TF_NewSessionWithGraph(m_graph, opts, s);
@@ -70,11 +71,14 @@ void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operati
 
   std::vector<TF_Port> input_ports;
   std::vector<TF_Tensor*> input_tensors;
+  for (unsigned int i = 0; i < inputs->Length(); ) {
+     TF_Operation* in = VALUE_TO_WRAPPER_OBJECT(nan_addons::Operation, inputs->Get(i))->ref();
+     TF_Tensor* va = VALUE_TO_TENSOR(inputs->Get(i+1));
 
-  // for (std::size_t i = 0; i < this->m_inputs.size(); i++) {
-  //   input_ports.push_back(TF_Port({this->m_inputs[i], i}));
-  //   input_tensors.push_back(Int32Tensor(inputs->Get(Nan::New("input").ToLocalChecked())->NumberValue()));
-  // }
+    input_ports.push_back(TF_Port({in, static_cast<int>(i/2)})); // TODO: handle by 2 enumberation
+    input_tensors.push_back(va);
+    i += 2;
+  }
 
   std::vector<TF_Port> output_ports;
 
@@ -85,11 +89,12 @@ void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operati
 
   TF_SessionRun(
     session, nullptr,
-    nullptr, nullptr, 0,
+    &input_ports[0], &input_tensors[0], input_ports.size(),
     &output_ports[0], &o_results[0], output_ports.size(),
     nullptr, 0,
     nullptr, s
   );
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
 
   TF_DeleteSessionOptions(opts);
   TF_CloseSessionWithGraph(session, s);
@@ -101,12 +106,11 @@ TF_Operation* Graph::Placeholder() {
   TF_Status* s = TF_NewStatus();
 
   char name[10]; gen_random(name, 4); name[4] = '\0';
-  TF_OperationDescription* desc = TF_NewOperation(m_graph, "Placeholder", "name");
+  TF_OperationDescription* desc = TF_NewOperation(m_graph, "Placeholder", name);
   TF_SetAttrType(desc, "dtype", TF_FLOAT);
 
   TF_Operation* result = TF_FinishOperation(desc, s);
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
-  this->m_inputs.push_back(result);
   TF_DeleteStatus(s);
   return result;
 }
@@ -144,40 +148,6 @@ TF_Operation* Graph::Add(TF_Operation* l, TF_Operation* r) {
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
   TF_DeleteStatus(s);
   return result;
-}
-
-void Graph::Run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Handle<v8::Object>& inputs) {
-  TF_Status* s = TF_NewStatus();
-  TF_SessionOptions* opts = TF_NewSessionOptions();
-  TF_SessionWithGraph* session = TF_NewSessionWithGraph(m_graph, opts, s);
-
-  std::vector<TF_Port> input_ports;
-  std::vector<TF_Tensor*> input_tensors;
-
-  for (std::size_t i = 0; i < this->m_inputs.size(); i++) {
-    input_ports.push_back(TF_Port({this->m_inputs[i], static_cast<int>(i)}));
-    input_tensors.push_back(VALUE_TO_TENSOR(inputs->Get(Nan::New("input").ToLocalChecked())));
-  }
-
-  std::vector<TF_Port> output_ports;
-
-  for (std::size_t i = 0; i < ops.size(); i++) {
-    output_ports.push_back(TF_Port({ops[i], static_cast<int>(i)}));
-    o_results.push_back(nullptr);
-  }
-
-  TF_SessionRun(
-    session, nullptr,
-    &input_ports[0], &input_tensors[0], input_ports.size(),
-    &output_ports[0], &o_results[0], output_ports.size(),
-    nullptr, 0,
-    nullptr, s
-  );
-
-  TF_DeleteSessionOptions(opts);
-  TF_CloseSessionWithGraph(session, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
-  TF_DeleteStatus(s);
 }
 
 } // namespace tensorflow
