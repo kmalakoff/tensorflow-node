@@ -15,7 +15,7 @@ class Graph {
     TF_Operation* constant(TF_Tensor* value);
     TF_Operation* add(TF_Operation* l, TF_Operation* r);
     TF_Operation* matmul(TF_Operation* l, TF_Operation* r);
-    void run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Local<v8::Array>& inputs);
+    void run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs);
 
   private:
     TF_Graph* m_graph;

@@ -11,14 +11,7 @@ namespace nan_addons {
 using namespace v8;
 using namespace tensorflow;
 
-static void Float32Deallocator(void* data, size_t, void* arg) {
-  delete[] static_cast<float*>(data);
-}
-
-static void Deallocator(void* data, size_t, void* arg) {
-  tensorflow::cpu_allocator()->DeallocateRaw(data);
-  // *reinterpret_cast<bool*>(arg) = true;
-}
+static void Deallocator(void* data, size_t, void* arg) { tensorflow::cpu_allocator()->DeallocateRaw(data); }
 
 void AddOns::Init(Local<Object> exports) {
   nan_addons::Graph::Init(exports);
@@ -27,15 +20,13 @@ void AddOns::Init(Local<Object> exports) {
 
 TF_Tensor* AddOns::_VALUE_TO_TENSOR(const Local<Value>& info) {
   if (info->IsNumber()) {
-    const int num_bytes = sizeof(float);
-    float* values = new float[1];
+    const int num_bytes = 1 * sizeof(float);
+    float* values = reinterpret_cast<float*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, num_bytes));
     values[0] = info->NumberValue();
-    return TF_NewTensor(TF_FLOAT, nullptr, 0, values, num_bytes, &Float32Deallocator, nullptr);
+    return TF_NewTensor(TF_FLOAT, nullptr, 0, values, num_bytes, &Deallocator, nullptr);
   }
   else if (info->IsArray()) {
-    // std::cout << "\ntensor";
     Handle<Array> jsArray = Handle<Array>::Cast(info);
-
     const int num_bytes = 2 * sizeof(float);
     float* values = reinterpret_cast<float*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, num_bytes));
 

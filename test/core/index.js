@@ -12,22 +12,21 @@ describe("Tensorflow", function() {
   describe("Run something", function() {
 
     it("simple", function() {
-      let graph = new tf.Graph();
-
-      const matrix1 = graph.constant([[3., 3.]]);
-      const matrix2 = graph.constant([[2.],[2.]]);
-      const product = graph.matmul(matrix1, matrix2);
-      const [result] = graph.run([product], []);
+      const g = new tf.Graph();
+      const matrix1 = g.constant([[3., 3.]]);
+      const matrix2 = g.constant([[2.],[2.]]);
+      const product = g.matmul(matrix1, matrix2);
+      const [result] = g.run([product]);
       assert.deepEqual([[result.readFloatLE()]], [[12.]]);
     });
 
     it("can be run", function() {
-      let graph = new tf.Graph();
-      const input = graph.input();
-      const two = graph.constant(2.);
-      const add = graph.add(input, two);
-      const [result] = graph.run([add], [input, 3.]);
-      assert.deepEqual(result.readFloatLE(), 5.);
+      const g = new tf.Graph();
+      const input = g.input();
+      const two = g.constant(2.);
+      const add = g.add(input, two);
+      const [result] = g.run([add], [[input, 3.]]);
+      assert.deepEqual(result, 5.);
     });
   });
 });

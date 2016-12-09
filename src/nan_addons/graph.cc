@@ -57,14 +57,18 @@ NAN_METHOD(Graph::run) {
     arg0.push_back(VALUE_TO_WRAPPER_OBJECT(Operation, jsArray->Get(i))->ref());
   }
 
-  Handle<Array> arg1 = Handle<Array>::Cast(info[1]);
-
   std::vector<TF_Tensor*> results;
-  obj->m_graph->run(results, arg0, arg1);
+  obj->m_graph->run(results, arg0, info[1]);
 
   v8::Local<v8::Array> arr = Nan::New<v8::Array>(results.size());
   for (std::size_t i = 0; i < results.size(); i++) {
-    Nan::Set(arr, i, TENSOR_TO_BUFFER_VALUE(results[i]));
+
+    if (TF_NumDims(results[i]) == 0) {
+      Nan::Set(arr, i, Nan::New(*((float*) TF_TensorData(results[i])))); // TF_TensorType(results[i]) == DT_Float32 // TODO: check type
+    }
+    else {
+      Nan::Set(arr, i, TENSOR_TO_BUFFER_VALUE(results[i]));
+    }
   }
   info.GetReturnValue().Set(arr);
 }

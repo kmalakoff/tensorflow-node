@@ -93,7 +93,7 @@ TF_Operation* Graph::matmul(TF_Operation* l, TF_Operation* r) {
   return result;
 }
 
-void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, v8::Handle<v8::Array>& inputs) {
+void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs) {
   TF_Status* s = TF_NewStatus();
   TF_SessionOptions* opts = TF_NewSessionOptions();
   TF_SessionWithGraph* session = TF_NewSessionWithGraph(m_graph, opts, s);
@@ -101,13 +101,16 @@ void Graph::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operati
 
   std::vector<TF_Port> input_ports;
   std::vector<TF_Tensor*> input_tensors;
-  for (unsigned int i = 0; i < inputs->Length(); ) {
-     TF_Operation* in = VALUE_TO_WRAPPER_OBJECT(nan_addons::Operation, inputs->Get(i))->ref();
-     TF_Tensor* va = VALUE_TO_TENSOR(inputs->Get(i+1));
+  if (input_pairs->IsArray()) {
+    Handle<Array> value = Handle<Array>::Cast(input_pairs);
+    for (unsigned int i = 0; i < value->Length(); i++) {
+      Handle<Array> pair = Handle<Array>::Cast(value->Get(i));
 
-    input_ports.push_back(TF_Port({in, static_cast<int>(i/2)})); // TODO: handle by 2 enumberation
-    input_tensors.push_back(va);
-    i += 2;
+      TF_Operation* in = VALUE_TO_WRAPPER_OBJECT(nan_addons::Operation, pair->Get(0))->ref();
+      TF_Tensor* va = VALUE_TO_TENSOR(pair->Get(1));
+      input_ports.push_back(TF_Port({in, static_cast<int>(i)}));
+      input_tensors.push_back(va);
+    }
   }
 
   std::vector<TF_Port> output_ports;
