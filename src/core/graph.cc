@@ -1,11 +1,6 @@
-#include <iostream>
-#include <string>
 #include <map>
-#include <nan.h> // remove dependency
-#include "tensorflow/c/c_api.h"
-#include "tensorflow/core/platform/types.h"
-#include "../tensorflow/tensor.h"
 #include "graph.h"
+#include "../tensorflow/tensor.h"
 #include "../nan_bridge/conversions.h"
 #include "../nan_bridge/operation.h"
 

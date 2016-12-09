@@ -1,10 +1,7 @@
-#include <iostream>
-#include "nan.h"
-#include "tensorflow/core/platform/types.h"
-#include "conversions.h"
 #include "graph.h"
-#include "../core/graph.h"
+#include "conversions.h"
 #include "operation.h"
+#include "../core/graph.h"
 
 namespace nan_bridge {
 

@@ -1,4 +1,3 @@
-#include <nan.h>
 #include "operation.h"
 
 namespace nan_bridge {

@@ -1,10 +1,6 @@
-#include <nan.h>
-#include "tensorflow/c/c_api.h"
-#include "tensorflow/core/platform/types.h"
-#include "tensorflow/core/framework/tensor.h"
 #include "conversions.h"
-#include "graph.h"
-#include "operation.h"
+#include "tensorflow/c/c_api.h"
+#include "tensorflow/core/framework/tensor.h"
 
 namespace nan_bridge {
 
@@ -55,7 +51,7 @@ Local<Value> tfCollectValues(TF_Tensor* value, std::vector<int64_t>& dims, int d
   int dim_count = (int) dims.size();
   if (dim_index >= dim_count) return Nan::Undefined();
   int64_t dim = TF_Dim(value, dim_index);
-  Local<Array> results = Nan::New<v8::Array>(dim);
+  Local<Array> results = Nan::New<v8::Array>((int) dim);
   for (int64_t i = 0; i < dim; i++) {
     if (dim_index == dim_count - 1) {
       results->Set((int) i, Nan::New(*((float*) TF_TensorData(value) + offset)));
@@ -78,7 +74,7 @@ Local<Value> ToValue(TF_Tensor* value) {
 }
 
 Local<Value> ToArrayValue(const std::vector<TF_Tensor*>& value) {
-  Local<Array> results = Nan::New<v8::Array>(value.size());
+  Local<Array> results = Nan::New<v8::Array>((int) value.size());
   for (size_t i = 0; i < value.size(); i++) results->Set((int) i, ToValue(value[i]));
   return results;
 }
@@ -90,7 +86,7 @@ Local<Value> ToBufferValue(TF_Tensor* value) {
 
   Local<v8::Object> globalObj = Nan::GetCurrentContext()->Global();
   Local<v8::Function> bufferConstructor = Local<v8::Function> ::Cast(globalObj->Get(Nan::New<String>("Buffer").ToLocalChecked()));
-  Local<Value> constructorArgs[3] = {buf, Nan::New<v8::Integer>((unsigned)TF_TensorByteSize(value)), Nan::New<v8::Integer>(0)};
+  Local<Value> constructorArgs[3] = {buf, Nan::New<v8::Integer>((int)TF_TensorByteSize(value)), Nan::New<v8::Integer>(0)};
   return Nan::NewInstance(bufferConstructor, 3, constructorArgs).ToLocalChecked();
 }
 
