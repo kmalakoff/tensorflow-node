@@ -1,4 +1,4 @@
-const _tf = require('../addons');
+const _tf = require('./addons');
 
 module.exports = class Session {
   constructor(graph) {

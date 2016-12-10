@@ -26,7 +26,7 @@ describe("Tensorflow training", function() {
       const W = g.variable(np.zeros([784, 10]));
       const b = g.variable(np.zeros([10]));
 
-      // const y = g.nn.softmax(g.add(g.matmul(x, W), b));
+      const y = g.nn.softmax(g.m.add(g.m.matmul(x, W), b));
       // const y_ = g.input(tf.float32, [-1, 10]);
 
       // cross_entropy = g.reduce_mean(-g.reduce_sum(y_ * g.log(y), {reduction_indices: [1]}))

@@ -1,7 +1,7 @@
 #ifndef NAN_NEURAL_NETWORK_H
 #define NAN_NEURAL_NETWORK_H
 
-#include "addons.h"
+#include "index.h"
 
 namespace addons {
 

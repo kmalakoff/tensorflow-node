@@ -1,7 +1,7 @@
 #ifndef NAN_GRAPH_H
 #define NAN_GRAPH_H
 
-#include "addons.h"
+#include "index.h"
 
 // forward declarations
 namespace tensorflow { class Graph; }
@@ -34,8 +34,6 @@ class Graph: public Nan::ObjectWrap {
     static NAN_METHOD(placeholder);
     static NAN_METHOD(variable);
     static NAN_METHOD(constant);
-    static NAN_METHOD(add);
-    static NAN_METHOD(matmul);
     static NAN_METHOD(run);
 };
 

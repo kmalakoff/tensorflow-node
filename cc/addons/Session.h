@@ -1,7 +1,7 @@
 #ifndef NAN_SESSION_H
 #define NAN_SESSION_H
 
-#include "addons.h"
+#include "index.h"
 
 // forward declarations
 namespace tensorflow { class Session; }

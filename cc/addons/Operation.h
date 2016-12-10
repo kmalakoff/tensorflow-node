@@ -1,7 +1,7 @@
 #ifndef NAN_OPERATION_H
 #define NAN_OPERATION_H
 
-#include "addons.h"
+#include "index.h"
 
 // forward declarations
 struct TF_Operation;

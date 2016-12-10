@@ -2,13 +2,11 @@ const Mocha = require('mocha');
 const fs = require('fs');
 const path = require('path');
 
-var mocha = new Mocha();
-var testDir = path.resolve(path.join(__dirname, 'core'));
+const mocha = new Mocha();
+const test_dir = path.resolve(path.join(__dirname, 'js'));
 
-fs.readdirSync(testDir).filter(function(file) { return file.substr(-3) === '.js'; }).forEach(function(file){
-  mocha.addFile(path.join(testDir, file));
-});
+fs.readdirSync(test_dir)
+  .filter(function(file) { return path.extname(file) == '.js'; })
+  .forEach(function(file) { mocha.addFile(path.join(test_dir, file)); });
 
-mocha.run(function(failures){
-  process.on('exit', function () { process.exit(failures); });
-});
+mocha.run(function(failures){ process.on('exit', function () { process.exit(failures); }); });

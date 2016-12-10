@@ -1,12 +1,8 @@
-#include "neural_network.h"
+#include "NeuralNetwork.h"
 
 namespace addons {
 
 using namespace v8;
-
-NAN_METHOD(NeuralNetwork::softmax) {
-
-}
 
 NAN_MODULE_INIT(NeuralNetwork::Init) {
   Nan::Persistent<Object> inner;
@@ -15,7 +11,11 @@ NAN_MODULE_INIT(NeuralNetwork::Init) {
 
   Nan::SetMethod(obj, "softmax", softmax);
 
-  target->Set(Nan::New("nn").ToLocalChecked(), obj);
+  target->Set(Nan::New("NeuralNetwork").ToLocalChecked(), obj);
 };
+
+NAN_METHOD(NeuralNetwork::softmax) {
+
+}
 
 } // namespace addons

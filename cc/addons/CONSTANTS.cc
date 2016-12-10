@@ -1,4 +1,4 @@
-#include "constants.h"
+#include "CONSTANTS.h"
 #include "tensorflow/core/public/version.h"
 
 namespace addons {

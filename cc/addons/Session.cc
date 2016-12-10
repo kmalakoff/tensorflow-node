@@ -1,10 +1,10 @@
 #include <iostream>
-#include "session.h"
-#include "../tensorflow/session.h"
-#include "graph.h"
-#include "../tensorflow/graph.h"
-#include "../lib/conversions.h"
-#include "operation.h"
+#include "Session.h"
+#include "../tensorflow/Session.h"
+#include "Graph.h"
+#include "../tensorflow/Graph.h"
+#include "../lib/Conversions.h"
+#include "Operation.h"
 
 namespace addons {
 
@@ -70,7 +70,7 @@ NAN_METHOD(Session::run) {
   }
 
   std::vector<TF_Tensor*> results;
-  obj->m_ref->run(results, arg0, info[1]);
+  obj->ref()->run(results, arg0, info[1]);
 
   info.GetReturnValue().Set(info[0]->IsArray() ? lib::ToArrayValue(results) : lib::ToValue(results[0]));
 }

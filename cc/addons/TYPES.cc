@@ -1,4 +1,4 @@
-#include "types.h"
+#include "TYPES.h"
 #include "tensorflow/core/framework/types.pb.h"
 
 namespace addons {

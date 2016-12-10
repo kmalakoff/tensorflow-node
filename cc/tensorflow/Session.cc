@@ -1,8 +1,8 @@
 #include <map>
-#include "session.h"
-#include "../tensorflow/tensor.h"
-#include "../addons/operation.h"
-#include "../lib/conversions.h"
+#include "Session.h"
+#include "../tensorflow/Tensor.h"
+#include "../addons/Operation.h"
+#include "../lib/Conversions.h"
 
 namespace tensorflow {
 

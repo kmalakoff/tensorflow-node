@@ -2,19 +2,21 @@
   'targets': [{ 
     'target_name': 'tensorflow', 
     'sources': [
-      'src/addons/addons.cc',
-      'src/addons/constants.cc',
-      'src/addons/graph.cc',
-      'src/addons/neural_network.cc',
-      'src/addons/operation.cc',
-      'src/addons/session.cc',
-      'src/addons/types.cc',
+      'cc/addons/index.cc',
+      'cc/addons/CONSTANTS.cc',
+      'cc/addons/Graph.cc',
+      'cc/addons/MathOps.cc',
+      'cc/addons/NeuralNetwork.cc',
+      'cc/addons/Operation.cc',
+      'cc/addons/Session.cc',
+      'cc/addons/Train.cc',
+      'cc/addons/TYPES.cc',
 
-      'src/lib/conversions.cc',
-      'src/lib/utils.cc',
+      'cc/lib/Conversions.cc',
+      'cc/lib/Utils.cc',
 
-      'src/tensorflow/graph.cc',
-      'src/tensorflow/session.cc'
+      'cc/tensorflow/Graph.cc',
+      'cc/tensorflow/Session.cc'
     ],
 
     'libraries' : [
