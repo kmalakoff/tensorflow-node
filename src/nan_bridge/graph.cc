@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "graph.h"
 #include "conversions.h"
 #include "operation.h"
@@ -9,20 +11,26 @@ using namespace tensorflow;
 using namespace v8;
 using namespace nan_bridge;
 
-Graph::Graph() { m_graph = new tensorflow::Graph(); }
-Graph::~Graph() { delete m_graph; m_graph = nullptr; }
+Graph::Graph() { m_ref = new tensorflow::Graph(); }
+Graph::~Graph() { delete m_ref; m_ref = nullptr; }
 
-NAN_METHOD(Graph::input) {
+NAN_METHOD(Graph::placeholder) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
 
-  TF_Operation* result = obj->m_graph->input();
+  if (info.Length() != 2) { Nan::ThrowTypeError("Wrong number of arguments"); return; }
+  TF_DataType arg0 = (TF_DataType) info[0]->NumberValue();
+  std::vector<int64_t> arg1; ToShape(arg1, info[1]);
+
+  TF_Operation* result = obj->m_ref->placeholder(arg0, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
 NAN_METHOD(Graph::variable) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
 
-  TF_Operation* result = obj->m_graph->variable(nullptr);
+  TF_Tensor* arg0 = ToTensor(info[0]); 
+  std::vector<int64_t> arg1; ToShape(arg1, info[0]);
+  TF_Operation* result = obj->m_ref->variable(arg0, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
@@ -30,7 +38,7 @@ NAN_METHOD(Graph::constant) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
 
   TF_Tensor* arg0 = ToTensor(info[0]); 
-  TF_Operation* result = obj->m_graph->constant(arg0);
+  TF_Operation* result = obj->m_ref->constant(arg0);
 
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
@@ -40,7 +48,7 @@ NAN_METHOD(Graph::add) {
   TF_Operation* arg0 = ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref(); 
   TF_Operation* arg1 = ObjectWrap::Unwrap<Operation>(info[1]->ToObject())->ref(); 
 
-  TF_Operation* result = obj->m_graph->add(arg0, arg1);
+  TF_Operation* result = obj->m_ref->add(arg0, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
@@ -49,7 +57,7 @@ NAN_METHOD(Graph::matmul) {
   
   TF_Operation* arg0 = ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref(); 
   TF_Operation* arg1 = ObjectWrap::Unwrap<Operation>(info[1]->ToObject())->ref(); 
-  TF_Operation* result = obj->m_graph->matmul(arg0, arg1);
+  TF_Operation* result = obj->m_ref->matmul(arg0, arg1);
 
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
@@ -69,7 +77,7 @@ NAN_METHOD(Graph::run) {
   }
 
   std::vector<TF_Tensor*> results;
-  obj->m_graph->run(results, arg0, info[1]);
+  obj->m_ref->run(results, arg0, info[1]);
 
   info.GetReturnValue().Set(info[0]->IsArray() ? ToArrayValue(results) : nan_bridge::ToValue(results[0]));
 }
@@ -86,7 +94,7 @@ NAN_MODULE_INIT(Graph::Init) {
   constructor.Reset(ctor);
 
   // Prototype
-  Nan::SetPrototypeMethod(ctor, "input", input);
+  Nan::SetPrototypeMethod(ctor, "placeholder", placeholder);
   Nan::SetPrototypeMethod(ctor, "variable", variable);
   Nan::SetPrototypeMethod(ctor, "constant", constant);
   Nan::SetPrototypeMethod(ctor, "add", add);

@@ -14,10 +14,10 @@ class Graph: public Nan::ObjectWrap {
     ~Graph();
 
     NAN_TO_VALUE(Graph, ToValue);
-    tensorflow::Graph* ref() { return m_graph; }
+    tensorflow::Graph* ref() { return m_ref; }
 
   private:
-    tensorflow::Graph* m_graph;
+    tensorflow::Graph* m_ref;
 
   /////////////////////////////////
   // Nan Lifecycle
@@ -27,7 +27,7 @@ class Graph: public Nan::ObjectWrap {
   private:
     static NAN_CONSTRUCTOR(constructor);
     static NAN_NEW(New);
-    static NAN_METHOD(input);
+    static NAN_METHOD(placeholder);
     static NAN_METHOD(variable);
     static NAN_METHOD(constant);
     static NAN_METHOD(add);

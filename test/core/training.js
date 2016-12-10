@@ -15,7 +15,7 @@ class Mnist {
   }
 }
 
-describe("Tensorflow", function() {
+describe("Tensorflow training", function() {
 
   describe("mnist", function() {
     it("should load mnist dataset", function() {
@@ -23,8 +23,8 @@ describe("Tensorflow", function() {
 
       const g = new tf.Graph();
       const x = g.input(tf.float32, [-1, 784]);
-      // const W = g.variable(np.zeros([784, 10]));
-      // const b = g.variable(np.zeros([10]));
+      const W = g.variable(np.zeros([784, 10]));
+      const b = g.variable(np.zeros([10]));
 
       // const y = g.nn.softmax(g.add(g.matmul(x, W), b));
       // const y_ = g.input(tf.float32, [-1, 10]);

@@ -3,15 +3,19 @@
     'target_name': 'tensorflow', 
     'sources': [
       'src/core/graph.cc',
-      'src/nan_bridge/constants.cc', 'src/nan_bridge/graph.cc', 'src/nan_bridge/operation.cc', 'src/nan_bridge/types.cc',
-      'src/nan_bridge/conversions.cc', 'src/nan_bridge/addons.cc'
+      'src/core/session.cc',
+      'src/nan_bridge/constants.cc',
+      'src/nan_bridge/graph.cc',
+      'src/nan_bridge/operation.cc',
+      'src/nan_bridge/session.cc',
+      'src/nan_bridge/types.cc',
+      'src/nan_bridge/conversions.cc',
+      'src/nan_bridge/addons.cc'
     ],
-    
+
     'libraries' : [
       '<!(pwd)/vendor/protobuf/libprotobuf.a',
       '<!(pwd)/vendor/tensorflow/libtensorflow.dylib'
-      # '<!(pwd)/vendor/bazel-out/host/bin/external/protobuf/libprotobuf.a',
-      # '<!(pwd)/vendor/bazel-out/local-opt/bin/tensorflow/libtensorflow.dylib'
     ],
 
     'include_dirs' : [ 
@@ -20,10 +24,6 @@
       'vendor/protobuf/Headers',
       'vendor/eigen/Headers',
       'vendor/eigen/Generated',
-      # 'vendor/bazel-org_tensorflow',
-      # 'vendor/bazel-org_tensorflow/external/protobuf/src',
-      # 'vendor/bazel-org_tensorflow/external/eigen_archive',
-      # 'vendor/bazel-genfiles',
       "<!(node -e \"require('nan')\")"
     ],
 

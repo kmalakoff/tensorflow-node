@@ -1,23 +1,23 @@
-#ifndef NAN_OPERATION_H
-#define NAN_OPERATION_H
+#ifndef NAN_SESSION_H
+#define NAN_SESSION_H
 
 #include "nan.h"
 
 // forward declarations
-struct TF_Operation;
+struct TF_Session;
 
 namespace nan_bridge {
 
-class Operation: public Nan::ObjectWrap {
+class Session: public Nan::ObjectWrap {
   public:
-    Operation(TF_Operation* operation = nullptr);
-    ~Operation();
+    Session(TF_Session* session = nullptr);
+    ~Session();
 
-    NAN_TO_VALUE(Operation, ToValue);
-    TF_Operation* ref() { return m_ref; }
+    NAN_TO_VALUE(Session, ToValue);
+    TF_Session* ref() { return m_ref; }
 
   private:
-    TF_Operation* m_ref;
+    TF_Session* m_ref;
 
   /////////////////////////////////
   // Nan Lifecycle
@@ -31,4 +31,4 @@ class Operation: public Nan::ObjectWrap {
 
 } // namespace nan_bridge
 
-#endif // NAN_OPERATION_H
+#endif // NAN_SESSION_H

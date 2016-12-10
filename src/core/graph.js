@@ -25,7 +25,7 @@ module.exports = class Graph {
     this.train = new Train(this);
   }
 
-  input() { return this._.input(); }
+  input(arg1, arg2) { return this._.placeholder(arg1, arg2); }
   variable(v) { return this._.variable(v); }
   constant(v) { return this._.constant(v); }
   run(ops, input_pairs) { return this._.run(ops, input_pairs); }

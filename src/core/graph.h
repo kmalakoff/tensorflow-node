@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <nan.h> // remove dependency
+#include "tensorflow/c/c_api.h"
 
 // forward declarations
 struct TF_Operation;
@@ -14,16 +15,17 @@ namespace tensorflow {
 class Graph {
   public:
     Graph();
-    TF_Operation* input();
-    TF_Operation* variable(TF_Tensor* value);
+    TF_Operation* placeholder(TF_DataType dtype, const std::vector<int64_t>& dims);
+    TF_Operation* variable(TF_Tensor* value, const std::vector<int64_t>& dims);
     TF_Operation* constant(TF_Tensor* value);
+    TF_Operation* assign(TF_Operation* l, TF_Operation* r);
     TF_Operation* add(TF_Operation* l, TF_Operation* r);
     TF_Operation* matmul(TF_Operation* l, TF_Operation* r);
     void run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs);
 
   private:
-    TF_Graph* m_graph;
-    std::vector<TF_Operation*> m_inputs;
+    TF_Graph* m_ref;
+    std::vector<TF_Operation*> m_initializers;
 };
 
 } // namespace tensorflow

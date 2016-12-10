@@ -47,6 +47,8 @@ TF_Tensor* ToTensor(const Local<Value>& info) {
   return nullptr;
 }
 
+void ToShape(std::vector<int64_t>& o_dims, const Local<Value>& info) { jsCollectDimensions(o_dims, Handle<Array>::Cast(info)); }
+
 Local<Value> tfCollectValues(TF_Tensor* value, std::vector<int64_t>& dims, int dim_index, size_t& offset) {
   int dim_count = (int) dims.size();
   if (dim_index >= dim_count) return Nan::Undefined();
