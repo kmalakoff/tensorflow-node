@@ -4,20 +4,22 @@
 #include "addons.h"
 
 // forward declarations
-struct TF_Session;
+namespace tensorflow { class Session; }
+namespace addons { class Graph; }
 
 namespace addons {
 
 class Session: public Nan::ObjectWrap {
   public:
-    Session(TF_Session* session = nullptr);
+    Session(Graph* graph);
     ~Session();
 
     NAN_TO_VALUE(Session, ToValue);
-    TF_Session* ref() { return m_ref; }
+    tensorflow::Session* ref() { return m_ref; }
 
   private:
-    TF_Session* m_ref;
+    tensorflow::Session* m_ref;
+    Graph* m_graph;
 
   /////////////////////////////////
   // Nan Lifecycle

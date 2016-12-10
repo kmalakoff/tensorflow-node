@@ -1,11 +1,20 @@
 #include "session.h"
+#include "../tensorflow/session.h"
+#include "graph.h"
 
 namespace addons {
 
 using namespace v8;
 
-Session::Session(TF_Session* session) : m_ref(session) {};
-Session::~Session() { m_ref = nullptr; }
+Session::Session(Graph* graph) {
+  m_graph = graph; /* m_graph->Ref(); */ // TODO: figure out how to hande references
+  m_ref = new tensorflow::Session();
+}
+
+Session::~Session() {
+  delete m_ref; m_ref = nullptr;
+  /* m_graph->Unref(); */ m_graph = nullptr; // TODO: figure out how to hande references
+}
 
 /////////////////////////////////
 // Nan Lifecycle
@@ -27,8 +36,9 @@ NAN_CONSTRUCTOR(Session::constructor);
 NAN_NEW(Session::New) {
   Nan::HandleScope scope;
 
-  // TF_Session* arg0 = Nan::ObjectWrap::Unwrap<Session>(info[0]->ToObject())->m_ref;
-  Session *instance = new Session();
+  Graph* arg0 = nullptr;
+  if (info.Length() >= 1) arg0 = Nan::ObjectWrap::Unwrap<Graph>(info[0]->ToObject());
+  Session *instance = new Session(arg0);
   instance->Wrap(info.Holder());
   info.GetReturnValue().Set(info.Holder());
 }

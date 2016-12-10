@@ -1,9 +1,9 @@
 #include <iostream>
 
 #include "graph.h"
+#include "../tensorflow/graph.h"
 #include "conversions.h"
 #include "operation.h"
-#include "../tensorflow/graph.h"
 
 namespace addons {
 

@@ -10,7 +10,7 @@ namespace addons {
 
 class Operation: public Nan::ObjectWrap {
   public:
-    Operation(TF_Operation* operation = nullptr);
+    Operation(TF_Operation* operation);
     ~Operation();
 
     NAN_TO_VALUE(Operation, ToValue);
