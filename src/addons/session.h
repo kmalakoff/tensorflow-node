@@ -28,9 +28,6 @@ class Session: public Nan::ObjectWrap {
     tensorflow::Session* m_ref;
     Graph* m_graph;
 
-  /////////////////////////////////
-  // Nan Lifecycle
-  /////////////////////////////////
   public:
     static NAN_MODULE_INIT(Init);
   private:

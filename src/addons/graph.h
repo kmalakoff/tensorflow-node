@@ -17,6 +17,7 @@ class Graph: public Nan::ObjectWrap {
     v8::Local<v8::Value> ToValue() {
       // const int argc = 1;
       // v8::Local<v8::Value> argv[argc] = {Nan::New(this->m_ref)};
+      // v8::Local<v8::Object> result = Nan::NewInstance(Nan::New(Graph::constructor)->GetFunction(), argc, argv).ToLocalChecked();
       v8::Local<v8::Object> result = Nan::NewInstance(Nan::New(Graph::constructor)->GetFunction()).ToLocalChecked();
       this->Wrap(result);
       return result;
@@ -25,9 +26,6 @@ class Graph: public Nan::ObjectWrap {
   private:
     tensorflow::Graph* m_ref;
 
-  /////////////////////////////////
-  // Nan Lifecycle
-  /////////////////////////////////
   public:
     static NAN_MODULE_INIT(Init);
   private:

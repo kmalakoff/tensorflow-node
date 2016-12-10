@@ -16,7 +16,8 @@ class Operation: public Nan::ObjectWrap {
 
     v8::Local<v8::Value> ToValue() {
       // const int argc = 1;
-      // v8::Local<v8::Value> argv[argc] = {Nan::New<v8::Object>(this)};
+      // v8::Local<v8::Value> argv[argc] = {Nan::New(this->m_ref)};
+      // v8::Local<v8::Object> result = Nan::NewInstance(Nan::New(Operation::constructor)->GetFunction(), argc, argv).ToLocalChecked();
       v8::Local<v8::Object> result = Nan::NewInstance(Nan::New(Operation::constructor)->GetFunction()).ToLocalChecked();
       this->Wrap(result);
       return result;
@@ -25,9 +26,6 @@ class Operation: public Nan::ObjectWrap {
   private:
     TF_Operation* m_ref;
 
-  /////////////////////////////////
-  // Nan Lifecycle
-  /////////////////////////////////
   public:
     static NAN_MODULE_INIT(Init);
   private:

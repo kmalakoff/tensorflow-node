@@ -1,12 +1,12 @@
-#ifndef NAN_CONVERSIONS_H
-#define NAN_CONVERSIONS_H
+#ifndef LIB_CONVERSIONS_H
+#define LIB_CONVERSIONS_H
 
 #include <nan.h>
 #include "tensorflow/c/c_api.h"
 
 struct TF_Tensor;
 
-namespace addons {
+namespace lib {
 
 using namespace v8;
 
@@ -20,6 +20,6 @@ v8::Local<v8::Value> ToValue(TF_Tensor* value);
 v8::Local<v8::Value> ToArrayValue(const std::vector<TF_Tensor*>& value);
 v8::Local<v8::Value> ToBufferValue(TF_Tensor* value);
 
-} // namespace addons
+} // namespace lib
 
-#endif // NAN_CONVERSIONS_H
+#endif // LIB_CONVERSIONS_H

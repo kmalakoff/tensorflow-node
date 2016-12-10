@@ -1,8 +1,8 @@
 #include <map>
 #include "session.h"
 #include "../tensorflow/tensor.h"
-#include "../addons/conversions.h"
 #include "../addons/operation.h"
+#include "../lib/conversions.h"
 
 namespace tensorflow {
 
@@ -26,7 +26,7 @@ void Session::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Opera
       Handle<Array> pair = Handle<Array>::Cast(jsArray->Get(i));
 
       TF_Operation* in = ObjectWrap::Unwrap<addons::Operation>(pair->Get(0)->ToObject())->ref();
-      TF_Tensor* va = ToTensor(pair->Get(1));
+      TF_Tensor* va = lib::ToTensor(pair->Get(1));
       input_ports.push_back(TF_Port({in, static_cast<int>(i)}));
       input_tensors.push_back(va);
     }

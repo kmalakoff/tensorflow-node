@@ -7,9 +7,6 @@ using namespace v8;
 Operation::Operation(TF_Operation* operation) { m_ref = operation; };
 Operation::~Operation() { m_ref = nullptr; }
 
-/////////////////////////////////
-// Nan Lifecycle
-/////////////////////////////////
 NAN_MODULE_INIT(Operation::Init) {
    Nan::HandleScope scope;
 
