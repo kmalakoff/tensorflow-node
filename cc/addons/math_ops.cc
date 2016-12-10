@@ -66,7 +66,7 @@ NAN_METHOD(MathOps::equal) {
   TF_Operation* arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref();
   TF_Operation* arg2 = ObjectWrap::Unwrap<addons::Operation>(info[2]->ToObject())->ref(); 
 
-  TF_Operation* result = tensorflow::MathOps::matmul(graph, arg1, arg2);
+  TF_Operation* result = tensorflow::MathOps::equal(graph, arg1, arg2);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 

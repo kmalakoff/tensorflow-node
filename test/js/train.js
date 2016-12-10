@@ -30,7 +30,7 @@ describe("Tensorflow training", function() {
 
       loss = g.reduce_mean(g.nn.softmax_cross_entropy_with_logits(y, y_));
       // train_step = g.train.GradientDescentOptimizer(0.5).minimize(loss);
-      train_step = g.train.GradientDescentOptimizer(loss);
+      // train_step = g.train.GradientDescentOptimizer(loss);
 
       init = g.variable_initializers();
       sess = new tf.Session(g);
@@ -38,11 +38,11 @@ describe("Tensorflow training", function() {
 
       for(let i = 0; i < 10; i++) {
         [batch_xs, batch_ys] = mnist.train.next_batch(100);
-        sess.run(train_step, [[x, batch_xs], [y_, batch_ys]]);
+        // sess.run(train_step, [[x, batch_xs], [y_, batch_ys]]);
  
         correct_prediction = g.equal(g.argmax(y,1), g.argmax(y_,1));
         accuracy = g.reduce_mean(g.cast(correct_prediction, tf.float32));
-        console.log(sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels}));
+        console.log(sess.run(accuracy, [[x, mnist.test.images], [y_, mnist.test.labels]]));
       }
     });
   });

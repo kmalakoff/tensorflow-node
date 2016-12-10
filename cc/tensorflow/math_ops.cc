@@ -82,7 +82,7 @@ TF_Operation* MathOps::equal(TF_Graph *graph, TF_Operation* l, TF_Operation* r) 
   TF_Status* s = TF_NewStatus();
 
   TF_OperationDescription* desc = TF_NewOperation(graph, "Equal", lib::uniqueId("Equal").c_str());
-  TF_SetAttrType(desc, "T", TF_FLOAT);
+  TF_SetAttrType(desc, "T", TF_INT64);
   TF_Port l_input = {l, 0};
   TF_AddInput(desc, l_input);
   TF_Port r_input = {r, 0};
@@ -98,10 +98,18 @@ TF_Operation* MathOps::argmax(TF_Graph *graph, TF_Operation* v, int dim) {
   TF_Status* s = TF_NewStatus();
 
   TF_OperationDescription* desc = TF_NewOperation(graph, "ArgMax", lib::uniqueId("ArgMax").c_str());
-  TF_SetAttrType(desc, "T", TF_INT32);
+  TF_SetAttrType(desc, "T", TF_FLOAT);
   TF_Port input = {v, 0};
   TF_AddInput(desc, input);
-  TF_SetAttrInt(desc, "dim", dim);
+
+  // dimension
+  const int byte_count = 1 * sizeof(int);
+  int* values = reinterpret_cast<int*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, byte_count));
+  values[0] = dim;
+  TF_Tensor* reduction_indices = TF_NewTensor(TF_INT32, nullptr, 0, values, byte_count, &Deallocator, nullptr);
+  TF_Operation* op = Graph::constant(graph, reduction_indices);
+  TF_Port input_dim = {op, 0};
+  TF_AddInput(desc, input_dim);
 
   TF_Operation* result = TF_FinishOperation(desc, s);
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
@@ -113,10 +121,9 @@ TF_Operation* MathOps::cast(TF_Graph *graph, TF_Operation* v, TF_DataType dtype)
   TF_Status* s = TF_NewStatus();
 
   TF_OperationDescription* desc = TF_NewOperation(graph, "Cast", lib::uniqueId("Cast").c_str());
-  TF_SetAttrType(desc, "T", TF_INT64);
   TF_Port input = {v, 0};
   TF_AddInput(desc, input);
-  TF_SetAttrInt(desc, "dtype", dtype);
+  TF_SetAttrType(desc, "DstT", dtype);
 
   TF_Operation* result = TF_FinishOperation(desc, s);
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
