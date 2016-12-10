@@ -2,15 +2,16 @@
   'targets': [{ 
     'target_name': 'tensorflow', 
     'sources': [
-      'src/core/graph.cc',
-      'src/core/session.cc',
       'src/addons/constants.cc',
       'src/addons/graph.cc',
       'src/addons/operation.cc',
       'src/addons/session.cc',
       'src/addons/types.cc',
       'src/addons/conversions.cc',
-      'src/addons/addons.cc'
+      'src/addons/addons.cc',
+      'src/lib/utils.cc',
+      'src/tensorflow/graph.cc',
+      'src/tensorflow/session.cc'
     ],
 
     'libraries' : [

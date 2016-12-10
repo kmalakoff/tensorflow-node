@@ -1,16 +1,8 @@
-#include <map>
 #include "graph.h"
 #include "../tensorflow/tensor.h"
 #include "../addons/conversions.h"
 #include "../addons/operation.h"
-
-// TODO: move to lib
-std::map<tensorflow::string, int> unique_ids;
-tensorflow::string uniqueId(const char* key) {
-  std::map<tensorflow::string, int>::iterator it = unique_ids.find(key);
-  if (it == unique_ids.end()) unique_ids[key] = 0;
-  return tensorflow::string(key + unique_ids[key]++);
-}
+#include "../lib/utils.h"
 
 namespace tensorflow {
 
@@ -23,7 +15,7 @@ Graph::Graph() { m_ref = TF_NewGraph(); }
 TF_Operation* Graph::placeholder(TF_DataType dtype, const std::vector<int64_t>& dims) {
   TF_Status* s = TF_NewStatus();
 
-  TF_OperationDescription* desc = TF_NewOperation(m_ref, "Placeholder", uniqueId("Placeholder").c_str());
+  TF_OperationDescription* desc = TF_NewOperation(m_ref, "Placeholder", lib::uniqueId("Placeholder").c_str());
   TF_SetAttrType(desc, "dtype", dtype);
   TF_SetAttrShape(desc, "shape", &dims[0], (int) dims.size());
 
@@ -38,7 +30,7 @@ TF_Operation* Graph::constant(TF_Tensor* value) {
 
   TF_Status* s = TF_NewStatus();
 
-  TF_OperationDescription* desc = TF_NewOperation(m_ref, "Const", uniqueId("Const").c_str());
+  TF_OperationDescription* desc = TF_NewOperation(m_ref, "Const", lib::uniqueId("Const").c_str());
   TF_SetAttrTensor(desc, "value", value, s);
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
   if (TF_GetCode(s) != TF_OK) return nullptr; // TODO: general error handling
@@ -55,7 +47,7 @@ TF_Operation* Graph::variable(TF_Tensor* value, const std::vector<int64_t>& dims
 
   TF_Status* s = TF_NewStatus();
 
-  TF_OperationDescription* desc = TF_NewOperation(m_ref, "Variable", uniqueId("Variable").c_str());
+  TF_OperationDescription* desc = TF_NewOperation(m_ref, "Variable", lib::uniqueId("Variable").c_str());
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
   if (TF_GetCode(s) != TF_OK) return nullptr; // TODO: general error handling
   TF_SetAttrShape(desc, "shape", &dims[0], (int) dims.size());
@@ -75,7 +67,7 @@ TF_Operation* Graph::variable(TF_Tensor* value, const std::vector<int64_t>& dims
 TF_Operation* Graph::add(TF_Operation* l, TF_Operation* r) {
   TF_Status* s = TF_NewStatus();
 
-  TF_OperationDescription* desc = TF_NewOperation(m_ref, "Add", uniqueId("Add").c_str());
+  TF_OperationDescription* desc = TF_NewOperation(m_ref, "Add", lib::uniqueId("Add").c_str());
   TF_SetAttrType(desc, "T", TF_FLOAT);
   TF_Port l_input = {l, 0};
   TF_AddInput(desc, l_input);
@@ -91,7 +83,7 @@ TF_Operation* Graph::add(TF_Operation* l, TF_Operation* r) {
 TF_Operation* Graph::assign(TF_Operation* l, TF_Operation* r) {
   TF_Status* s = TF_NewStatus();
 
-  TF_OperationDescription* desc = TF_NewOperation(m_ref, "Assign", uniqueId("Assign").c_str());
+  TF_OperationDescription* desc = TF_NewOperation(m_ref, "Assign", lib::uniqueId("Assign").c_str());
   TF_SetAttrType(desc, "T", TF_FLOAT);
   TF_Port l_input = {l, 0};
   TF_AddInput(desc, l_input);
@@ -107,7 +99,7 @@ TF_Operation* Graph::assign(TF_Operation* l, TF_Operation* r) {
 TF_Operation* Graph::matmul(TF_Operation* l, TF_Operation* r) {
   TF_Status* s = TF_NewStatus();
 
-  TF_OperationDescription* desc = TF_NewOperation(m_ref, "MatMul", uniqueId("MatMul").c_str());
+  TF_OperationDescription* desc = TF_NewOperation(m_ref, "MatMul", lib::uniqueId("MatMul").c_str());
 
   TF_SetAttrType(desc, "T", TF_FLOAT);
   TF_Port l_input = {l, 0};

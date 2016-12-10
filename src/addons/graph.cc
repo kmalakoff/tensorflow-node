@@ -3,7 +3,7 @@
 #include "graph.h"
 #include "conversions.h"
 #include "operation.h"
-#include "../core/graph.h"
+#include "../tensorflow/graph.h"
 
 namespace addons {
 

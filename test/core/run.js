@@ -11,23 +11,23 @@ describe("Tensorflow run", function() {
   //   assert.deepEqual(result, [[4, 1], [2, 2]]);
   // });
 
-  // it("can use inputs", function() {
-  //   const g = new tf.Graph();
-  //   const input = g.input();
-  //   const two = g.constant(2);
-  //   const add = g.add(input, two);
-  //   const result = g.run(add, [[input, 3]]);
-  //   assert.deepEqual(result, 5);
-  // });
-
-  it("can use sessions", function() {
+  it("can use inputs", function() {
     const g = new tf.Graph();
     const input = g.input();
     const two = g.constant(2);
     const add = g.add(input, two);
-
-    const session = tf.Session(g);
-    const result = session.run(add, [[input, 3]]);
+    const result = g.run(add, [[input, 3]]);
     assert.deepEqual(result, 5);
   });
+
+  // it("can use sessions", function() {
+  //   const g = new tf.Graph();
+  //   const input = g.input();
+  //   const two = g.constant(2);
+  //   const add = g.add(input, two);
+
+  //   const session = tf.Session(g);
+  //   const result = session.run(add, [[input, 3]]);
+  //   assert.deepEqual(result, 5);
+  // });
 });

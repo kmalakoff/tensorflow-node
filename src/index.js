@@ -2,7 +2,7 @@ const _tf = require('./addons');
 
 let tf = {
   // version: _tf.TF_VERSION_STRING,
-  Graph: require('./core/graph'),
+  Graph: require('./tensorflow/graph'),
   Session: _tf.Session
 }
 
