@@ -17,7 +17,7 @@ class MathOps {
     static TF_Operation* matmul_add(TF_Graph *graph, TF_Operation* l, TF_Operation* r, TF_Operation* a);
     static TF_Operation* reduce_mean(TF_Graph *graph, TF_Operation* v);
     static TF_Operation* equal(TF_Graph *graph, TF_Operation* l, TF_Operation* r);
-    static TF_Operation* argmax(TF_Graph *graph, TF_Operation* l, int dim);
+    static TF_Operation* argmax(TF_Graph *graph, TF_Operation* v, int dim);
     static TF_Operation* cast(TF_Graph *graph, TF_Operation* v, TF_DataType dtype);
     static TF_Operation* log(TF_Graph *graph, TF_Operation* v);
 };
