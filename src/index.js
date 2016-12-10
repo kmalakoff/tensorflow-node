@@ -3,7 +3,7 @@ const _tf = require('./addons');
 let tf = {
   // version: _tf.TF_VERSION_STRING,
   Graph: require('./tensorflow/graph'),
-  Session: _tf.Session
+  Session: require('./tensorflow/session')
 }
 
 Object.assign(tf, _tf.CONSTANTS);

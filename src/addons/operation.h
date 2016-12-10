@@ -12,9 +12,15 @@ class Operation: public Nan::ObjectWrap {
   public:
     Operation(TF_Operation* operation);
     ~Operation();
-
-    NAN_TO_VALUE(Operation, ToValue);
     TF_Operation* ref() { return m_ref; }
+
+    v8::Local<v8::Value> ToValue() {
+      // const int argc = 1;
+      // v8::Local<v8::Value> argv[argc] = {Nan::New<v8::Object>(this)};
+      v8::Local<v8::Object> result = Nan::NewInstance(Nan::New(Operation::constructor)->GetFunction()).ToLocalChecked();
+      this->Wrap(result);
+      return result;
+    }
 
   private:
     TF_Operation* m_ref;

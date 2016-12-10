@@ -10,7 +10,7 @@ using namespace v8;
 using namespace Nan;
 using namespace addons;
 
-Session::Session() { m_ref = nullptr; } // TF_NewSession(); }
+Session::Session(TF_SessionWithGraph* session) { m_ref = session; }
 
 void Session::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs) {
   TF_Status* s = TF_NewStatus();

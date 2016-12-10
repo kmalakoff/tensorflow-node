@@ -14,7 +14,14 @@ class Session: public Nan::ObjectWrap {
     Session(Graph* graph);
     ~Session();
 
-    NAN_TO_VALUE(Session, ToValue);
+    v8::Local<v8::Value> ToValue() {
+      // const int argc = 1;
+      // v8::Local<v8::Value> argv[argc] = {Nan::New(this->m_ref)};
+      // v8::Local<v8::Object> result = Nan::NewInstance(Nan::New(Session::constructor)->GetFunction(), argc, argv).ToLocalChecked();
+      v8::Local<v8::Object> result = Nan::NewInstance(Nan::New(Session::constructor)->GetFunction()).ToLocalChecked();
+      this->Wrap(result);
+      return result;
+    }
     tensorflow::Session* ref() { return m_ref; }
 
   private:
@@ -29,6 +36,7 @@ class Session: public Nan::ObjectWrap {
   private:
     static NAN_CONSTRUCTOR(constructor);
     static NAN_NEW(New);
+    static NAN_METHOD(run);
 };
 
 } // namespace addons

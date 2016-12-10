@@ -12,9 +12,15 @@ class Graph: public Nan::ObjectWrap {
   public:
     Graph();
     ~Graph();
-
-    NAN_TO_VALUE(Graph, ToValue);
     tensorflow::Graph* ref() { return m_ref; }
+
+    v8::Local<v8::Value> ToValue() {
+      // const int argc = 1;
+      // v8::Local<v8::Value> argv[argc] = {Nan::New(this->m_ref)};
+      v8::Local<v8::Object> result = Nan::NewInstance(Nan::New(Graph::constructor)->GetFunction()).ToLocalChecked();
+      this->Wrap(result);
+      return result;
+    }
 
   private:
     tensorflow::Graph* m_ref;

@@ -82,6 +82,7 @@ NAN_METHOD(Graph::run) {
 
   info.GetReturnValue().Set(info[0]->IsArray() ? ToArrayValue(results) : addons::ToValue(results[0]));
 }
+
 /////////////////////////////////
 // Nan Lifecycle
 /////////////////////////////////

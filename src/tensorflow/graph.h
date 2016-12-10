@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <nan.h> // remove dependency
-#include "tensorflow/c/c_api.h"
+#include "tensorflow/c/c_api.h" // TF_DataType
 
 // forward declarations
 struct TF_Operation;
@@ -15,6 +15,8 @@ namespace tensorflow {
 class Graph {
   public:
     Graph();
+    TF_Graph* ref() { return m_ref; }
+
     TF_Operation* placeholder(TF_DataType dtype, const std::vector<int64_t>& dims);
     TF_Operation* variable(TF_Tensor* value, const std::vector<int64_t>& dims);
     TF_Operation* constant(TF_Tensor* value);
