@@ -4,6 +4,9 @@ const mnist_data = require('mnist-data');
 require('pyextjs'); const np = window.numpy;
 
 class MnistData {
+  constructor(set) { this.set = set; }
+  get images() { return this.set.images.values; }
+  get labels() { return this.set.labels.values; }
   next_batch() { return [1, 2]; }
 }
 
@@ -32,12 +35,11 @@ describe("Tensorflow training", function() {
       // train_step = g.train.GradientDescentOptimizer(0.5).minimize(loss);
       // train_step = g.train.GradientDescentOptimizer(loss);
 
-      init = g.variable_initializers();
       sess = new tf.Session(g);
-      sess.runNoOut(init);
+      sess.runNoOut(g.variable_initializers());
 
       for(let i = 0; i < 10; i++) {
-        [batch_xs, batch_ys] = mnist.train.next_batch(100);
+        // [batch_xs, batch_ys] = mnist.train.next_batch(100);
         // sess.run(train_step, [[x, batch_xs], [y_, batch_ys]]);
  
         correct_prediction = g.equal(g.argmax(y,1), g.argmax(y_,1));
