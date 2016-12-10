@@ -6,4 +6,5 @@ module.exports = class Session {
   }
 
   run(ops, input_pairs) { return this._.run(ops, input_pairs); }
+  runNoOut(ops, input_pairs) { return this._.runNoOut(ops, input_pairs); }
 };

@@ -62,4 +62,31 @@ void Session::run(std::vector<TF_Tensor*>& o_results, TF_SessionWithGraph* sessi
   TF_DeleteStatus(s);
 }
 
+void Session::run(TF_SessionWithGraph* session, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs) {
+  std::vector<TF_Port> input_ports;
+  std::vector<TF_Tensor*> input_tensors;
+  if (input_pairs->IsArray()) {
+    Handle<Array> jsArray = Handle<Array>::Cast(input_pairs);
+    for (unsigned int i = 0; i < jsArray->Length(); i++) {
+      Handle<Array> pair = Handle<Array>::Cast(jsArray->Get(i));
+
+      TF_Operation* in = ObjectWrap::Unwrap<addons::Operation>(pair->Get(0)->ToObject())->ref();
+      TF_Tensor* va = lib::ToTensor(pair->Get(1));
+      input_ports.push_back(TF_Port({in, static_cast<int>(i)}));
+      input_tensors.push_back(va);
+    }
+  }
+
+  TF_Status* s = TF_NewStatus();
+  TF_SessionRun(
+    session, nullptr,
+    &input_ports[0], &input_tensors[0], (int) input_ports.size(),
+    nullptr, nullptr, 0,
+    &ops[0], (int) ops.size(),
+    nullptr, s
+  );
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  TF_DeleteStatus(s);
+}
+
 } // namespace tensorflow

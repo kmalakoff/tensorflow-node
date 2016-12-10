@@ -65,15 +65,15 @@ TF_Operation* Graph::constant(TF_Graph *graph, TF_Tensor* value) {
   return result;
 }
 
-TF_Operation* Graph::assign(TF_Graph *graph, TF_Operation* l, TF_Operation* r) {
+TF_Operation* Graph::assign(TF_Graph *graph, TF_Operation* var, TF_Operation* val) {
   TF_Status* s = TF_NewStatus();
 
   TF_OperationDescription* desc = TF_NewOperation(graph, "Assign", lib::uniqueId("Assign").c_str());
   TF_SetAttrType(desc, "T", TF_FLOAT);
-  TF_Port l_input = {l, 0};
-  TF_AddInput(desc, l_input);
-  TF_Port r_input = {r, 0};
-  TF_AddInput(desc, r_input);
+  TF_Port var_port = {var, 0};
+  TF_AddInput(desc, var_port);
+  TF_Port val_port = {val, 0};
+  TF_AddInput(desc, val_port);
 
   TF_Operation* result = TF_FinishOperation(desc, s);
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }

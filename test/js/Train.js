@@ -34,7 +34,7 @@ describe("Tensorflow training", function() {
 
       init = g.variable_initializers();
       sess = new tf.Session(g);
-      sess.run(init);
+      sess.runNoOut(init);
 
       // _.times(10, () => {
       //   [batch_xs, batch_ys] = mnist.train.next_batch(100);

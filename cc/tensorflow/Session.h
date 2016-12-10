@@ -17,6 +17,7 @@ class Session {
     static TF_SessionWithGraph* create(TF_Graph* graph);
     static void destroy(TF_SessionWithGraph* session);
     static void run(std::vector<TF_Tensor*>& o_results, TF_SessionWithGraph* m_session, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs);
+    static void run(TF_SessionWithGraph* m_session, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs);
 };
 
 } // namespace tensorflow
