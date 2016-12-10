@@ -1,7 +1,7 @@
 #include "train.h"
 #include "graph.h"
 #include "operation.h"
-#include "../tensorflow/graph.h"
+#include "../tensorflow/train.h"
 #include "../lib/conversions.h"
 
 namespace addons {
@@ -19,13 +19,11 @@ NAN_MODULE_INIT(Train::Init) {
 };
 
 NAN_METHOD(Train::GradientDescentOptimizer) {
-  // Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
-  
-  // TF_Operation* arg0 = ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref(); 
-  // TF_Operation* arg1 = ObjectWrap::Unwrap<Operation>(info[1]->ToObject())->ref(); 
-  // TF_Operation* result = obj->ref()->matmul(arg0, arg1);
+  TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
+  TF_Operation* arg0 = ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref(); 
+  TF_Operation* result = tensorflow::Train::GradientDescentOptimizer(graph, arg0);
 
-  // info.GetReturnValue().Set((new Operation(result))->ToValue());
+  info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
 } // namespace addons

@@ -29,7 +29,8 @@ describe("Tensorflow training", function() {
       const y = g.matmul_add(x, W, b);
 
       loss = g.reduce_mean(g.nn.softmax_cross_entropy_with_logits(y, y_));
-      train_step = g.train.GradientDescentOptimizer(0.5).minimize(loss);
+      // train_step = g.train.GradientDescentOptimizer(0.5).minimize(loss);
+      train_step = g.train.GradientDescentOptimizer(loss);
 
       init = g.variable_initializers();
       sess = new tf.Session(g);
