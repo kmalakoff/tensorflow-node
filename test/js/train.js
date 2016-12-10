@@ -24,8 +24,8 @@ describe("Tensorflow training", function() {
       const mnist = new Mnist(1000, 100);
 
       const g = new tf.Graph();
-      const x = g.input(tf.float32, [-1, 784]);
-      const y_ = g.input(tf.float32, [-1, 10]);
+      const x = g.input(tf.float32, [100, 784]); // TODO: handle variable input dimensions
+      const y_ = g.input(tf.float32, [100, 10]); // TODO: handle variable input dimensions
 
       const W = g.variable(np.zeros([784, 10]));
       const b = g.variable(np.zeros([10]));
@@ -33,18 +33,19 @@ describe("Tensorflow training", function() {
 
       loss = g.reduce_mean(g.nn.softmax_cross_entropy_with_logits(y, y_));
       // train_step = g.train.GradientDescentOptimizer(0.5).minimize(loss);
-      // train_step = g.train.GradientDescentOptimizer(loss);
+      // train_step = g.train.GradientDescentOptimizer(loss); // TODO: implement loss function
 
       sess = new tf.Session(g);
       sess.runNoOut(g.variable_initializers());
 
       for(let i = 0; i < 10; i++) {
         // [batch_xs, batch_ys] = mnist.train.next_batch(100);
-        // sess.run(train_step, [[x, batch_xs], [y_, batch_ys]]);
+        // sess.run(train_step, [[x, batch_xs], [y_, batch_ys]]); // TODO: implement training
  
         correct_prediction = g.equal(g.argmax(y,1), g.argmax(y_,1));
-        accuracy = g.reduce_mean(g.cast(correct_prediction, tf.float32));
-        console.log(sess.run(accuracy, [[x, mnist.test.images], [y_, mnist.test.labels]]));
+        accuracy_op = g.reduce_mean(g.cast(correct_prediction, tf.float32));
+        accuracy = sess.run(accuracy_op, [[x, mnist.test.images], [y_, mnist.test.labels]])
+        console.log(accuracy);
       }
     });
   });

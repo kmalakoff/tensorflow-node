@@ -15,7 +15,7 @@ TF_SessionWithGraph* Session::create(TF_Graph* graph) {
   TF_SessionOptions* opts = TF_NewSessionOptions();
   TF_SessionWithGraph* session = TF_NewSessionWithGraph(graph, opts, s);
   TF_DeleteSessionOptions(opts);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
   return session;
 }
@@ -24,7 +24,7 @@ void Session::destroy(TF_SessionWithGraph* session) {
   TF_Status* s = TF_NewStatus();
 
   TF_CloseSessionWithGraph(session, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
 }
 
@@ -58,7 +58,7 @@ void Session::run(std::vector<TF_Tensor*>& o_results, TF_SessionWithGraph* sessi
     nullptr, 0,
     nullptr, s
   );
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
 }
 
@@ -85,7 +85,7 @@ void Session::run(TF_SessionWithGraph* session, const std::vector<TF_Operation*>
     &ops[0], (int) ops.size(),
     nullptr, s
   );
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
 }
 

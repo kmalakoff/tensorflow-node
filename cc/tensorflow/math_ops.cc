@@ -25,7 +25,7 @@ TF_Operation* MathOps::add(TF_Graph *graph, TF_Operation* l, TF_Operation* r) {
   TF_AddInput(desc, r_input);
 
   TF_Operation* result = TF_FinishOperation(desc, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
   return result;
 }
@@ -44,7 +44,7 @@ TF_Operation* MathOps::matmul(TF_Graph *graph, TF_Operation* l, TF_Operation* r)
   TF_SetAttrBool(desc, "transpose_b", false);
 
   TF_Operation* result = TF_FinishOperation(desc, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
   return result;
 }
@@ -73,7 +73,7 @@ TF_Operation* MathOps::reduce_mean(TF_Graph *graph, TF_Operation* v) {
   // keep_dims
 
   TF_Operation* result = TF_FinishOperation(desc, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
   return result;
 }
@@ -89,7 +89,7 @@ TF_Operation* MathOps::equal(TF_Graph *graph, TF_Operation* l, TF_Operation* r) 
   TF_AddInput(desc, r_input);
 
   TF_Operation* result = TF_FinishOperation(desc, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
   return result;
 }
@@ -112,7 +112,7 @@ TF_Operation* MathOps::argmax(TF_Graph *graph, TF_Operation* v, int dim) {
   TF_AddInput(desc, input_dim);
 
   TF_Operation* result = TF_FinishOperation(desc, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
   return result;
 }
@@ -126,7 +126,7 @@ TF_Operation* MathOps::cast(TF_Graph *graph, TF_Operation* v, TF_DataType dtype)
   TF_SetAttrType(desc, "DstT", dtype);
 
   TF_Operation* result = TF_FinishOperation(desc, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
   return result;
 }
@@ -140,7 +140,7 @@ TF_Operation* MathOps::log(TF_Graph *graph, TF_Operation* v) {
   TF_AddInput(desc, input);
 
   TF_Operation* result = TF_FinishOperation(desc, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
   return result;
 }

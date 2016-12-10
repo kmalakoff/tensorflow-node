@@ -19,7 +19,7 @@ TF_Operation* Train::GradientDescentOptimizer(TF_Graph *graph, TF_Operation* v) 
 //  TF_AddInput(desc, v_input);
 
   TF_Operation* result = TF_FinishOperation(desc, s);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
   return result;
 }

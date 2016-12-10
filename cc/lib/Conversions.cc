@@ -65,6 +65,8 @@ Local<Value> tfCollectValues(TF_Tensor* value, std::vector<int64_t>& dims, int d
 }
 
 Local<Value> ToValue(TF_Tensor* value) {
+  if (!value) return Nan::Undefined();
+
   size_t dim_count = TF_NumDims(value);
   if (dim_count == 0) return Nan::New(*((float*) TF_TensorData(value))); // TF_TensorType(results[i]) == DT_Float32 // TODO: check type
 
