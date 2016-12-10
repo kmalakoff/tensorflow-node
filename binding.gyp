@@ -17,6 +17,7 @@
 
       'cc/tensorflow/graph.cc',
       'cc/tensorflow/math_ops.cc',
+      'cc/tensorflow/neural_network.cc',
       'cc/tensorflow/session.cc'
     ],
 

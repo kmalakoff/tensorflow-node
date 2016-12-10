@@ -45,4 +45,28 @@ TF_Operation* MathOps::matmul(TF_Graph *graph, TF_Operation* l, TF_Operation* r)
   return result;
 }
 
+TF_Operation* MathOps::matmul_add(TF_Graph *graph, TF_Operation* l, TF_Operation* r, TF_Operation* a) {
+
+}
+
+TF_Operation* MathOps::reduce_mean(TF_Graph *graph, TF_Operation* v) {
+
+}
+
+TF_Operation* MathOps::equal(TF_Graph *graph, TF_Operation* l, TF_Operation* r) {
+
+}
+
+TF_Operation* MathOps::argmax(TF_Graph *graph, TF_Operation* l, int dim) {
+
+}
+
+TF_Operation* MathOps::cast(TF_Graph *graph, TF_Operation* v, TF_DataType dtype) {
+
+}
+
+TF_Operation* MathOps::log(TF_Graph *graph, TF_Operation* v) {
+
+}
+
 } // namespace tensorflow

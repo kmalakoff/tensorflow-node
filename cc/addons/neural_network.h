@@ -12,6 +12,7 @@ class NeuralNetwork: public Nan::ObjectWrap {
     static NAN_MODULE_INIT(Init);
   private:
     static NAN_METHOD(softmax);
+    static NAN_METHOD(softmax_cross_entropy_with_logits);
 };
 
 } // namespace addons
