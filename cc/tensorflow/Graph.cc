@@ -42,7 +42,7 @@ TF_Operation* Graph::variable(TF_Tensor* value, const std::vector<int64_t>& dims
   // https://www.tensorflow.org/versions/master/how_tos/variables/index.html
   TF_Operation* initial_value = this->constant(value);
   TF_Operation* initializer = this->assign(result, initial_value);
-  m_initializers.push_back(initializer);
+  m_variable_initializers.push_back(initializer);
   
   return result;
 }

@@ -19,6 +19,7 @@ class Graph {
 
     TF_Operation* placeholder(TF_DataType dtype, const std::vector<int64_t>& dims);
     TF_Operation* variable(TF_Tensor* value, const std::vector<int64_t>& dims);
+    void variable_initializers(std::vector<TF_Operation*>& o_variable_initializers) { o_variable_initializers = this->m_variable_initializers; }
     TF_Operation* constant(TF_Tensor* value);
     TF_Operation* assign(TF_Operation* l, TF_Operation* r);
     TF_Operation* add(TF_Operation* l, TF_Operation* r);
@@ -27,7 +28,7 @@ class Graph {
 
   private:
     TF_Graph* m_ref;
-    std::vector<TF_Operation*> m_initializers;
+    std::vector<TF_Operation*> m_variable_initializers;
 };
 
 } // namespace tensorflow

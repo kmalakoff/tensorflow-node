@@ -5,7 +5,7 @@
       'cc/addons/index.cc',
       'cc/addons/constants.cc',
       'cc/addons/graph.cc',
-      'cc/addons/mathOps.cc',
+      'cc/addons/math_ops.cc',
       'cc/addons/neural_network.cc',
       'cc/addons/operation.cc',
       'cc/addons/session.cc',

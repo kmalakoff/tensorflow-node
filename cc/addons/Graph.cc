@@ -44,39 +44,48 @@ NAN_NEW(Graph::New) {
 }
 
 NAN_METHOD(Graph::placeholder) {
-  Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
+  tensorflow::Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
   TF_DataType arg0 = TF_FLOAT;
   std::vector<int64_t> arg1;
 
   if (info.Length() >= 1) arg0 = (TF_DataType) info[0]->NumberValue();
   if (info.Length() >= 2) lib::ToShape(arg1, info[1]);
 
-  TF_Operation* result = obj->ref()->placeholder(arg0, arg1);
+  TF_Operation* result = obj->placeholder(arg0, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
 NAN_METHOD(Graph::variable) {
-  Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
-
+  tensorflow::Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
   TF_Tensor* arg0 = lib::ToTensor(info[0]); 
   std::vector<int64_t> arg1; lib::ToShape(arg1, info[0]);
-  TF_Operation* result = obj->ref()->variable(arg0, arg1);
+
+  TF_Operation* result = obj->variable(arg0, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
-NAN_METHOD(Graph::variable_initializers) {}
+NAN_METHOD(Graph::variable_initializers) {
+  tensorflow::Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
+  std::vector<TF_Operation*> variable_initializers; obj->variable_initializers(variable_initializers);
+
+  Local<Array> results = Nan::New<v8::Array>((int) variable_initializers.size());
+  for (size_t i = 0; i < variable_initializers.size(); i++)
+    results->Set((int) i, (new Operation(variable_initializers[i]))->ToValue());
+
+  info.GetReturnValue().Set(results);
+}
 
 NAN_METHOD(Graph::constant) {
-  Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
+  tensorflow::Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
 
   TF_Tensor* arg0 = lib::ToTensor(info[0]); 
-  TF_Operation* result = obj->ref()->constant(arg0);
+  TF_Operation* result = obj->constant(arg0);
 
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
 NAN_METHOD(Graph::run) {
-  Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
+  tensorflow::Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
 
   std::vector<TF_Operation*> arg0;
   if (info[0]->IsArray()) {
@@ -90,7 +99,7 @@ NAN_METHOD(Graph::run) {
   }
 
   std::vector<TF_Tensor*> results;
-  obj->ref()->run(results, arg0, info[1]);
+  obj->run(results, arg0, info[1]);
 
   info.GetReturnValue().Set(info[0]->IsArray() ? lib::ToArrayValue(results) : lib::ToValue(results[0]));
 }
