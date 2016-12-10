@@ -4,7 +4,9 @@
 #include "index.h"
 
 // forward declarations
-namespace tensorflow { class Session; }
+struct TF_SessionWithGraph;
+
+// forward declarations
 namespace addons { class Graph; }
 
 namespace addons {
@@ -13,6 +15,7 @@ class Session: public Nan::ObjectWrap {
   public:
     Session(Graph* graph);
     ~Session();
+    TF_SessionWithGraph* ref() { return m_ref; }
 
     v8::Local<v8::Value> ToValue() {
       // const int argc = 1;
@@ -22,11 +25,10 @@ class Session: public Nan::ObjectWrap {
       this->Wrap(result);
       return result;
     }
-    tensorflow::Session* ref() { return m_ref; }
 
   private:
-    tensorflow::Session* m_ref;
-    Graph* m_graph;
+    TF_SessionWithGraph* m_ref;
+    Graph* m_graph; // TODO: safe references
 
   public:
     static NAN_MODULE_INIT(Init);

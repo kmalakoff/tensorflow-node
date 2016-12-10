@@ -32,9 +32,9 @@ describe("Tensorflow training", function() {
       // cross_entropy = g.reduce_mean(-g.reduce_sum(y_ * g.log(y), {reduction_indices: [1]}))
       // // train_step = g.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
 
-      // init = g.variable_initializers();
-      // sess = new tf.Session(g);
-      // sess.run(init);
+      init = g.variable_initializers();
+      sess = new tf.Session(g);
+      sess.run(init);
 
       // _.times(10, () => {
       //   [batch_xs, batch_ys] = mnist.train.next_batch(100);

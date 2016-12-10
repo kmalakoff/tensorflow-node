@@ -11,21 +11,13 @@ namespace addons {
 using namespace v8;
 
 Session::Session(Graph* graph) {
-  m_graph = graph; /* m_graph->Ref(); */ // TODO: figure out how to hande references
-
-  TF_Status* s = TF_NewStatus();
-  TF_SessionOptions* opts = TF_NewSessionOptions();
-  TF_SessionWithGraph* session = TF_NewSessionWithGraph(graph->ref()->ref(), opts, s);
-  TF_DeleteSessionOptions(opts);
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
-  TF_DeleteStatus(s);
-
-  m_ref = new tensorflow::Session(session);
+  m_graph = graph; /* m_graph->Ref(); */ // TODO: safe references
+  m_ref = tensorflow::Session::create(graph->ref());
 }
 
 Session::~Session() {
   delete m_ref; m_ref = nullptr;
-  /* m_graph->Unref(); */ m_graph = nullptr; // TODO: figure out how to hande references
+  /* m_graph->Unref(); */ m_graph = nullptr; // TODO: safe references
 }
 
 NAN_MODULE_INIT(Session::Init) {
@@ -70,7 +62,7 @@ NAN_METHOD(Session::run) {
   }
 
   std::vector<TF_Tensor*> results;
-  obj->ref()->run(results, arg0, info[1]);
+  tensorflow::Session::run(results, obj->ref(), arg0, info[1]);
   info.GetReturnValue().Set(info[0]->IsArray() ? lib::ToArrayValue(results) : lib::ToValue(results[0]));
 }
 

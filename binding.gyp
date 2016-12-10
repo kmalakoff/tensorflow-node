@@ -16,6 +16,7 @@
       'cc/lib/utils.cc',
 
       'cc/tensorflow/graph.cc',
+      'cc/tensorflow/math_ops.cc',
       'cc/tensorflow/session.cc'
     ],
 

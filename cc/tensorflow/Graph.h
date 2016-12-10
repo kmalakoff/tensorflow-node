@@ -14,21 +14,15 @@ namespace tensorflow {
 
 class Graph {
   public:
-    Graph();
-    TF_Graph* ref() { return m_ref; }
+    static TF_Graph* create();
+    static void destroy(TF_Graph* graph);
 
-    TF_Operation* placeholder(TF_DataType dtype, const std::vector<int64_t>& dims);
-    TF_Operation* variable(TF_Tensor* value, const std::vector<int64_t>& dims);
-    void variable_initializers(std::vector<TF_Operation*>& o_variable_initializers) { o_variable_initializers = this->m_variable_initializers; }
-    TF_Operation* constant(TF_Tensor* value);
-    TF_Operation* assign(TF_Operation* l, TF_Operation* r);
-    TF_Operation* add(TF_Operation* l, TF_Operation* r);
-    TF_Operation* matmul(TF_Operation* l, TF_Operation* r);
-    void run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs);
-
-  private:
-    TF_Graph* m_ref;
-    std::vector<TF_Operation*> m_variable_initializers;
+    static TF_Operation* placeholder(TF_Graph *graph, TF_DataType dtype, const std::vector<int64_t>& dims);
+    static TF_Operation* variable(TF_Graph *graph, TF_DataType dtype, const std::vector<int64_t>& dims);
+    static TF_Operation* variableInitializer(TF_Graph *graph, TF_Operation* variable, TF_Tensor* value);
+    static TF_Operation* constant(TF_Graph *graph, TF_Tensor* value);
+    static TF_Operation* assign(TF_Graph *graph, TF_Operation* l, TF_Operation* r);
+    static void run(std::vector<TF_Tensor*>& o_results, TF_Graph* graph, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs);
 };
 
 } // namespace tensorflow

@@ -10,14 +10,25 @@ using namespace v8;
 using namespace Nan;
 using namespace addons;
 
-Session::Session(TF_SessionWithGraph* session) { m_ref = session; }
-
-void Session::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs) {
+TF_SessionWithGraph* Session::create(TF_Graph* graph) {
   TF_Status* s = TF_NewStatus();
   TF_SessionOptions* opts = TF_NewSessionOptions();
-  // TF_SessionWithSession* session = TF_NewSessionWithGraph(m_ref, opts, s);
+  TF_SessionWithGraph* session = TF_NewSessionWithGraph(graph, opts, s);
+  TF_DeleteSessionOptions(opts);
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  TF_DeleteStatus(s);
+  return session;
+}
 
+void Session::destroy(TF_SessionWithGraph* session) {
+  TF_Status* s = TF_NewStatus();
+
+  TF_CloseSessionWithGraph(session, s);
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
+  TF_DeleteStatus(s);
+}
+
+void Session::run(std::vector<TF_Tensor*>& o_results, TF_SessionWithGraph* session, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs) {
   std::vector<TF_Port> input_ports;
   std::vector<TF_Tensor*> input_tensors;
   if (input_pairs->IsArray()) {
@@ -39,17 +50,14 @@ void Session::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Opera
     o_results.push_back(nullptr);
   }
 
+  TF_Status* s = TF_NewStatus();
   TF_SessionRun(
-    m_ref, nullptr,
+    session, nullptr,
     &input_ports[0], &input_tensors[0], (int) input_ports.size(),
     &output_ports[0], &o_results[0], (int) output_ports.size(),
     nullptr, 0,
     nullptr, s
   );
-  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
-
-  TF_DeleteSessionOptions(opts);
-  // TF_CloseSessionWithSession(session, s);
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s); }
   TF_DeleteStatus(s);
 }

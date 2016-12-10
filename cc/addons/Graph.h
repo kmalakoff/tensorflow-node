@@ -4,7 +4,8 @@
 #include "index.h"
 
 // forward declarations
-namespace tensorflow { class Graph; }
+struct TF_Graph;
+struct TF_Operation;
 
 namespace addons {
 
@@ -12,7 +13,7 @@ class Graph: public Nan::ObjectWrap {
   public:
     Graph();
     ~Graph();
-    tensorflow::Graph* ref() { return m_ref; }
+    TF_Graph* ref() { return m_ref; }
 
     v8::Local<v8::Value> ToValue() {
       // const int argc = 1;
@@ -24,7 +25,8 @@ class Graph: public Nan::ObjectWrap {
     }
 
   private:
-    tensorflow::Graph* m_ref;
+    TF_Graph* m_ref;
+    std::vector<TF_Operation*> m_variable_initializers;
 
   public:
     static NAN_MODULE_INIT(Init);

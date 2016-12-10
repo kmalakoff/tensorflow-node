@@ -1,7 +1,7 @@
 #include "math_ops.h"
 #include "graph.h"
 #include "operation.h"
-#include "../tensorflow/graph.h"
+#include "../tensorflow/math_ops.h"
 #include "../lib/conversions.h"
 
 namespace addons {
@@ -23,20 +23,20 @@ NAN_MODULE_INIT(MathOps::Init) {
 };
 
 NAN_METHOD(MathOps::add) {
-  tensorflow::Graph* obj = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
+  TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
   TF_Operation* arg0 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref(); 
   TF_Operation* arg1 = ObjectWrap::Unwrap<addons::Operation>(info[2]->ToObject())->ref(); 
 
-  TF_Operation* result = obj->add(arg0, arg1);
+  TF_Operation* result = tensorflow::MathOps::add(graph, arg0, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
 NAN_METHOD(MathOps::matmul) {
-  tensorflow::Graph* obj = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
-  TF_Operation* arg0 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref(); 
+  TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
+  TF_Operation* arg0 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref();
   TF_Operation* arg1 = ObjectWrap::Unwrap<addons::Operation>(info[2]->ToObject())->ref(); 
 
-  TF_Operation* result = obj->matmul(arg0, arg1);
+  TF_Operation* result = tensorflow::MathOps::matmul(graph, arg0, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
