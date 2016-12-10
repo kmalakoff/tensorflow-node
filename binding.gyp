@@ -3,20 +3,20 @@
     'target_name': 'tensorflow', 
     'sources': [
       'cc/addons/index.cc',
-      'cc/addons/CONSTANTS.cc',
-      'cc/addons/Graph.cc',
-      'cc/addons/MathOps.cc',
-      'cc/addons/NeuralNetwork.cc',
-      'cc/addons/Operation.cc',
-      'cc/addons/Session.cc',
-      'cc/addons/Train.cc',
-      'cc/addons/TYPES.cc',
+      'cc/addons/constants.cc',
+      'cc/addons/graph.cc',
+      'cc/addons/mathOps.cc',
+      'cc/addons/neural_network.cc',
+      'cc/addons/operation.cc',
+      'cc/addons/session.cc',
+      'cc/addons/train.cc',
+      'cc/addons/types.cc',
 
-      'cc/lib/Conversions.cc',
-      'cc/lib/Utils.cc',
+      'cc/lib/conversions.cc',
+      'cc/lib/utils.cc',
 
-      'cc/tensorflow/Graph.cc',
-      'cc/tensorflow/Session.cc'
+      'cc/tensorflow/graph.cc',
+      'cc/tensorflow/session.cc'
     ],
 
     'libraries' : [

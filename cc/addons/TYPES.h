@@ -5,7 +5,7 @@
 
 namespace addons {
 
-class TYPES: public Nan::ObjectWrap {
+class Types: public Nan::ObjectWrap {
   public:
     static NAN_MODULE_INIT(Init);
 };

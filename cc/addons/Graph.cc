@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include "Graph.h"
-#include "Operation.h"
-#include "../tensorflow/Graph.h"
-#include "../lib/Conversions.h"
+#include "graph.h"
+#include "operation.h"
+#include "../tensorflow/graph.h"
+#include "../lib/conversions.h"
 
 namespace addons {
 
@@ -26,6 +26,7 @@ NAN_MODULE_INIT(Graph::Init) {
   // Prototype
   Nan::SetPrototypeMethod(ctor, "placeholder", placeholder);
   Nan::SetPrototypeMethod(ctor, "variable", variable);
+  Nan::SetPrototypeMethod(ctor, "variable_initializers", variable_initializers);
   Nan::SetPrototypeMethod(ctor, "constant", constant);
   Nan::SetPrototypeMethod(ctor, "run", run);
 
@@ -62,6 +63,8 @@ NAN_METHOD(Graph::variable) {
   TF_Operation* result = obj->ref()->variable(arg0, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
+
+NAN_METHOD(Graph::variable_initializers) {}
 
 NAN_METHOD(Graph::constant) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());

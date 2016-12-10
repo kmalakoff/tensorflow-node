@@ -1,4 +1,4 @@
-#include "TYPES.h"
+#include "Types.h"
 #include "tensorflow/core/framework/types.pb.h"
 
 namespace addons {
@@ -8,7 +8,7 @@ using namespace tensorflow;
 
 #define CONST_INT(n, v) obj->Set(Nan::New<String>(n).ToLocalChecked(), Nan::New<Integer>(v));
 
-NAN_MODULE_INIT(TYPES::Init) {
+NAN_MODULE_INIT(Types::Init) {
   Nan::Persistent<Object> inner;
   Local<Object> obj = Nan::New<Object>();
   inner.Reset(obj);
@@ -58,7 +58,7 @@ NAN_MODULE_INIT(TYPES::Init) {
   CONST_INT("qint32_ref", DT_QINT32_REF);
   CONST_INT("bfloat16_ref", DT_BFLOAT16_REF);
 
-  target->Set(Nan::New("TYPES").ToLocalChecked(), obj);
+  target->Set(Nan::New("Types").ToLocalChecked(), obj);
 };
 
 } // namespace addons

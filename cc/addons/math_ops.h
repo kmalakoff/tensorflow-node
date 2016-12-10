@@ -13,6 +13,9 @@ class MathOps: public Nan::ObjectWrap {
   private:
     static NAN_METHOD(add);
     static NAN_METHOD(matmul);
+    static NAN_METHOD(reduce_mean);
+    static NAN_METHOD(reduce_sum);
+    static NAN_METHOD(log);
 };
 
 } // namespace addons

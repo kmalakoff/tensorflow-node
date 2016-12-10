@@ -1,8 +1,8 @@
-#include "Graph.h"
-#include "../tensorflow/Tensor.h"
-#include "../addons/Operation.h"
-#include "../lib/Utils.h"
-#include "../lib/Conversions.h"
+#include "graph.h"
+#include "../tensorflow/tensor.h"
+#include "../addons/operation.h"
+#include "../lib/utils.h"
+#include "../lib/conversions.h"
 
 namespace tensorflow {
 

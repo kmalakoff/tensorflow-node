@@ -33,6 +33,7 @@ class Graph: public Nan::ObjectWrap {
     static NAN_NEW(New);
     static NAN_METHOD(placeholder);
     static NAN_METHOD(variable);
+    static NAN_METHOD(variable_initializers);
     static NAN_METHOD(constant);
     static NAN_METHOD(run);
 };

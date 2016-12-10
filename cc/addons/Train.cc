@@ -1,8 +1,8 @@
-#include "Train.h"
-#include "Graph.h"
-#include "Operation.h"
-#include "../tensorflow/Graph.h"
-#include "../lib/Conversions.h"
+#include "train.h"
+#include "graph.h"
+#include "operation.h"
+#include "../tensorflow/graph.h"
+#include "../lib/conversions.h"
 
 namespace addons {
 

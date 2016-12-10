@@ -5,7 +5,7 @@
 
 namespace addons {
 
-class CONSTANTS: public Nan::ObjectWrap {
+class Constants: public Nan::ObjectWrap {
   public:
     static NAN_MODULE_INIT(Init);
 };

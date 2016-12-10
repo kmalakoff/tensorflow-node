@@ -2,12 +2,12 @@ const _tf = require('./addons');
 
 let tf = {
   // version: _tf.TF_VERSION_STRING,
-  Graph: require('./Graph'),
-  Session: require('./Session')
+  Graph: require('./graph'),
+  Session: require('./session')
 }
 
-Object.assign(tf, _tf.CONSTANTS);
-Object.assign(tf, _tf.TYPES);
+Object.assign(tf, _tf.Constants);
+Object.assign(tf, _tf.Types);
 
 module.exports = tf;
  

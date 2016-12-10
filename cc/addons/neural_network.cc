@@ -1,4 +1,4 @@
-#include "NeuralNetwork.h"
+#include "neural_network.h"
 
 namespace addons {
 
