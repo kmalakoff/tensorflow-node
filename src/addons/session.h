@@ -1,12 +1,12 @@
 #ifndef NAN_SESSION_H
 #define NAN_SESSION_H
 
-#include "nan.h"
+#include "addons.h"
 
 // forward declarations
 struct TF_Session;
 
-namespace nan_bridge {
+namespace addons {
 
 class Session: public Nan::ObjectWrap {
   public:
@@ -29,6 +29,6 @@ class Session: public Nan::ObjectWrap {
     static NAN_NEW(New);
 };
 
-} // namespace nan_bridge
+} // namespace addons
 
 #endif // NAN_SESSION_H

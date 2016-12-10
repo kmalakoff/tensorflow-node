@@ -4,13 +4,13 @@
     'sources': [
       'src/core/graph.cc',
       'src/core/session.cc',
-      'src/nan_bridge/constants.cc',
-      'src/nan_bridge/graph.cc',
-      'src/nan_bridge/operation.cc',
-      'src/nan_bridge/session.cc',
-      'src/nan_bridge/types.cc',
-      'src/nan_bridge/conversions.cc',
-      'src/nan_bridge/addons.cc'
+      'src/addons/constants.cc',
+      'src/addons/graph.cc',
+      'src/addons/operation.cc',
+      'src/addons/session.cc',
+      'src/addons/types.cc',
+      'src/addons/conversions.cc',
+      'src/addons/addons.cc'
     ],
 
     'libraries' : [

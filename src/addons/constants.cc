@@ -1,7 +1,7 @@
 #include "constants.h"
 #include "tensorflow/core/public/version.h"
 
-namespace nan_bridge {
+namespace addons {
 
 using namespace v8;
 
@@ -17,4 +17,4 @@ NAN_MODULE_INIT(CONSTANTS::Init) {
   target->Set(Nan::New("CONSTANTS").ToLocalChecked(), obj);
 };
 
-} // namespace nan_bridge
+} // namespace addons

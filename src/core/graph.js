@@ -1,4 +1,4 @@
-const _tf = require('../nan_bridge');
+const _tf = require('../addons');
 
 class NeuralNetwork {
   constructor(graph) { this.graph = graph; }
@@ -25,7 +25,7 @@ module.exports = class Graph {
     this.train = new Train(this);
   }
 
-  input(arg1, arg2) { return this._.placeholder(arg1, arg2); }
+  input(...args) { return this._.placeholder.apply(this._, args); }
   variable(v) { return this._.variable(v); }
   constant(v) { return this._.constant(v); }
   run(ops, input_pairs) { return this._.run(ops, input_pairs); }

@@ -3,7 +3,7 @@
 
 #include "nan.h"
 
-namespace nan_bridge {
+namespace addons {
 
 class TYPES: public Nan::ObjectWrap {
   public:

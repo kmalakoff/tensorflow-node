@@ -1,7 +1,7 @@
 #include "types.h"
 #include "tensorflow/core/framework/types.pb.h"
 
-namespace nan_bridge {
+namespace addons {
 
 using namespace v8;
 using namespace tensorflow;
@@ -61,4 +61,4 @@ NAN_MODULE_INIT(TYPES::Init) {
   target->Set(Nan::New("TYPES").ToLocalChecked(), obj);
 };
 
-} // namespace nan_bridge
+} // namespace addons

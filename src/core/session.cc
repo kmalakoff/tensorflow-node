@@ -1,14 +1,14 @@
 #include <map>
 #include "session.h"
 #include "../tensorflow/tensor.h"
-#include "../nan_bridge/conversions.h"
-#include "../nan_bridge/operation.h"
+#include "../addons/conversions.h"
+#include "../addons/operation.h"
 
 namespace tensorflow {
 
 using namespace v8;
 using namespace Nan;
-using namespace nan_bridge;
+using namespace addons;
 
 Session::Session() { m_ref = nullptr; } // TF_NewSession(); }
 
@@ -25,7 +25,7 @@ void Session::run(std::vector<TF_Tensor*>& o_results, const std::vector<TF_Opera
     for (unsigned int i = 0; i < jsArray->Length(); i++) {
       Handle<Array> pair = Handle<Array>::Cast(jsArray->Get(i));
 
-      TF_Operation* in = ObjectWrap::Unwrap<nan_bridge::Operation>(pair->Get(0)->ToObject())->ref();
+      TF_Operation* in = ObjectWrap::Unwrap<addons::Operation>(pair->Get(0)->ToObject())->ref();
       TF_Tensor* va = ToTensor(pair->Get(1));
       input_ports.push_back(TF_Port({in, static_cast<int>(i)}));
       input_tensors.push_back(va);

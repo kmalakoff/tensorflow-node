@@ -5,21 +5,22 @@
 #include "operation.h"
 #include "../core/graph.h"
 
-namespace nan_bridge {
+namespace addons {
 
 using namespace tensorflow;
 using namespace v8;
-using namespace nan_bridge;
+using namespace addons;
 
 Graph::Graph() { m_ref = new tensorflow::Graph(); }
 Graph::~Graph() { delete m_ref; m_ref = nullptr; }
 
 NAN_METHOD(Graph::placeholder) {
   Graph* obj = ObjectWrap::Unwrap<Graph>(info.Holder());
+  TF_DataType arg0 = TF_FLOAT;
+  std::vector<int64_t> arg1;
 
-  if (info.Length() != 2) { Nan::ThrowTypeError("Wrong number of arguments"); return; }
-  TF_DataType arg0 = (TF_DataType) info[0]->NumberValue();
-  std::vector<int64_t> arg1; ToShape(arg1, info[1]);
+  if (info.Length() >= 1) arg0 = (TF_DataType) info[0]->NumberValue();
+  if (info.Length() >= 2) ToShape(arg1, info[1]);
 
   TF_Operation* result = obj->m_ref->placeholder(arg0, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
@@ -79,7 +80,7 @@ NAN_METHOD(Graph::run) {
   std::vector<TF_Tensor*> results;
   obj->m_ref->run(results, arg0, info[1]);
 
-  info.GetReturnValue().Set(info[0]->IsArray() ? ToArrayValue(results) : nan_bridge::ToValue(results[0]));
+  info.GetReturnValue().Set(info[0]->IsArray() ? ToArrayValue(results) : addons::ToValue(results[0]));
 }
 /////////////////////////////////
 // Nan Lifecycle
@@ -114,4 +115,4 @@ NAN_NEW(Graph::New) {
   info.GetReturnValue().Set(info.Holder());
 }
 
-} // namespace nan_bridge
+} // namespace addons

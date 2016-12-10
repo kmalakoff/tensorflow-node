@@ -1,12 +1,12 @@
 #ifndef NAN_GRAPH_H
 #define NAN_GRAPH_H
 
-#include "nan.h"
+#include "addons.h"
 
 // forward declarations
 namespace tensorflow { class Graph; }
 
-namespace nan_bridge {
+namespace addons {
 
 class Graph: public Nan::ObjectWrap {
   public:

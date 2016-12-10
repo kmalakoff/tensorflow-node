@@ -6,7 +6,7 @@
 
 struct TF_Tensor;
 
-namespace nan_bridge {
+namespace addons {
 
 using namespace v8;
 
@@ -20,6 +20,6 @@ v8::Local<v8::Value> ToValue(TF_Tensor* value);
 v8::Local<v8::Value> ToArrayValue(const std::vector<TF_Tensor*>& value);
 v8::Local<v8::Value> ToBufferValue(TF_Tensor* value);
 
-} // namespace nan_bridge
+} // namespace addons
 
 #endif // NAN_CONVERSIONS_H

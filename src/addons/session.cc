@@ -1,6 +1,6 @@
 #include "session.h"
 
-namespace nan_bridge {
+namespace addons {
 
 using namespace v8;
 
@@ -33,4 +33,4 @@ NAN_NEW(Session::New) {
   info.GetReturnValue().Set(info.Holder());
 }
 
-} // namespace nan_bridge
+} // namespace addons

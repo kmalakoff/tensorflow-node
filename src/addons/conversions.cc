@@ -2,7 +2,7 @@
 #include "tensorflow/c/c_api.h"
 #include "tensorflow/core/framework/tensor.h"
 
-namespace nan_bridge {
+namespace addons {
 
 using namespace v8;
 using namespace tensorflow;
@@ -92,7 +92,7 @@ Local<Value> ToBufferValue(TF_Tensor* value) {
   return Nan::NewInstance(bufferConstructor, 3, constructorArgs).ToLocalChecked();
 }
 
-} // namespace nan_bridge
+} // namespace addons
 
 // IN_TO_BUFFER
 // char* buf = node::Buffer::Data(info[0]->ToObject());

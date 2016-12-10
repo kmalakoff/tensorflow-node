@@ -1,5 +1,5 @@
-#ifndef NAN_H
-#define NAN_H
+#ifndef NAN_ADDONS_H
+#define NAN_ADDONS_H
 
 #include <nan.h>
 
@@ -11,4 +11,4 @@
   return result; \
 }
 
-#endif // NAN_H
+#endif // NAN_ADDONS_H
