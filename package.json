@@ -1,5 +1,5 @@
 {
-  "name": "tensorflow.js",
+  "name": "tensorflow-node",
   "version": "0.1.0",
   "description": "Tensorflow for node.js",
   "main": "index.js",
