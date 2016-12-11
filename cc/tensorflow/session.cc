@@ -46,6 +46,7 @@ void Session::run(std::vector<TF_Tensor*>& o_results, TF_SessionWithGraph* sessi
   std::vector<TF_Port> output_ports;
 
   for (std::size_t i = 0; i < ops.size(); i++) {
+    if (!ops[i]) { std::cout << "Skipping run: operation is missing" << "\n"; return;}
     output_ports.push_back(TF_Port({ops[i], 0}));
     o_results.push_back(nullptr);
   }
@@ -75,6 +76,10 @@ void Session::runNoOut(TF_SessionWithGraph* session, const std::vector<TF_Operat
       input_ports.push_back(TF_Port({in, static_cast<int>(i)}));
       input_tensors.push_back(va);
     }
+  }
+
+  for (std::size_t i = 0; i < ops.size(); i++) {
+    if (!ops[i]) { std::cout << "Skipping run: operation is missing" << "\n"; return;}
   }
 
   TF_Status* s = TF_NewStatus();

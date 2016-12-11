@@ -64,7 +64,9 @@ NAN_METHOD(Session::run) {
 
   std::vector<TF_Tensor*> results;
   tensorflow::Session::run(results, obj->ref(), arg0, info[1]);
-  info.GetReturnValue().Set(info[0]->IsArray() ? lib::ToArrayValue(results) : lib::ToValue(results[0]));
+
+  if (info[0]->IsArray()) info.GetReturnValue().Set(lib::ToArrayValue(results));
+  else if (results.size()) info.GetReturnValue().Set(lib::ToValue(results[0]));
 }
 
 NAN_METHOD(Session::runNoOut) {
@@ -82,7 +84,6 @@ NAN_METHOD(Session::runNoOut) {
   }
 
   tensorflow::Session::runNoOut(obj->ref(), arg0, info[1]);
-  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 } // namespace addons
