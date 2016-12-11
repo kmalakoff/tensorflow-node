@@ -1,6 +1,6 @@
 {
   'targets': [{ 
-    'target_name': 'tensorflow', 
+    'target_name': 'tensorflow-node', 
     'sources': [
       'cc/addons/index.cc',
       'cc/addons/constants.cc',

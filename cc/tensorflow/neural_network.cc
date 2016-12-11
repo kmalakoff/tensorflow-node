@@ -28,7 +28,7 @@ TF_Operation* NeuralNetwork::softmax_cross_entropy_with_logits(TF_Graph *graph, 
   TF_Status* s = TF_NewStatus();
 
   TF_OperationDescription* desc = TF_NewOperation(graph, "SoftmaxCrossEntropyWithLogits", lib::uniqueId("SoftmaxCrossEntropyWithLogits").c_str());
-  TF_SetAttrType(desc, "T", TF_FLOAT);
+  // TF_SetAttrType(desc, "T", TF_FLOAT);
   TF_Port input_y = {y, 0};
   TF_AddInput(desc, input_y);
   TF_Port input_y_ = {y_, 0};
