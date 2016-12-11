@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "preinstall": "scripts/build_tensorflow.sh",
-    "postinstall": "node-gyp build",
+    "postinstall": "node-gyp configure build",
     "build": "node-gyp build",
     "test": "node test/index.js"
   },
