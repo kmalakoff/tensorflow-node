@@ -45,9 +45,9 @@ describe("Tensorflow training", function() {
         // sess.run(train_step, [[x, batch_xs], [y_, batch_ys]]); // TODO: implement training
  
         // console.log(sess.run(g.argmax(y,1), [[x, mnist.test.images]]));
-        // console.log(sess.run(g.argmax(y,1), [[x, mnist.test.images]]));
         // console.log(sess.run(g.argmax(y_,1), [[y_, mnist.test.labels]]));
-        console.log(sess.run(g.add(g.argmax(y,1), g.argmax(y_,1)), [[x, mnist.test.images], [y_, mnist.test.labels]]));
+        console.log(sess.run([g.argmax(y,1), g.argmax(y_,1)], [[x, mnist.test.images], [y_, mnist.test.labels]]));
+        // console.log(sess.run(g.add(g.argmax(y,1), g.argmax(y_,1)), [[x, mnist.test.images], [y_, mnist.test.labels]]));
 
         // console.log(sess.run(g.argmax(y_,1), [[x, mnist.test.images], [y_, mnist.test.labels]]));
         // // correct_prediction_op = g.equal(g.argmax(y,1), g.argmax(y_,1));
