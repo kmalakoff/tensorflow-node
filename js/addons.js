@@ -1,1 +1,1 @@
-module.exports = require('bindings')('tensorflow');
+module.exports = require('bindings')('tensorflow-node');

@@ -11,7 +11,7 @@ namespace tensorflow {
 
 class Train {
   public:
-    static TF_Operation* GradientDescentOptimizer(TF_Graph *graph, TF_Operation* v);
+    static TF_Operation* GradientDescentOptimizer(TF_Graph *graph, float learning_rate, TF_Operation* v);
 };
 
 } // namespace tensorflow

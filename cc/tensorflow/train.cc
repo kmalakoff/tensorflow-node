@@ -10,7 +10,7 @@ using namespace v8;
 using namespace Nan;
 using namespace addons;
 
-TF_Operation* Train::GradientDescentOptimizer(TF_Graph *graph, TF_Operation* v) {
+TF_Operation* Train::GradientDescentOptimizer(TF_Graph *graph, float learning_rate, TF_Operation* v) {
   TF_Status* s = TF_NewStatus();
 
   TF_OperationDescription* desc = TF_NewOperation(graph, "ApplyGradientDescent", lib::uniqueId("ApplyGradientDescent").c_str());
