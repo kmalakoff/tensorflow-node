@@ -33,16 +33,16 @@ describe("Tensorflow training", function() {
       const b = g.variable(np.zeros([10]));
       const y = g.matmul_add(x, W, b);
 
-      loss = g.reduce_mean(g.nn.softmax_cross_entropy_with_logits(y, y_));
-      // // // train_step = g.train.GradientDescentOptimizer(0.5).minimize(loss);
-      train_step = g.train.GradientDescentOptimizer(0.5, loss);
+      // loss = g.reduce_mean(g.nn.softmax_cross_entropy_with_logits(y, y_));
+      // // train_step = g.train.GradientDescentOptimizer(0.5).minimize(loss);
+      // train_step = g.train.GradientDescentOptimizer(0.5, loss);
 
       sess = new tf.Session(g);
       sess.runNoOut(g.variable_initializers());
 
       for(let i = 0; i < 10; i++) {
-        [batch_xs, batch_ys] = mnist.train.next_batch(100);
-        sess.run(train_step, [[x, batch_xs], [y_, batch_ys]]);
+        // [batch_xs, batch_ys] = mnist.train.next_batch(100);
+        // sess.run(train_step, [[x, batch_xs], [y_, batch_ys]]);
          
         correct_prediction_op = g.equal(g.argmax(y,1), g.argmax(y_,1));
         accuracy_op = g.reduce_mean(g.cast(correct_prediction_op, tf.float32));
