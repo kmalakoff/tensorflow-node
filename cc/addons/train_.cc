@@ -20,8 +20,9 @@ NAN_MODULE_INIT(Train::Init) {
 
 NAN_METHOD(Train::GradientDescentOptimizer) {
   TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
-  TF_Operation* arg0 = ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref(); 
-  TF_Operation* result = tensorflow::Train::GradientDescentOptimizer(graph, arg0);
+  float arg0 = info[0]->NumberValue();
+  TF_Operation* arg1 = ObjectWrap::Unwrap<Operation>(info[1]->ToObject())->ref(); 
+  TF_Operation* result = tensorflow::Train::GradientDescentOptimizer(graph, arg0, arg1);
 
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
