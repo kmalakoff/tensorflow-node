@@ -65,7 +65,7 @@ TF_Operation* MathOps::reduce_mean(TF_Graph *graph, TF_Operation* v) {
   // reduction_indices
   const int byte_count = 1 * sizeof(int);
   int* values = reinterpret_cast<int*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, byte_count));
-  values[0] = 1;
+  values[0] = 0;
   TF_Tensor* reduction_indices = TF_NewTensor(TF_INT32, nullptr, 0, values, byte_count, &Deallocator, nullptr);
   TF_Operation* op = Graph::constant(graph, reduction_indices);
   TF_Port input_ri = {op, 0};

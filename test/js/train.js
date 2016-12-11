@@ -40,26 +40,14 @@ describe("Tensorflow training", function() {
       sess = new tf.Session(g);
       sess.runNoOut(g.variable_initializers());
 
-      for(let i = 0; i < 1; i++) {
+      for(let i = 0; i < 10; i++) {
         // [batch_xs, batch_ys] = mnist.train.next_batch(100);
         // sess.run(train_step, [[x, batch_xs], [y_, batch_ys]]); // TODO: implement training
- 
-        // console.log(sess.run(g.argmax(y,1), [[x, mnist.test.images]]));
-        // console.log(sess.run(g.argmax(y_,1), [[y_, mnist.test.labels]]));
-        console.log(sess.run([g.argmax(y,1), g.argmax(y_,1)], [[x, mnist.test.images], [y_, mnist.test.labels]]));
-        // console.log(sess.run(g.add(g.argmax(y,1), g.argmax(y_,1)), [[x, mnist.test.images], [y_, mnist.test.labels]]));
-
-        // console.log(sess.run(g.argmax(y_,1), [[x, mnist.test.images], [y_, mnist.test.labels]]));
-        // // correct_prediction_op = g.equal(g.argmax(y,1), g.argmax(y_,1));
-        // console.log(sess.run(correct_prediction_op, [[x, mnist.test.images], [y_, mnist.test.labels]]));
-        
-        // correct_prediction_op = g.equal(g.argmax(y,1), g.argmax(y_,1));
-        // correct_prediction = sess.run(correct_prediction_op, [[x, mnist.test.images], [y_, mnist.test.labels]]);
-        // console.log(correct_prediction);
-
-        // accuracy_op = g.reduce_mean(g.cast(correccorrect_prediction_opt_prediction, tf.float32));
-        // accuracy = sess.run(accuracy_op, [[x, mnist.test.images], [y_, mnist.test.labels]])
-        // console.log(accuracy);
+         
+        correct_prediction_op = g.equal(g.argmax(y,1), g.argmax(y_,1));
+        accuracy_op = g.reduce_mean(g.cast(correct_prediction_op, tf.float32));
+        accuracy = sess.run(accuracy_op, [[x, mnist.test.images], [y_, mnist.test.labels]])
+        console.log(accuracy);
       }
     });
   });
