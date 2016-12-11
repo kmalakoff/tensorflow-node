@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-VENDOR_DIR="$(pwd)/vendor"
+ROOT_DIR=$PWD
+VENDOR_DIR="$ROOT_DIR/vendor"
 BAZEL_DIR=`cd $VENDOR_DIR; bazel info output_base`
 TENSORFLOW_DIR="$BAZEL_DIR/external/org_tensorflow"
 
@@ -37,6 +38,8 @@ cp -rf $TENSORFLOW_DIR/bazel-org_tensorflow/tensorflow/ $VENDOR_DIR/tensorflow/H
 mkdir -p $VENDOR_DIR/tensorflow/Generated
 cp -rf $TENSORFLOW_DIR/bazel-genfiles/tensorflow/ $VENDOR_DIR/tensorflow/Generated/tensorflow/
 cp -f $TENSORFLOW_DIR/bazel-out/local-opt/bin/tensorflow/libtensorflow.so $VENDOR_DIR/tensorflow/libtensorflow.dylib
-exec sudo install_name_tool -id $VENDOR_DIR/tensorflow/libtensorflow.dylib $VENDOR_DIR/tensorflow/libtensorflow.dylib
 
-# TODO: figure out why install_name_tool fails, eg. later commands do not execute
+# TODO: figure out how to use the hardcoded library path in bazel correctly
+# exec sudo install_name_tool -id $VENDOR_DIR/tensorflow/libtensorflow.dylib $VENDOR_DIR/tensorflow/libtensorflow.dylib
+mkdir -p $ROOT_DIR/bazel-out/local-opt/bin/tensorflow
+ln -s $VENDOR_DIR/tensorflow/libtensorflow.dylib $ROOT_DIR/bazel-out/local-opt/bin/tensorflow/libtensorflow.so > /dev/null 2>&1 || :
