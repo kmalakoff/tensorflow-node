@@ -40,9 +40,9 @@ cp -rf $TENSORFLOW_DIR/bazel-genfiles/tensorflow/ $VENDOR_DIR/tensorflow/Generat
 cp -f $TENSORFLOW_DIR/bazel-out/local-opt/bin/tensorflow/libtensorflow.so $VENDOR_DIR/tensorflow/libtensorflow.so
 
 # TODO: figure out how to use the hardcoded library path in bazel correctly
-# exec sudo install_name_tool -id $VENDOR_DIR/tensorflow/libtensorflow.dylib $VENDOR_DIR/tensorflow/libtensorflow.dylib
-mkdir -p $ROOT_DIR/bazel-out/local-opt/bin/tensorflow
-ln -s $VENDOR_DIR/tensorflow/libtensorflow.so $ROOT_DIR/bazel-out/local-opt/bin/tensorflow/libtensorflow.so > /dev/null 2>&1 || :
+exec sudo install_name_tool -id $VENDOR_DIR/tensorflow/libtensorflow.so $VENDOR_DIR/tensorflow/libtensorflow.so
+# mkdir -p $ROOT_DIR/bazel-out/local-opt/bin/tensorflow
+# ln -s $VENDOR_DIR/tensorflow/libtensorflow.so $ROOT_DIR/bazel-out/local-opt/bin/tensorflow/libtensorflow.so > /dev/null 2>&1 || :
 
 # allow xcode to be used for debugging by linking to a dylib file
 ln -s $VENDOR_DIR/tensorflow/libtensorflow.so $VENDOR_DIR/tensorflow/libtensorflow.dylib > /dev/null 2>&1 || :

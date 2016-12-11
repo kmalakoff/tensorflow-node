@@ -53,6 +53,20 @@ TF_Tensor* ToTensor(const Local<Value>& info) {
   return nullptr;
 }
 
+TF_Tensor* ToTensor(int value) {
+  const int byte_count = 1 * sizeof(int);
+  int* values = reinterpret_cast<int*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, byte_count));
+  values[0] = value;
+  return TF_NewTensor(TF_INT32, nullptr, 0, values, byte_count, &Deallocator, nullptr);
+}
+
+TF_Tensor* ToTensor(float value) {
+  const float byte_count = 1 * sizeof(float);
+  float* values = reinterpret_cast<float*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, byte_count));
+  values[0] = value;
+  return TF_NewTensor(TF_FLOAT, nullptr, 0, values, byte_count, &Deallocator, nullptr);
+}
+
 void ToShape(std::vector<int64_t>& o_dims, TF_Tensor* value) {
   size_t dim_count = TF_NumDims(value);
   for (size_t i = 0; i < dim_count; i++) o_dims.push_back(TF_Dim(value, (int) i));
