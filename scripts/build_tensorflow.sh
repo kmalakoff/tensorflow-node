@@ -26,7 +26,7 @@ mkdir -p $VENDOR_DIR/protobuf/Headers
 cp -rf $TENSORFLOW_DIR/bazel-org_tensorflow/external/protobuf/src/ $VENDOR_DIR/protobuf/Headers/
 cp -f $TENSORFLOW_DIR/bazel-out/host/bin/external/protobuf/libprotobuf.a $VENDOR_DIR/protobuf/libprotobuf.a
 
-# eiger: copy files
+# eigen: copy files
 mkdir -p $VENDOR_DIR/eigen/Headers
 cp -rf $TENSORFLOW_DIR/bazel-org_tensorflow/external/eigen_archive/ $VENDOR_DIR/eigen/Headers/
 mkdir -p $VENDOR_DIR/eigen/Generated
@@ -37,9 +37,12 @@ mkdir -p $VENDOR_DIR/tensorflow/Headers/tensorflow
 cp -rf $TENSORFLOW_DIR/bazel-org_tensorflow/tensorflow/ $VENDOR_DIR/tensorflow/Headers/tensorflow/
 mkdir -p $VENDOR_DIR/tensorflow/Generated
 cp -rf $TENSORFLOW_DIR/bazel-genfiles/tensorflow/ $VENDOR_DIR/tensorflow/Generated/tensorflow/
-cp -f $TENSORFLOW_DIR/bazel-out/local-opt/bin/tensorflow/libtensorflow.so $VENDOR_DIR/tensorflow/libtensorflow.dylib
+cp -f $TENSORFLOW_DIR/bazel-out/local-opt/bin/tensorflow/libtensorflow.so $VENDOR_DIR/tensorflow/libtensorflow.so
 
 # TODO: figure out how to use the hardcoded library path in bazel correctly
 # exec sudo install_name_tool -id $VENDOR_DIR/tensorflow/libtensorflow.dylib $VENDOR_DIR/tensorflow/libtensorflow.dylib
 mkdir -p $ROOT_DIR/bazel-out/local-opt/bin/tensorflow
-ln -s $VENDOR_DIR/tensorflow/libtensorflow.dylib $ROOT_DIR/bazel-out/local-opt/bin/tensorflow/libtensorflow.so > /dev/null 2>&1 || :
+ln -s $VENDOR_DIR/tensorflow/libtensorflow.so $ROOT_DIR/bazel-out/local-opt/bin/tensorflow/libtensorflow.so > /dev/null 2>&1 || :
+
+# allow xcode to be used for debugging by linking to a dylib file
+ln -s $VENDOR_DIR/tensorflow/libtensorflow.so $VENDOR_DIR/tensorflow/libtensorflow.dylib > /dev/null 2>&1 || :
