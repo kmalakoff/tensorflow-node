@@ -12,7 +12,7 @@ module.exports = class Graph {
     this.train = {}; bindFns(this, this.train, _tf.Train);
   }
 
-  input(...args) { return this._.placeholder.apply(this._, args); }
+  placeholder(...args) { return this._.placeholder.apply(this._, args); }
   variable(...args) { return this._.variable.apply(this._, args); }
   variable_initializers(...args) { return this._.variable_initializers.apply(this._, args); }
   constant(...args) { return this._.constant.apply(this._, args); }

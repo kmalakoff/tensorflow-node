@@ -16,7 +16,7 @@ Session::Session(Graph* graph) {
 }
 
 Session::~Session() {
-  delete m_ref; m_ref = nullptr;
+  tensorflow::Session::destroy(m_ref); m_ref = nullptr;
   /* m_graph->Unref(); */ m_graph = nullptr; // TODO: safe references
 }
 

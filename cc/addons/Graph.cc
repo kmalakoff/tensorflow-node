@@ -60,7 +60,7 @@ NAN_METHOD(Graph::placeholder) {
 NAN_METHOD(Graph::variable) {
   TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
   TF_Tensor* arg0 = lib::ToTensor(info[0]); 
-  std::vector<int64_t> arg1; lib::ToShape(arg1, info[0]);
+  std::vector<int64_t> arg1; lib::ToShape(arg1, arg0);
 
   TF_Operation* result = tensorflow::Graph::variable(graph, arg0->dtype, arg1);
 
@@ -84,6 +84,9 @@ NAN_METHOD(Graph::constant) {
   TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
 
   TF_Tensor* arg0 = lib::ToTensor(info[0]); 
+
+//  std::cout << TF_TensorDims(arg0)
+
   TF_Operation* result = tensorflow::Graph::constant(graph, arg0);
 
   info.GetReturnValue().Set((new Operation(result))->ToValue());

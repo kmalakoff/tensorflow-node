@@ -1,3 +1,4 @@
+#include <iostream>
 #include "math_ops.h"
 #include "graph.h"
 #include "operation.h"
@@ -73,9 +74,9 @@ NAN_METHOD(MathOps::equal) {
 NAN_METHOD(MathOps::argmax) {
   TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
   TF_Operation* arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref();
-  int arg2 = info[2]->NumberValue(); 
+  int dim = (info.Length() >= 3) ? info[2]->NumberValue() : 0;
 
-  TF_Operation* result = tensorflow::MathOps::argmax(graph, arg1, arg2);
+  TF_Operation* result = tensorflow::MathOps::argmax(graph, arg1, dim);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 

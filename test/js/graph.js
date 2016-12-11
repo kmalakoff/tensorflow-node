@@ -13,7 +13,7 @@ describe("Tensorflow run", function() {
 
   it("can use inputs", function() {
     const g = new tf.Graph();
-    const input = g.input();
+    const input = g.placeholder();
     const two = g.constant(2);
     const add = g.add(input, two);
     const result = g.run(add, [[input, 3]]);
@@ -22,7 +22,7 @@ describe("Tensorflow run", function() {
 
   it("can use sessions", function() {
     const g = new tf.Graph();
-    const input = g.input();
+    const input = g.placeholder();
     const two = g.constant(2);
     const add = g.add(input, two);
 

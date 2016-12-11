@@ -1,3 +1,4 @@
+#include <iostream>
 #include "graph.h"
 #include "session.h"
 #include "../tensorflow/tensor.h"
@@ -52,7 +53,6 @@ TF_Operation* Graph::constant(TF_Graph *graph, TF_Tensor* value) {
   TF_DataType dtype = value->dtype;
 
   TF_Status* s = TF_NewStatus();
-
   TF_OperationDescription* desc = TF_NewOperation(graph, "Const", lib::uniqueId("Const").c_str());
   TF_SetAttrTensor(desc, "value", value, s);
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
