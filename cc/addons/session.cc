@@ -81,7 +81,7 @@ NAN_METHOD(Session::runNoOut) {
     arg0.push_back(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref());
   }
 
-  tensorflow::Session::run(obj->ref(), arg0, info[1]);
+  tensorflow::Session::runNoOut(obj->ref(), arg0, info[1]);
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
