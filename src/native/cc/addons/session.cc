@@ -96,8 +96,12 @@ void Session::run(tensorflow::Session* session, tensorflow::Scope& scope, const 
 
   // outputs
   std::vector<Tensor> results;
-
-  TF_CHECK_OK(session->Run(arg1, ops, {}, &results));
+  if (outputs) {
+    TF_CHECK_OK(session->Run(arg1, ops, {}, &results));
+  }
+  else {
+    TF_CHECK_OK(session->Run(arg1, {}, ops, &results));
+  }
   if (outputs) info.GetReturnValue().Set(info[0]->IsArray() ? lib::ToArrayValue(results) : lib::ToValue(results[0]));
 }
 
