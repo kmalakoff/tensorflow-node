@@ -63,7 +63,7 @@ NAN_METHOD(Graph::variable) {
   TF_Operation* result = Variable(graph, arg0->dtype, arg1);
 
   // https://www.tensorflow.org/versions/master/how_tos/variables/index.html
-  auto value = Const(graph, arg0); TF_DeleteTensor(arg0);
+  auto value = tf::ops::Const(graph, arg0); // TF_DeleteTensor(arg0); // constant takes over tensor ownership
   auto assign = Assign(graph, result, value);
   ObjectWrap::Unwrap<Graph>(info.Holder())->m_variable_initializers.push_back(assign);
 

@@ -7,7 +7,9 @@ namespace lib {
 using namespace v8;
 using namespace tensorflow;
 
-void Deallocator(void* data, size_t, void* arg) { tensorflow::cpu_allocator()->DeallocateRaw(data); }
+void Deallocator(void* data, size_t, void* arg) {
+  tensorflow::cpu_allocator()->DeallocateRaw(data);
+}
 
 void jsCollectDimensions(std::vector<int64_t>& o_dims, Handle<Array> jsArray) {
   o_dims.push_back(jsArray->Length());

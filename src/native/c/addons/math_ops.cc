@@ -62,7 +62,7 @@ NAN_METHOD(MathOps::reduce_mean) {
 
   TF_Tensor* arg2 = lib::ToTensor(0);
   auto reduction_indices = Const(graph, arg2);
-  auto result = Mean(graph, arg1, reduction_indices); TF_DeleteTensor(arg2);
+  auto result = Mean(graph, arg1, reduction_indices); // TF_DeleteTensor(arg2); // constant takes over tensor ownership
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
