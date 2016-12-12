@@ -32,17 +32,19 @@ cp -rf $TENSORFLOW_DIR/bazel-org_tensorflow/external/eigen_archive/ $VENDOR_DIR/
 mkdir -p $VENDOR_DIR/eigen/Generated
 cp -rf $TENSORFLOW_DIR/bazel-org_tensorflow/third_party/ $VENDOR_DIR/eigen/Generated/third_party/
 
-# tensorflow: copy files and rename libtensorflow.dylib to for xcode debugging
+# tensorflow: copy files
 mkdir -p $VENDOR_DIR/tensorflow/Headers/tensorflow
 cp -rf $TENSORFLOW_DIR/bazel-org_tensorflow/tensorflow/ $VENDOR_DIR/tensorflow/Headers/tensorflow/
 mkdir -p $VENDOR_DIR/tensorflow/Generated
 cp -rf $TENSORFLOW_DIR/bazel-genfiles/tensorflow/ $VENDOR_DIR/tensorflow/Generated/tensorflow/
-cp -f $TENSORFLOW_DIR/bazel-out/local-opt/bin/tensorflow/libtensorflow.so $VENDOR_DIR/tensorflow/libtensorflow.so
 
-# TODO: figure out how to use the hardcoded library path in bazel correctly
-exec sudo install_name_tool -id $VENDOR_DIR/tensorflow/libtensorflow.so $VENDOR_DIR/tensorflow/libtensorflow.so
-# mkdir -p $ROOT_DIR/bazel-out/local-opt/bin/tensorflow
-# ln -s $VENDOR_DIR/tensorflow/libtensorflow.so $ROOT_DIR/bazel-out/local-opt/bin/tensorflow/libtensorflow.so > /dev/null 2>&1 || :
+# tensorflow: rename libtensorflow.so to libtensorflow.dylib to for xcode debugging
+TENSORFLOW_BAZEL_DIR="bazel-out/local-opt/bin/tensorflow"
+TENSORFLOW_LIB_DIR="$VENDOR_DIR/tensorflow/$TENSORFLOW_BAZEL_DIR"
+mkdir -p $TENSORFLOW_LIB_DIR
+cp -f $TENSORFLOW_DIR/$TENSORFLOW_BAZEL_DIR/libtensorflow.so $TENSORFLOW_LIB_DIR/libtensorflow.so
+ln -s $TENSORFLOW_LIB_DIR/libtensorflow.so $VENDOR_DIR/tensorflow/libtensorflow.dylib > /dev/null 2>&1 || :
 
-# allow xcode to be used for debugging by linking to a dylib file
-ln -s $VENDOR_DIR/tensorflow/libtensorflow.so $VENDOR_DIR/tensorflow/libtensorflow.dylib > /dev/null 2>&1 || :
+# # update the hardcoded library path in bazel
+# # TODO: figure out a way to do this that 1) doesn't require sudo and 2) handles relative paths
+sudo install_name_tool -id $TENSORFLOW_LIB_DIR/libtensorflow.so $TENSORFLOW_LIB_DIR/libtensorflow.so > /dev/null 2>&1 || :
