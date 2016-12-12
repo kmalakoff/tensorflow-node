@@ -1,22 +1,30 @@
 #include <iostream>
 #include "session.h"
-#include "../tf/session.h"
 #include "graph.h"
-#include "../tf/graph.h"
 #include "../../lib/conversions.h"
 #include "operation.h"
+#include "../tf_ops.h"
 
 namespace addons {
 
+using namespace tf::ops;
 using namespace v8;
 
 Session::Session(Graph* graph) {
   m_graph = graph; /* m_graph->Ref(); */ // TODO: safe references
-  m_ref = tf::Session::create(graph->ref());
+  TF_Status* s = TF_NewStatus();
+  TF_SessionOptions* opts = TF_NewSessionOptions();
+  m_ref = TF_NewSessionWithGraph(graph->ref(), opts, s);
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
+  TF_DeleteStatus(s);
+  TF_DeleteSessionOptions(opts);
 }
 
 Session::~Session() {
-  tf::Session::destroy(m_ref); m_ref = nullptr;
+  TF_Status* s = TF_NewStatus();
+  TF_CloseSessionWithGraph(m_ref, s); m_ref = nullptr;
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
+  TF_DeleteStatus(s);
   /* m_graph->Unref(); */ m_graph = nullptr; // TODO: safe references
 }
 

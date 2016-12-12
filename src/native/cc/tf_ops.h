@@ -2,7 +2,7 @@
 #define TF_OPS_H
 
 #include <vector>
-#include "tensorflow/core/framework/types.pb.h"
+#include "tensorflow/core/framework/types.pb.h" // DataType
 
 // forward declarations
 namespace tensorflow { class Scope; }

@@ -66,7 +66,7 @@ NAN_METHOD(Graph::variable) {
   tensorflow::Tensor* arg0 = lib::ToTensor2(info[0]);
   std::vector<int64_t> arg1; lib::ToShape(arg1, *arg0);
 
-  auto result = Variable(scope, DT_FLOAT, arg1);
+  auto result = Variable(scope, (DataType) arg0->dtype, arg1);
 
   // https://www.tensorflow.org/versions/master/how_tos/variables/index.html
   auto value = Const<float>(scope, *arg0); delete arg0;
