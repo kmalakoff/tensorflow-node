@@ -6,6 +6,7 @@
 #include "../tf/session.h"
 #include "../tf/tensor.h"
 #include "../../lib/conversions.h"
+#include "../../lib/utils.h"
 
 #include "tensorflow/cc/ops/const_op.h"
 #include "tensorflow/core/public/session.h"
@@ -98,7 +99,7 @@ NAN_METHOD(Graph::constant) {
 
 NAN_METHOD(Graph::run) {
   auto& scope = ObjectWrap::Unwrap<Graph>(info.Holder())->m_scope;
-
+  
   SessionOptions options;
   std::unique_ptr<Session> session(NewSession(options));
 
@@ -112,12 +113,11 @@ NAN_METHOD(Graph::run) {
    if (info[0]->IsArray()) {
      Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
      for (unsigned int i = 0; i < jsArray->Length(); i++) {
-       ops.push_back(ObjectWrap::Unwrap<Operation>(jsArray->Get(i)->ToObject())->m_output.name());
+       ops.push_back(lib::nodeName(ObjectWrap::Unwrap<Operation>(jsArray->Get(i)->ToObject())->m_output.node()));
      }
    }
    else {
-//     ops.push_back(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->m_output.name());
-     ops.push_back("Equal:0");
+     ops.push_back(lib::nodeName(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->m_output.node()));
    }
 
   std::vector<Tensor> results;

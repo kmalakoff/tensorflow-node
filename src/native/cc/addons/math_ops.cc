@@ -72,9 +72,6 @@ NAN_METHOD(MathOps::equal) {
   auto& arg2 = ObjectWrap::Unwrap<addons::Operation>(info[2]->ToObject())->m_output;
 
   auto result = Equal(scope.WithOpName("Equal"), arg1, arg2);
-
-//  auto name = result.node()->name();
-  
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 
   // TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
