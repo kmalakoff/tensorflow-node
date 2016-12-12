@@ -48,7 +48,8 @@ NAN_NEW(Session::New) {
 }
 
 NAN_METHOD(Session::run) {
-  Session* obj = ObjectWrap::Unwrap<Session>(info.Holder());
+  TF_SessionWithGraph* session = ObjectWrap::Unwrap<Session>(info.Holder())->ref();
+  addons::Session::run(session, info);
 }
 
 void Session::run(TF_SessionWithGraph* session, const Nan::FunctionCallbackInfo<v8::Value>& info) {
@@ -65,8 +66,8 @@ void Session::run(TF_SessionWithGraph* session, const Nan::FunctionCallbackInfo<
   // inputs
   std::vector<TF_Port> input_ports;
   std::vector<TF_Tensor*> input_tensors;
-  if (info[0]->IsArray()) {
-    Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
+  if (info[1]->IsArray()) {
+    Handle<Array> jsArray = Handle<Array>::Cast(info[1]);
     for (unsigned int i = 0; i < jsArray->Length(); i++) {
       Handle<Array> pair = Handle<Array>::Cast(jsArray->Get(i));
 
@@ -88,13 +89,25 @@ void Session::run(TF_SessionWithGraph* session, const Nan::FunctionCallbackInfo<
   }
 
   TF_Status* s = TF_NewStatus();
-  TF_SessionRun(
-    session, nullptr,
-    &input_ports[0], &input_tensors[0], (int) input_ports.size(),
-    &output_ports[0], &results[0], (int) output_ports.size(),
-    nullptr, 0,
-    nullptr, s
-  );
+  if (outputs) {
+    TF_SessionRun(
+      session, nullptr,
+      &input_ports[0], &input_tensors[0], (int) input_ports.size(),
+      &output_ports[0], &results[0], (int) output_ports.size(),
+      nullptr, 0,
+      nullptr, s
+    );
+  }
+  else {
+    TF_SessionRun(
+      session, nullptr,
+      &input_ports[0], &input_tensors[0], (int) input_ports.size(),
+      nullptr, nullptr, 0,
+      &ops[0], (int) ops.size(),
+      nullptr, s
+    );
+  }
+
   if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   TF_DeleteStatus(s);
 
