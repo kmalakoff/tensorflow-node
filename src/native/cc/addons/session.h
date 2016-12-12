@@ -2,9 +2,8 @@
 #define NAN_SESSION_H
 
 #include "../../lib/nan.h"
-
-// forward declarations
-struct TF_SessionWithGraph;
+#include "tensorflow/cc/framework/scope.h"
+#include "tensorflow/core/public/session.h"
 
 // forward declarations
 namespace addons { class Graph; }
@@ -15,7 +14,6 @@ class Session: public Nan::ObjectWrap {
   public:
     Session(Graph* graph);
     ~Session();
-    TF_SessionWithGraph* ref() { return m_ref; }
 
     v8::Local<v8::Value> ToValue() {
       // const int argc = 1;
@@ -26,9 +24,11 @@ class Session: public Nan::ObjectWrap {
       return result;
     }
 
+    static void run(tensorflow::Session* session, tensorflow::Scope& scope, const Nan::FunctionCallbackInfo<v8::Value>& info);
+
   private:
-    TF_SessionWithGraph* m_ref;
-    Graph* m_graph; // TODO: safe references
+    tensorflow::Session* m_session;
+    tensorflow::Scope m_scope;
 
   public:
     static NAN_MODULE_INIT(Init);
