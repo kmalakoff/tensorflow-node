@@ -18,7 +18,7 @@ eval "cd $TENSORFLOW_DIR; python ${GEN_GIT_SOURCE} --configure ${TENSORFLOW_DIR}
 # fi
 
 # tensorflow: build
-eval "cd $TENSORFLOW_DIR; bazel build -c opt //tensorflow:libtensorflow.so"
+eval "cd $TENSORFLOW_DIR; bazel build -c opt //tensorflow:libtensorflow_cc.so"
 eval "cd $VENDOR_DIR; rm -rf bazel-*"
 
 # protobuf: copy files
@@ -38,13 +38,13 @@ cp -rf $TENSORFLOW_DIR/bazel-org_tensorflow/tensorflow/ $VENDOR_DIR/tensorflow/H
 mkdir -p $VENDOR_DIR/tensorflow/Generated
 cp -rf $TENSORFLOW_DIR/bazel-genfiles/tensorflow/ $VENDOR_DIR/tensorflow/Generated/tensorflow/
 
-# tensorflow: rename libtensorflow.so to libtensorflow.dylib to for xcode debugging
+# tensorflow: rename libtensorflow_cc.so to libtensorflow_cc.dylib to for xcode debugging
 TENSORFLOW_BAZEL_DIR="bazel-out/local-opt/bin/tensorflow"
 TENSORFLOW_LIB_DIR="$VENDOR_DIR/tensorflow/$TENSORFLOW_BAZEL_DIR"
 mkdir -p $TENSORFLOW_LIB_DIR
-cp -f $TENSORFLOW_DIR/$TENSORFLOW_BAZEL_DIR/libtensorflow.so $TENSORFLOW_LIB_DIR/libtensorflow.so
-ln -s $TENSORFLOW_LIB_DIR/libtensorflow.so $VENDOR_DIR/tensorflow/libtensorflow.dylib > /dev/null 2>&1 || :
+cp -f $TENSORFLOW_DIR/$TENSORFLOW_BAZEL_DIR/libtensorflow_cc.so $TENSORFLOW_LIB_DIR/libtensorflow_cc.so
+ln -s $TENSORFLOW_LIB_DIR/libtensorflow_cc.so $VENDOR_DIR/tensorflow/libtensorflow_cc.dylib > /dev/null 2>&1 || :
 
 # # update the hardcoded library path in bazel
 # # TODO: figure out a way to do this that 1) doesn't require sudo and 2) handles relative paths
-sudo install_name_tool -id $TENSORFLOW_LIB_DIR/libtensorflow.so $TENSORFLOW_LIB_DIR/libtensorflow.so > /dev/null 2>&1 || :
+sudo install_name_tool -id $TENSORFLOW_LIB_DIR/libtensorflow_cc.so $TENSORFLOW_LIB_DIR/libtensorflow_cc.so > /dev/null 2>&1 || :

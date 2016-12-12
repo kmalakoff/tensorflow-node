@@ -9,6 +9,7 @@
       'cc/addons/neural_network.cc',
       'cc/addons/operation.cc',
       'cc/addons/session.cc',
+      'cc/addons/test.cc',
       'cc/addons/train.cc',
       'cc/addons/types.cc',
 
@@ -24,7 +25,7 @@
 
     'libraries' : [
       '<!(pwd)/vendor/protobuf/libprotobuf.a',
-      '<!(pwd)/vendor/tensorflow/libtensorflow.dylib'
+      '<!(pwd)/vendor/tensorflow/libtensorflow_cc.dylib'
     ],
 
     'include_dirs' : [ 

@@ -5,6 +5,7 @@
 #include "neural_network.h"
 #include "operation.h"
 #include "session.h"
+#include "test.h"
 #include "train.h"
 #include "types.h"
 
@@ -15,6 +16,7 @@ void Init(v8::Local<v8::Object> exports) {
   addons::NeuralNetwork::Init(exports);
   addons::Operation::Init(exports);
   addons::Session::Init(exports);
+  addons::Test::Init(exports);
   addons::Train::Init(exports);
   addons::Types::Init(exports);
 }
