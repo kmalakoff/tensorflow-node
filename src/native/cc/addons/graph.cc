@@ -2,9 +2,9 @@
 
 #include "graph.h"
 #include "operation.h"
-#include "../tensorflow/graph.h"
-#include "../tensorflow/session.h"
-#include "../tensorflow/tensor.h"
+#include "../tf/graph.h"
+#include "../tf/session.h"
+#include "../tf/tensor.h"
 #include "../../lib/conversions.h"
 
 namespace addons {
@@ -13,8 +13,8 @@ using namespace tensorflow;
 using namespace v8;
 using namespace addons;
 
-Graph::Graph() { m_ref = tensorflow::Graph::create(); }
-Graph::~Graph() { tensorflow::Graph::destroy(m_ref); m_ref = nullptr; }
+Graph::Graph() : m_scope(tensorflow::Scope::NewRootScope()) { m_ref = tf::Graph::create(); }
+Graph::~Graph() { tf::Graph::destroy(m_ref); m_ref = nullptr; }
 
 NAN_MODULE_INIT(Graph::Init) {
   Nan::HandleScope scope;
@@ -53,7 +53,7 @@ NAN_METHOD(Graph::placeholder) {
   if (info.Length() >= 1) arg0 = (TF_DataType) info[0]->NumberValue();
   if (info.Length() >= 2) lib::ToShape(arg1, info[1]);
 
-  TF_Operation* result = tensorflow::Graph::placeholder(graph, arg0, arg1);
+  TF_Operation* result = tf::Graph::placeholder(graph, arg0, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
@@ -62,11 +62,11 @@ NAN_METHOD(Graph::variable) {
   TF_Tensor* arg0 = lib::ToTensor(info[0]); 
   std::vector<int64_t> arg1; lib::ToShape(arg1, arg0);
 
-  TF_Operation* result = tensorflow::Graph::variable(graph, arg0->dtype, arg1);
+  TF_Operation* result = tf::Graph::variable(graph, arg0->dtype, arg1);
 
   // https://www.tensorflow.org/versions/master/how_tos/variables/index.html
   std::vector<TF_Operation*>& variable_initializers = ObjectWrap::Unwrap<Graph>(info.Holder())->m_variable_initializers;
-  variable_initializers.push_back(tensorflow::Graph::variableInitializer(graph, result, arg0));
+  variable_initializers.push_back(tf::Graph::variableInitializer(graph, result, arg0));
 
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
@@ -83,7 +83,7 @@ NAN_METHOD(Graph::variable_initializers) {
 NAN_METHOD(Graph::constant) {
   TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
   TF_Tensor* arg0 = lib::ToTensor(info[0]); 
-  TF_Operation* result = tensorflow::Graph::constant(graph, arg0);
+  TF_Operation* result = tf::Graph::constant(graph, arg0);
 
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
@@ -103,7 +103,7 @@ NAN_METHOD(Graph::run) {
   }
 
   std::vector<TF_Tensor*> results;
-  tensorflow::Graph::run(results, graph, arg0, info[1]);
+  tf::Graph::run(results, graph, arg0, info[1]);
 
   info.GetReturnValue().Set(info[0]->IsArray() ? lib::ToArrayValue(results) : lib::ToValue(results[0]));
 }

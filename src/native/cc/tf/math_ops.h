@@ -8,7 +8,7 @@
 struct TF_Operation;
 struct TF_Graph;
 
-namespace tensorflow {
+namespace tf {
 
 class MathOps {
   public:
@@ -22,6 +22,6 @@ class MathOps {
     static TF_Operation* log(TF_Graph *graph, TF_Operation* v);
 };
 
-} // namespace tensorflow
+} // namespace tf
 
 #endif // CORE_MATH_OPS_H

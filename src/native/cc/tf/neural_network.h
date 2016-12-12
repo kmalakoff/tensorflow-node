@@ -7,7 +7,7 @@
 struct TF_Operation;
 struct TF_Graph;
 
-namespace tensorflow {
+namespace tf {
 
 class NeuralNetwork {
   public:
@@ -15,6 +15,6 @@ class NeuralNetwork {
     static TF_Operation* softmax_cross_entropy_with_logits(TF_Graph *graph, TF_Operation* y, TF_Operation* y_);
 };
 
-} // namespace tensorflow
+} // namespace tf
 
 #endif // CORE_NEURAL_NETWORK_H

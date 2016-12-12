@@ -1,10 +1,10 @@
 #include <map>
 #include "session.h"
-#include "../tensorflow/tensor.h"
+#include "../tf/tensor.h"
 #include "../addons/operation.h"
 #include "../../lib/conversions.h"
 
-namespace tensorflow {
+namespace tf {
 
 using namespace v8;
 using namespace Nan;
@@ -94,4 +94,4 @@ void Session::runNoOut(TF_SessionWithGraph* session, const std::vector<TF_Operat
   TF_DeleteStatus(s);
 }
 
-} // namespace tensorflow
+} // namespace tf

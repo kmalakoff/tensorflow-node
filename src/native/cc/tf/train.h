@@ -7,13 +7,13 @@
 struct TF_Operation;
 struct TF_Graph;
 
-namespace tensorflow {
+namespace tf {
 
 class Train {
   public:
     static TF_Operation* GradientDescentOptimizer(TF_Graph *graph, float learning_rate, TF_Operation* v);
 };
 
-} // namespace tensorflow
+} // namespace tf
 
 #endif // CORE_TRAIN_H

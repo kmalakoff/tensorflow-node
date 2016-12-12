@@ -10,7 +10,7 @@ struct TF_Operation;
 struct TF_SessionWithGraph;
 struct TF_Tensor;
 
-namespace tensorflow {
+namespace tf {
 
 class Session {
   public:
@@ -20,6 +20,6 @@ class Session {
     static void runNoOut(TF_SessionWithGraph* m_session, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs);
 };
 
-} // namespace tensorflow
+} // namespace tf
 
 #endif // CORE_SESSION_H

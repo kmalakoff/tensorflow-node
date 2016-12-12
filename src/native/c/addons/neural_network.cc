@@ -2,7 +2,7 @@
 #include "graph.h"
 #include "operation.h"
 #include "../../lib/conversions.h"
-#include "../tensorflow/neural_network.h"
+#include "../tf/neural_network.h"
 
 namespace addons {
 
@@ -23,7 +23,7 @@ NAN_METHOD(NeuralNetwork::softmax) {
   TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
   TF_Operation* arg0 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref(); 
 
-  TF_Operation* result = tensorflow::NeuralNetwork::softmax(graph, arg0);
+  TF_Operation* result = tf::NeuralNetwork::softmax(graph, arg0);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
@@ -32,7 +32,7 @@ NAN_METHOD(NeuralNetwork::softmax_cross_entropy_with_logits) {
   TF_Operation* arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref(); 
   TF_Operation* arg2 = ObjectWrap::Unwrap<addons::Operation>(info[2]->ToObject())->ref(); 
 
-  TF_Operation* result = tensorflow::NeuralNetwork::softmax_cross_entropy_with_logits(graph, arg1, arg2);
+  TF_Operation* result = tf::NeuralNetwork::softmax_cross_entropy_with_logits(graph, arg1, arg2);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 

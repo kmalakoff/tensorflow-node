@@ -4,7 +4,7 @@
 #include "../../lib/utils.h"
 #include "../../lib/conversions.h"
 
-namespace tensorflow {
+namespace tf {
 
 using namespace v8;
 using namespace Nan;
@@ -40,4 +40,4 @@ TF_Operation* NeuralNetwork::softmax_cross_entropy_with_logits(TF_Graph *graph, 
   return result;
 }
 
-} // namespace tensorflow
+} // namespace tf

@@ -10,7 +10,7 @@ struct TF_Operation;
 struct TF_Tensor;
 struct TF_Graph;
 
-namespace tensorflow {
+namespace tf {
 
 class Graph {
   public:
@@ -25,6 +25,6 @@ class Graph {
     static void run(std::vector<TF_Tensor*>& o_results, TF_Graph* graph, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs);
 };
 
-} // namespace tensorflow
+} // namespace tf
 
 #endif // CORE_GRAPH_H

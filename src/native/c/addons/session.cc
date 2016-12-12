@@ -1,8 +1,8 @@
 #include <iostream>
 #include "session.h"
-#include "../tensorflow/session.h"
+#include "../tf/session.h"
 #include "graph.h"
-#include "../tensorflow/graph.h"
+#include "../tf/graph.h"
 #include "../../lib/conversions.h"
 #include "operation.h"
 
@@ -12,11 +12,11 @@ using namespace v8;
 
 Session::Session(Graph* graph) {
   m_graph = graph; /* m_graph->Ref(); */ // TODO: safe references
-  m_ref = tensorflow::Session::create(graph->ref());
+  m_ref = tf::Session::create(graph->ref());
 }
 
 Session::~Session() {
-  tensorflow::Session::destroy(m_ref); m_ref = nullptr;
+  tf::Session::destroy(m_ref); m_ref = nullptr;
   /* m_graph->Unref(); */ m_graph = nullptr; // TODO: safe references
 }
 
@@ -63,7 +63,7 @@ NAN_METHOD(Session::run) {
   }
 
   std::vector<TF_Tensor*> results;
-  tensorflow::Session::run(results, obj->ref(), arg0, info[1]);
+  tf::Session::run(results, obj->ref(), arg0, info[1]);
 
   if (info[0]->IsArray()) info.GetReturnValue().Set(lib::ToArrayValue(results));
   else if (results.size()) info.GetReturnValue().Set(lib::ToValue(results[0]));
@@ -83,7 +83,7 @@ NAN_METHOD(Session::runNoOut) {
     arg0.push_back(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref());
   }
 
-  tensorflow::Session::runNoOut(obj->ref(), arg0, info[1]);
+  tf::Session::runNoOut(obj->ref(), arg0, info[1]);
 }
 
 } // namespace addons

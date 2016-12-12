@@ -5,7 +5,7 @@
 #include "../../lib/utils.h"
 #include "../../lib/conversions.h"
 
-namespace tensorflow {
+namespace tf {
 
 using namespace v8;
 using namespace Nan;
@@ -30,4 +30,4 @@ TF_Operation* Train::GradientDescentOptimizer(TF_Graph *graph, float learning_ra
   return nullptr;
 }
 
-} // namespace tensorflow
+} // namespace tf

@@ -1,12 +1,12 @@
 #include <iostream>
 #include "graph.h"
 #include "session.h"
-#include "../tensorflow/tensor.h"
+#include "../tf/tensor.h"
 #include "../addons/operation.h"
 #include "../../lib/utils.h"
 #include "../../lib/conversions.h"
 
-namespace tensorflow {
+namespace tf {
 
 using namespace v8;
 using namespace Nan;
@@ -83,8 +83,8 @@ TF_Operation* Graph::assign(TF_Graph *graph, TF_Operation* var, TF_Operation* va
 
 void Graph::run(std::vector<TF_Tensor*>& o_results, TF_Graph* graph, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs) {
   TF_SessionWithGraph* session = Session::create(graph);
-  tensorflow::Session::run(o_results, session, ops, input_pairs);
+  tf::Session::run(o_results, session, ops, input_pairs);
   Session::destroy(session);
 }
 
-} // namespace tensorflow
+} // namespace tf

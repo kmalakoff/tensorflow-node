@@ -2,6 +2,7 @@
 #define NAN_GRAPH_H
 
 #include "../../lib/nan.h"
+#include "tensorflow/cc/framework/scope.h"
 
 // forward declarations
 struct TF_Graph;
@@ -25,6 +26,7 @@ class Graph: public Nan::ObjectWrap {
     }
 
   private:
+    tensorflow::Scope m_scope;
     TF_Graph* m_ref;
     std::vector<TF_Operation*> m_variable_initializers;
 

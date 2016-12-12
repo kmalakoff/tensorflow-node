@@ -1,12 +1,12 @@
   #include "math_ops.h"
 #include "graph.h"
-#include "../tensorflow/tensor.h"
+#include "../tf/tensor.h"
 #include "../addons/operation.h"
 #include "../../lib/utils.h"
 #include "../../lib/conversions.h"
 #include "tensorflow/core/framework/node_def_util.h"
 
-namespace tensorflow {
+namespace tf {
 
 using namespace v8;
 using namespace Nan;
@@ -78,7 +78,7 @@ TF_Operation* MathOps::equal(TF_Graph *graph, TF_Operation* l, TF_Operation* r) 
 
   // TODO: use for shape checking
   // TF_Buffer* buffer = TF_NewBuffer();
-  // tensorflow::NodeDef node_def;
+  // tf::NodeDef node_def;
   // TF_OperationToNodeDef(r, buffer, s);
   // if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
   // node_def.ParseFromArray(buffer->data, buffer->length);
@@ -156,4 +156,4 @@ TF_Operation* MathOps::log(TF_Graph *graph, TF_Operation* v) {
   return result;
 }
 
-} // namespace tensorflow
+} // namespace tf
