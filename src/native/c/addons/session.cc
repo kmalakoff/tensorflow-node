@@ -51,9 +51,18 @@ NAN_METHOD(Session::run) {
   Session* obj = ObjectWrap::Unwrap<Session>(info.Holder());
 }
 
-void Session::run(TF_SessionWithGraph* session, tensorflow::Scope& scope, const Nan::FunctionCallbackInfo<v8::Value>& info) {
-  bool outputs = (info.Length() >= 2) ? info[1]->BoolValue() : true; // TODO: infer the output instead of having a separate function
+void Session::run(TF_SessionWithGraph* session, const Nan::FunctionCallbackInfo<v8::Value>& info) {
+  bool outputs = (info.Length() >= 2) ? info[1]->BooleanValue() : true; // TODO: infer the output instead of having a separate function
 
+  // operations
+  std::vector<TF_Operation*> ops;
+  if (info[0]->IsArray()) {
+    Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
+    for (unsigned int i = 0; i < jsArray->Length(); i++) ops.push_back(ObjectWrap::Unwrap<Operation>(jsArray->Get(i)->ToObject())->ref());
+  }
+  else ops.push_back(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref());
+
+  // inputs
   std::vector<TF_Port> input_ports;
   std::vector<TF_Tensor*> input_tensors;
   if (info[0]->IsArray()) {
@@ -66,13 +75,11 @@ void Session::run(TF_SessionWithGraph* session, tensorflow::Scope& scope, const 
       input_ports.push_back(TF_Port({in, 0}));
       input_tensors.push_back(va);
     }
-
-    // for (unsigned int i = 0; i < jsArray->Length(); i++) arg0.push_back(ObjectWrap::Unwrap<Operation>(jsArray->Get(i)->ToObject())->ref());
-    // else arg0.push_back(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref());
   }
 
-  std::vector<TF_Port> output_ports;
+  // outputs
   std::vector<TF_Tensor*> results;
+  std::vector<TF_Port> output_ports;
   for (std::size_t i = 0; i < ops.size(); i++) {
     if (!ops[i]) { std::cout << "Skipping run: operation is missing" << "\n"; return;}
     if (!outputs) continue;

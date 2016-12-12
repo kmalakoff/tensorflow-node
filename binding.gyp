@@ -5,22 +5,22 @@
       'src/native/lib/conversions.cc',
       'src/native/lib/utils.cc',
 
-      'src/native/cc/register_module.cc',
-      'src/native/cc/addons/constants.cc',
-      'src/native/cc/addons/graph.cc',
-      'src/native/cc/addons/math_ops.cc',
-      'src/native/cc/addons/neural_network.cc',
-      'src/native/cc/addons/operation.cc',
-      'src/native/cc/addons/session.cc',
-      'src/native/cc/addons/test.cc',
-      'src/native/cc/addons/train.cc',
-      'src/native/cc/addons/types.cc',
+      'src/native/c/register_module.cc',
+      'src/native/c/addons/constants.cc',
+      'src/native/c/addons/graph.cc',
+      'src/native/c/addons/math_ops.cc',
+      'src/native/c/addons/neural_network.cc',
+      'src/native/c/addons/operation.cc',
+      'src/native/c/addons/session.cc',
+      'src/native/c/addons/test.cc',
+      'src/native/c/addons/train.cc',
+      'src/native/c/addons/types.cc',
 
-      'src/native/cc/tf/graph.cc',
-      'src/native/cc/tf/math_ops.cc',
-      'src/native/cc/tf/neural_network.cc',
-      'src/native/cc/tf/session.cc',
-      'src/native/cc/tf/train.cc'
+      'src/native/c/tf/graph.cc',
+      'src/native/c/tf/math_ops.cc',
+      'src/native/c/tf/neural_network.cc',
+      'src/native/c/tf/session.cc',
+      'src/native/c/tf/train.cc'
     ],
 
     'libraries' : [

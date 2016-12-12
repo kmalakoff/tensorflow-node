@@ -88,9 +88,9 @@ NAN_METHOD(Graph::constant) {
 
 NAN_METHOD(Graph::run) {
   TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
-  TF_SessionWithGraph* session = Session::create(graph);
-  addons::Session::run(session, graph, info);
-  Session::destroy(session);
+  TF_SessionWithGraph* session = tf::Session::create(graph);
+  addons::Session::run(session, info);
+  tf::Session::destroy(session);
 }
 
 } // namespace addons
