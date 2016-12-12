@@ -1,7 +1,6 @@
 #include <iostream>
 #include "tf_ops.h"
 #include "tf_tensor.h"
-#include "addons/operation.h"
 #include "../lib/utils.h"
 #include "../lib/conversions.h"
 
@@ -251,7 +250,7 @@ TF_Operation* SoftmaxCrossEntropyWithLogits(TF_Graph *graph, TF_Operation* y, TF
 //////////////////////////////////////////////
 // Train
 //////////////////////////////////////////////
-static TF_Operation* GradientDescentOptimizer(TF_Graph *graph, float learning_rate, TF_Operation* v) {
+TF_Operation* GradientDescentOptimizer(TF_Graph *graph, float learning_rate, TF_Operation* v) {
   TF_Status* s = TF_NewStatus();
 
   TF_OperationDescription* desc = TF_NewOperation(graph, "ApplyGradientDescent", lib::uniqueId("ApplyGradientDescent").c_str());
