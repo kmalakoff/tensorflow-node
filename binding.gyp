@@ -2,25 +2,25 @@
   'targets': [{ 
     'target_name': 'tensorflow-node', 
     'sources': [
-      'cc/addons/index.cc',
-      'cc/addons/constants.cc',
-      'cc/addons/graph.cc',
-      'cc/addons/math_ops.cc',
-      'cc/addons/neural_network.cc',
-      'cc/addons/operation.cc',
-      'cc/addons/session.cc',
-      'cc/addons/test.cc',
-      'cc/addons/train.cc',
-      'cc/addons/types.cc',
+      'src/native/lib/conversions.cc',
+      'src/native/lib/utils.cc',
 
-      'cc/lib/conversions.cc',
-      'cc/lib/utils.cc',
+      'src/native/cc/register_module.cc',
+      'src/native/cc/addons/constants.cc',
+      'src/native/cc/addons/graph.cc',
+      'src/native/cc/addons/math_ops.cc',
+      'src/native/cc/addons/neural_network.cc',
+      'src/native/cc/addons/operation.cc',
+      'src/native/cc/addons/session.cc',
+      'src/native/cc/addons/test.cc',
+      'src/native/cc/addons/train.cc',
+      'src/native/cc/addons/types.cc',
 
-      'cc/tensorflow/graph.cc',
-      'cc/tensorflow/math_ops.cc',
-      'cc/tensorflow/neural_network.cc',
-      'cc/tensorflow/session.cc',
-      'cc/tensorflow/train.cc'
+      'src/native/cc/tensorflow/graph.cc',
+      'src/native/cc/tensorflow/math_ops.cc',
+      'src/native/cc/tensorflow/neural_network.cc',
+      'src/native/cc/tensorflow/session.cc',
+      'src/native/cc/tensorflow/train.cc'
     ],
 
     'libraries' : [
