@@ -88,7 +88,9 @@ NAN_METHOD(Graph::variable_initializers) {
 
 NAN_METHOD(Graph::constant) {
   auto& scope = ObjectWrap::Unwrap<Graph>(info.Holder())->m_scope;
-  auto result = Const<float>(scope, {{0, 1, 2}, {3, 4, 5}});
+  tensorflow::Tensor* arg0 = lib::ToTensor2(info[0]);
+  auto result = Const<float>(scope, *arg0);
+  delete arg0;
 
   // TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
   // TF_Tensor* arg0 = lib::ToTensor(info[0]); 

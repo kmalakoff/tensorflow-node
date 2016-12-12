@@ -25,41 +25,65 @@ int jsCollectValues(float* o_values, Handle<Array> jsArray, int index) {
   return index;
 }
 
-TF_Tensor* ToTensor(const Local<Value>& info) {
-  if (!(info->IsNumber() || info->IsArray())) { Nan::ThrowError(Nan::TypeError("Expecting Number or Array of Numbers")); return nullptr; }
+struct TensorData {
+  TF_DataType dtype;
+  std::vector<int64_t> dims;
+  int byte_count;
+};
+
+bool ToTensorData(TensorData& o_data, const Local<Value>& info) {
+  if (!(info->IsNumber() || info->IsArray())) { Nan::ThrowError(Nan::TypeError("Expecting Number or Array of Numbers")); return false; }
 
   if (info->IsNumber()) {
-    const int byte_count = 1 * sizeof(float);
-    float* values = reinterpret_cast<float*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, byte_count));
-    values[0] = info->NumberValue();
-    return TF_NewTensor(TF_FLOAT, nullptr, 0, values, byte_count, &Deallocator, nullptr);
+    o_data.dtype = TF_FLOAT; // TODO: implement flexible types
+    o_data.byte_count = 1 * sizeof(float);
+    return true;
   }
   else if (info->IsArray()) {
     Handle<Array> jsArray = Handle<Array>::Cast(info);
-    std::vector<int64_t> dims;
-    jsCollectDimensions(dims, jsArray);
+    
+    jsCollectDimensions(o_data.dims, jsArray);
 
-    const int byte_count = (int) std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<int64_t>()) * sizeof(float);
-    float* values = reinterpret_cast<float*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, byte_count));
-    jsCollectValues(values, jsArray, 0);
-
-    // std::cout << " dim0: " << dims[0] << " dim1: " << dims[1] << "\n";
-    // for (int i = 0; i < dims[0] * dims[1]; i++) std::cout << values[i];
-    // std::cout << "\n";
-
-    return TF_NewTensor(TF_FLOAT, &dims[0], (int) dims.size(), values, byte_count, &Deallocator, nullptr);
+    o_data.dtype = TF_FLOAT; // TODO: implement flexible types
+    o_data.byte_count = (int) std::accumulate(o_data.dims.begin(), o_data.dims.end(), 1, std::multiplies<int64_t>()) * sizeof(float);
+    return true;
   }
 
-  return nullptr;
+  return false;
 }
 
+TF_Tensor* ToTensor(const Local<Value>& info) {
+  TensorData data;
+  if (!ToTensorData(data, info)) return nullptr;
+
+  float* values = reinterpret_cast<float*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, data.byte_count));
+  if (info->IsNumber())
+    values[0] = info->NumberValue();
+  else
+    jsCollectValues(values, Handle<Array>::Cast(info), 0);
+
+  if (data.dims.size() == 0) return TF_NewTensor(data.dtype, nullptr, 0, values, data.byte_count, &Deallocator, nullptr);
+  return TF_NewTensor(data.dtype, &data.dims[0], (int) data.dims.size(), values, data.byte_count, &Deallocator, nullptr);
+}
+
+tensorflow::Tensor* ToTensor2(const Local<Value>& info) {
+  TensorData data;
+  if (!ToTensorData(data, info)) return nullptr;
+
+  // reduce memory copying
+  TensorShape shape(data.dims);
+  tensorflow::Tensor* result = new tensorflow::Tensor((DataType) data.dtype, shape);
+  jsCollectValues((float*) result->tensor_data().data(), Handle<Array>::Cast(info), 0);
+  return result;
+}
+ 
 TF_Tensor* ToTensor(int value) {
   const int byte_count = 1 * sizeof(int);
   int* values = reinterpret_cast<int*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, byte_count));
   values[0] = value;
   return TF_NewTensor(TF_INT32, nullptr, 0, values, byte_count, &Deallocator, nullptr);
 }
-
+ 
 TF_Tensor* ToTensor(float value) {
   const float byte_count = 1 * sizeof(float);
   float* values = reinterpret_cast<float*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, byte_count));

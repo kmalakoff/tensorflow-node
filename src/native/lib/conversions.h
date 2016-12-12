@@ -16,6 +16,7 @@ void jsCollectDimensions(std::vector<int64_t>& o_dims, Handle<Array> jsArray);
 int jsCollectValues(float* o_values, Handle<Array> jsArray, int index);
 
 TF_Tensor* ToTensor(const Local<Value>& info);
+tensorflow::Tensor* ToTensor2(const Local<Value>& info);
 TF_Tensor* ToTensor(int value);
 TF_Tensor* ToTensor(float value);
 void ToShape(std::vector<int64_t>& o_dims, TF_Tensor* value);
