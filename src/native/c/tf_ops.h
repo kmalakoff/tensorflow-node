@@ -1,12 +1,12 @@
-#ifndef TF_OPS_H
-#define TF_OPS_H
+#ifndef TF_C_OPS_H
+#define TF_C_OPS_H
 
 #include <vector>
 #include "tensorflow/c/c_api.h" // TF_DataType
 
 // forward declarations
-class TF_Graph;
-class TF_Operation;
+struct TF_Graph;
+struct TF_Operation;
 
 namespace tf {
 namespace ops {
@@ -44,4 +44,4 @@ static TF_Operation* GradientDescentOptimizer(TF_Graph *graph, float learning_ra
 } // namespace ops
 } // namespace tf
 
-#endif // TF_OPS_H
+#endif // TF_C_OPS_H

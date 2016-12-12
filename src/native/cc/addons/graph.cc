@@ -11,6 +11,7 @@
 #include "tensorflow/cc/ops/const_op.h"
 #include "tensorflow/core/public/session.h"
 #include "tensorflow/core/graph/default_device.h"
+#include "tensorflow/core/framework/tensor.h"
 
 namespace addons {
 
@@ -20,7 +21,7 @@ using namespace tf::ops;
 using namespace v8;
 using namespace addons;
 
-Graph::Graph() : m_scope(tensorflow::Scope::NewRootScope()) {}
+Graph::Graph() : m_scope(Scope::NewRootScope()) {}
 Graph::~Graph() {}
 
 NAN_MODULE_INIT(Graph::Init) {
@@ -63,10 +64,10 @@ NAN_METHOD(Graph::placeholder) {
 
 NAN_METHOD(Graph::variable) {
   auto& scope = ObjectWrap::Unwrap<Graph>(info.Holder())->m_scope;
-  tensorflow::Tensor* arg0 = lib::ToTensor2(info[0]);
+  Tensor* arg0 = lib::ToTensor2(info[0]);
   std::vector<int64_t> arg1; lib::ToShape(arg1, *arg0);
 
-  auto result = Variable(scope, (DataType) arg0->dtype, arg1);
+  auto result = Variable(scope, (DataType) arg0->dtype(), arg1);
 
   // https://www.tensorflow.org/versions/master/how_tos/variables/index.html
   auto value = Const<float>(scope, *arg0); delete arg0;
@@ -87,7 +88,7 @@ NAN_METHOD(Graph::variable_initializers) {
 
 NAN_METHOD(Graph::constant) {
   auto& scope = ObjectWrap::Unwrap<Graph>(info.Holder())->m_scope;
-  tensorflow::Tensor* arg0 = lib::ToTensor2(info[0]);
+  Tensor* arg0 = lib::ToTensor2(info[0]);
 
   auto result = Const<float>(scope, *arg0); delete arg0;
   info.GetReturnValue().Set((new Operation(result))->ToValue());
