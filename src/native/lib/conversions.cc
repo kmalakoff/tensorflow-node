@@ -90,8 +90,6 @@ TF_Tensor* ToTensor(int value) {
 }
 
 tensorflow::Tensor* ToTensor2(int value) {
-  const int byte_count = 1 * sizeof(int);
-  
   TensorShape shape({});
   tensorflow::Tensor* result = new tensorflow::Tensor((DataType) DT_INT32, shape);
   *((int32_t*) result->tensor_data().data()) = value;
@@ -106,8 +104,6 @@ TF_Tensor* ToTensor(float value) {
 }
 
 tensorflow::Tensor* ToTensor2(float value) {
-  const int byte_count = 1 * sizeof(int);
-  
   TensorShape shape({});
   tensorflow::Tensor* result = new tensorflow::Tensor((DataType) DT_FLOAT, shape);
   *((float*) result->tensor_data().data()) = value;
