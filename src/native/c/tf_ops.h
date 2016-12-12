@@ -27,7 +27,7 @@ TF_Operation* MatMul(TF_Graph *graph, TF_Operation* l, TF_Operation* r);
 TF_Operation* Equal(TF_Graph *graph, TF_Operation* l, TF_Operation* r);
 TF_Operation* ArgMax(TF_Graph *graph, TF_Operation* v, int dim);
 TF_Operation* Cast(TF_Graph *graph, TF_Operation* v, TF_DataType dtype);
-TF_Operation* Mean(TF_Graph *graph, TF_Operation* v, TF_Operation* reduction_indices);
+TF_Operation* ReduceMean(TF_Graph *graph, TF_Operation* v, TF_Operation* reduction_indices);
 TF_Operation* Log(TF_Graph *graph, TF_Operation* v);
 
 //////////////////////////////////////////////

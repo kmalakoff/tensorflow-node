@@ -181,7 +181,7 @@ TF_Operation* Cast(TF_Graph *graph, TF_Operation* v, TF_DataType dtype) {
   return result;
 }
 
-TF_Operation* Mean(TF_Graph *graph, TF_Operation* v, TF_Operation* reduction_indices) {
+TF_Operation* ReduceMean(TF_Graph *graph, TF_Operation* v, TF_Operation* reduction_indices) {
   TF_Status* s = TF_NewStatus();
 
   TF_OperationDescription* desc = TF_NewOperation(graph, "Mean", lib::uniqueId("ReduceMean").c_str());

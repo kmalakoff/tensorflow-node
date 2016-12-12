@@ -10,6 +10,7 @@
 
 namespace addons {
 
+using namespace tf::ops;
 using namespace v8;
 using namespace tensorflow;
 using namespace ops;
@@ -65,8 +66,8 @@ NAN_METHOD(MathOps::reduce_mean) {
   auto& arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->m_output;
   Tensor* arg2 = lib::ToTensor2(0);
   
-  auto reduction_indices = Const<int>(scope, *arg2); delete arg2;
-  auto result = Mean(scope.WithOpName("ReduceMean"), arg1, reduction_indices);
+  auto reduction_indices = Const<int>(scope, *arg2); // delete arg2;
+  auto result = ReduceMean(scope, arg1, reduction_indices);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 

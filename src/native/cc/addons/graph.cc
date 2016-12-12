@@ -70,7 +70,7 @@ NAN_METHOD(Graph::variable) {
   auto result = Variable(scope, (DataType) arg0->dtype(), arg1);
 
   // https://www.tensorflow.org/versions/master/how_tos/variables/index.html
-  auto value = Const<float>(scope, *arg0); delete arg0;
+  auto value = Const<float>(scope, *arg0); // delete arg0;
   auto assign = Assign(scope, result, value);
   ObjectWrap::Unwrap<Graph>(info.Holder())->m_variable_initializers.push_back(assign);
 
@@ -90,7 +90,7 @@ NAN_METHOD(Graph::constant) {
   auto& scope = ObjectWrap::Unwrap<Graph>(info.Holder())->m_scope;
   Tensor* arg0 = lib::ToTensor2(info[0]);
 
-  auto result = Const<float>(scope, *arg0); delete arg0;
+  auto result = Const<float>(scope, *arg0); // delete arg0;
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
@@ -99,7 +99,14 @@ NAN_METHOD(Graph::run) {
 
   SessionOptions options;
   tensorflow::Session* session = NewSession(options);
-  addons::Session::run(session, scope, info);
+
+  GraphDef def;
+  TF_CHECK_OK(scope.ToGraphDef(&def));
+  graph::SetDefaultDevice("/cpu:0", &def);
+  TF_CHECK_OK(session->Create(def));
+
+  addons::Session::run(session, info);
+
   TF_CHECK_OK(session->Close());
 }
 

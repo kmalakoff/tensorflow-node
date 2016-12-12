@@ -21,7 +21,13 @@ using namespace v8;
 Session::Session(Graph* graph) : m_scope(graph->m_scope) {
   SessionOptions options;
   m_session = NewSession(options);
+
+  GraphDef def;
+  TF_CHECK_OK(graph->m_scope.ToGraphDef(&def));
+  graph::SetDefaultDevice("/cpu:0", &def);
+  TF_CHECK_OK(m_session->Create(def));
 }
+  
 Session::~Session() {
   m_session->Close(); m_session = nullptr;
   // /* m_graph->Unref(); */ m_scope = nullptr; // TODO: safe references
@@ -56,18 +62,11 @@ NAN_NEW(Session::New) {
 
 NAN_METHOD(Session::run) {
   tensorflow::Session* session = ObjectWrap::Unwrap<Session>(info.Holder())->m_session;
-  tensorflow::Scope& scope = ObjectWrap::Unwrap<Session>(info.Holder())->m_scope;
-
-  Session::run(session, scope, info);
+  Session::run(session, info);
 }
 
-void Session::run(tensorflow::Session* session, tensorflow::Scope& scope, const Nan::FunctionCallbackInfo<v8::Value>& info) {
+void Session::run(tensorflow::Session* session, const Nan::FunctionCallbackInfo<v8::Value>& info) {
   bool outputs = (info.Length() >= 2) ? info[1]->NumberValue() : true; // TODO: infer the output instead of having a separate function
-
-  GraphDef def;
-  TF_CHECK_OK(scope.ToGraphDef(&def));
-  graph::SetDefaultDevice("/cpu:0", &def);
-  TF_CHECK_OK(session->Create(def));
 
   // operations
   std::vector<string> ops;
@@ -87,8 +86,7 @@ void Session::run(tensorflow::Session* session, tensorflow::Scope& scope, const 
       Output out = ObjectWrap::Unwrap<Operation>(pair->Get(0)->ToObject())->m_output;
       string name = lib::nodeName(out.node());
       tensorflow::Tensor* va = lib::ToTensor2(pair->Get(1));
-      arg1.push_back(std::pair<string, Tensor>(name, *va));
-      delete va; // TODO:: memory
+      arg1.push_back(std::pair<string, Tensor>(name, *va)); // delete va; // TODO:: memory
     }
   }
 

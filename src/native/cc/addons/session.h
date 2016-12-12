@@ -24,7 +24,7 @@ class Session: public Nan::ObjectWrap {
       return result;
     }
 
-    static void run(tensorflow::Session* session, tensorflow::Scope& scope, const Nan::FunctionCallbackInfo<v8::Value>& info);
+    static void run(tensorflow::Session* session, const Nan::FunctionCallbackInfo<v8::Value>& info);
 
   private:
     tensorflow::Session* m_session;
