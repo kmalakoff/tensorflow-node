@@ -1,7 +1,6 @@
 #include "train.h"
 #include "graph.h"
 #include "operation.h"
-#include "../tf/train.h"
 #include "../../lib/conversions.h"
 
 namespace addons {

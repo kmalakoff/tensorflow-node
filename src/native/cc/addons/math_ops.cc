@@ -3,16 +3,16 @@
 #include "graph.h"
 #include "operation.h"
 #include "../../lib/conversions.h"
-#include "../tf/math_ops.h"
 
-#include "tensorflow/core/graph/node_builder.h"
+#include "../tf_ops.h"
 #include "tensorflow/cc/ops/math_ops.h"
 #include "tensorflow/cc/ops/const_op.h"
 
 namespace addons {
 
 using namespace v8;
-using namespace tensorflow::ops;
+using namespace tensorflow;
+using namespace ops;
 
 NAN_MODULE_INIT(MathOps::Init) {
   Nan::Persistent<Object> inner;
@@ -63,10 +63,9 @@ NAN_METHOD(MathOps::matmul_add) {
 NAN_METHOD(MathOps::reduce_mean) {
   auto& scope = ObjectWrap::Unwrap<Graph>(info[0]->ToObject())->m_scope;
   auto& arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->m_output;
-
-  tensorflow::Tensor* arg2 = lib::ToTensor2(0);
-  auto reduction_indices = Const<int>(scope, *arg2); delete arg2;
+  Tensor* arg2 = lib::ToTensor2(0);
   
+  auto reduction_indices = Const<int>(scope, *arg2); delete arg2;
   auto result = Mean(scope.WithOpName("ReduceMean"), arg1, reduction_indices);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
@@ -92,17 +91,9 @@ NAN_METHOD(MathOps::argmax) {
 NAN_METHOD(MathOps::cast) {
   auto& scope = ObjectWrap::Unwrap<Graph>(info[0]->ToObject())->m_scope;
   auto& arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->m_output;
-  auto arg2 = (tensorflow::DataType) info[2]->NumberValue();
+  auto arg2 = info[2]->NumberValue();
 
-  // TODO: wrap in a Cast function
-  const auto op_name = scope.GetUniqueNameForOp("Cast");
-  auto builder = tensorflow::NodeBuilder(op_name, "Cast")
-    .Input(arg1.node())
-    .Attr("DstT", arg2);
-  scope.UpdateBuilder(&builder);
-  tensorflow::Node* ret;
-  scope.UpdateStatus(builder.Finalize(scope.graph(), &ret));
-  auto result = Output(ret, 0);
+  auto result = tf::ops::Cast(scope, arg1, (DataType) arg2);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 

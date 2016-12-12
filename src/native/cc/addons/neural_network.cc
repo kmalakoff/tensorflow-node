@@ -2,7 +2,6 @@
 #include "graph.h"
 #include "operation.h"
 #include "../../lib/conversions.h"
-#include "../tf/neural_network.h"
 
 #include "tensorflow/core/graph/node_builder.h"
 #include "tensorflow/cc/framework/grad_op_registry.h"

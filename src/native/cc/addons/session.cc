@@ -1,8 +1,6 @@
 #include <iostream>
 #include "session.h"
-#include "../tf/session.h"
 #include "graph.h"
-#include "../tf/graph.h"
 #include "../../lib/conversions.h"
 #include "../../lib/utils.h"
 #include "operation.h"

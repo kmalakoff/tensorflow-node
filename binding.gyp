@@ -16,11 +16,7 @@
       'src/native/cc/addons/train.cc',
       'src/native/cc/addons/types.cc',
 
-      'src/native/cc/tf/graph.cc',
-      'src/native/cc/tf/math_ops.cc',
-      'src/native/cc/tf/neural_network.cc',
-      'src/native/cc/tf/session.cc',
-      'src/native/cc/tf/train.cc'
+      'src/native/cc/tf_ops.cc'
     ],
 
     'libraries' : [

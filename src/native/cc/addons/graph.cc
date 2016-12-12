@@ -3,13 +3,10 @@
 #include "graph.h"
 #include "operation.h"
 #include "session.h"
-#include "../tf/graph.h"
-#include "../tf/session.h"
-#include "../tf/tensor.h"
 #include "../../lib/conversions.h"
 #include "../../lib/utils.h"
 
-#include "tensorflow/core/graph/node_builder.h"
+#include "../tf_ops.h"
 #include "tensorflow/cc/ops/math_ops.h"
 #include "tensorflow/cc/ops/const_op.h"
 #include "tensorflow/core/public/session.h"
@@ -19,6 +16,7 @@ namespace addons {
 
 using namespace tensorflow;
 using namespace tensorflow::ops;
+using namespace tf::ops;
 using namespace v8;
 using namespace addons;
 
@@ -59,16 +57,7 @@ NAN_METHOD(Graph::placeholder) {
   TF_DataType arg0 = (info.Length() >= 1) ? (TF_DataType) info[0]->NumberValue() : TF_FLOAT;
   std::vector<int64_t> arg1; if (info.Length() >= 2) lib::ToShape(arg1, info[1]);
 
-  // TODO: wrap in a Placeholder function
-  tensorflow::TensorShape shape(arg1);
-  const auto op_name = scope.GetUniqueNameForOp("Placeholder");
-  auto builder = tensorflow::NodeBuilder(op_name, "Placeholder")
-    .Attr("dtype", (DataType) arg0)
-    .Attr("shape", shape);
-  scope.UpdateBuilder(&builder);
-  tensorflow::Node* ret;
-  scope.UpdateStatus(builder.Finalize(scope.graph(), &ret));
-  auto result = Output(ret, 0);
+  auto result = Placeholder(scope, (DataType) arg0, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
@@ -77,30 +66,12 @@ NAN_METHOD(Graph::variable) {
   tensorflow::Tensor* arg0 = lib::ToTensor2(info[0]);
   std::vector<int64_t> arg1; lib::ToShape(arg1, *arg0);
 
-  // TODO: wrap in a Variable function
-  tensorflow::TensorShape shape(arg1);
-  const auto op_name = scope.GetUniqueNameForOp("Variable");
-  auto builder = tensorflow::NodeBuilder(op_name, "Variable")
-    .Attr("dtype", DT_FLOAT)
-    .Attr("shape", shape);
-  scope.UpdateBuilder(&builder);
-  tensorflow::Node* ret;
-  scope.UpdateStatus(builder.Finalize(scope.graph(), &ret));
-  auto result = Output(ret, 0);
+  auto result = Variable(scope, DT_FLOAT, arg1);
 
   // https://www.tensorflow.org/versions/master/how_tos/variables/index.html
-  auto& variable_initializers = ObjectWrap::Unwrap<Graph>(info.Holder())->m_variable_initializers;
   auto value = Const<float>(scope, *arg0); delete arg0;
-  const auto op_name1 = scope.GetUniqueNameForOp("Assign");
-  auto builder1 = tensorflow::NodeBuilder(op_name1, "Assign")
-    .Input(result.node())
-    .Input(value.node())
-    .Attr("use_locking", true);
-  scope.UpdateBuilder(&builder1);
-  tensorflow::Node* ret1;
-  scope.UpdateStatus(builder.Finalize(scope.graph(), &ret1));
-  auto assign = Output(ret1, 0);
-  variable_initializers.push_back(assign);
+  auto assign = Assign(scope, result, value);
+  ObjectWrap::Unwrap<Graph>(info.Holder())->m_variable_initializers.push_back(assign);
 
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
