@@ -31,7 +31,6 @@ NAN_MODULE_INIT(Session::Init) {
 
   // Prototype
   Nan::SetPrototypeMethod(ctor, "run", run);
-  Nan::SetPrototypeMethod(ctor, "runNoOut", runNoOut);
 
   target->Set(Nan::New("Session").ToLocalChecked(), ctor->GetFunction());
 };
@@ -50,21 +49,47 @@ NAN_NEW(Session::New) {
 
 NAN_METHOD(Session::run) {
   Session* obj = ObjectWrap::Unwrap<Session>(info.Holder());
+}
+
+void Session::run(TF_SessionWithGraph* session, tensorflow::Scope& scope, const Nan::FunctionCallbackInfo<v8::Value>& info) {
   bool outputs = (info.Length() >= 2) ? info[1]->BoolValue() : true; // TODO: infer the output instead of having a separate function
 
-  // operations
-  std::vector<TF_Operation*> arg0;
+  std::vector<TF_Port> input_ports;
+  std::vector<TF_Tensor*> input_tensors;
   if (info[0]->IsArray()) {
     Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
-    for (unsigned int i = 0; i < jsArray->Length(); i++) arg0.push_back(ObjectWrap::Unwrap<Operation>(jsArray->Get(i)->ToObject())->ref());
+    for (unsigned int i = 0; i < jsArray->Length(); i++) {
+      Handle<Array> pair = Handle<Array>::Cast(jsArray->Get(i));
+
+      TF_Operation* in = ObjectWrap::Unwrap<addons::Operation>(pair->Get(0)->ToObject())->ref();
+      TF_Tensor* va = lib::ToTensor(pair->Get(1));
+      input_ports.push_back(TF_Port({in, 0}));
+      input_tensors.push_back(va);
+    }
+
+    // for (unsigned int i = 0; i < jsArray->Length(); i++) arg0.push_back(ObjectWrap::Unwrap<Operation>(jsArray->Get(i)->ToObject())->ref());
+    // else arg0.push_back(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref());
   }
-  else arg0.push_back(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref());
 
-  // inputs
-  auto arg1 = info[1];
-
+  std::vector<TF_Port> output_ports;
   std::vector<TF_Tensor*> results;
-  tf::Session::run(results, obj->ref(), arg0, arg1, outputs);
+  for (std::size_t i = 0; i < ops.size(); i++) {
+    if (!ops[i]) { std::cout << "Skipping run: operation is missing" << "\n"; return;}
+    if (!outputs) continue;
+    output_ports.push_back(TF_Port({ops[i], 0}));
+    results.push_back(nullptr);
+  }
+
+  TF_Status* s = TF_NewStatus();
+  TF_SessionRun(
+    session, nullptr,
+    &input_ports[0], &input_tensors[0], (int) input_ports.size(),
+    &output_ports[0], &results[0], (int) output_ports.size(),
+    nullptr, 0,
+    nullptr, s
+  );
+  if (TF_OK != TF_GetCode(s)) { std::cout << TF_Message(s) << "\n"; }
+  TF_DeleteStatus(s);
 
   if (outputs) {
     if (info[0]->IsArray()) info.GetReturnValue().Set(lib::ToArrayValue(results));

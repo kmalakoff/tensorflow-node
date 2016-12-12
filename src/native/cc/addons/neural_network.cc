@@ -4,8 +4,14 @@
 #include "../../lib/conversions.h"
 #include "../tf/neural_network.h"
 
+#include "tensorflow/core/graph/node_builder.h"
+#include "tensorflow/cc/framework/grad_op_registry.h"
+#include "tensorflow/cc/ops/standard_ops.h"
+
 namespace addons {
 
+using namespace tensorflow;
+using namespace tensorflow::ops;
 using namespace v8;
 
 NAN_MODULE_INIT(NeuralNetwork::Init) {
@@ -20,20 +26,20 @@ NAN_MODULE_INIT(NeuralNetwork::Init) {
 };
 
 NAN_METHOD(NeuralNetwork::softmax) {
-  TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
-  TF_Operation* arg0 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref(); 
+  auto& scope = ObjectWrap::Unwrap<Graph>(info[0]->ToObject())->m_scope;
+  auto& arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->m_output;
 
-  TF_Operation* result = tf::NeuralNetwork::softmax(graph, arg0);
+  auto result = Softmax(scope, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
 NAN_METHOD(NeuralNetwork::softmax_cross_entropy_with_logits) {
-  TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
-  TF_Operation* arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref(); 
-  TF_Operation* arg2 = ObjectWrap::Unwrap<addons::Operation>(info[2]->ToObject())->ref(); 
+  auto& scope = ObjectWrap::Unwrap<Graph>(info[0]->ToObject())->m_scope;
+  auto& arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->m_output;
+  auto& arg2 = ObjectWrap::Unwrap<addons::Operation>(info[2]->ToObject())->m_output;
 
-  TF_Operation* result = tf::NeuralNetwork::softmax_cross_entropy_with_logits(graph, arg1, arg2);
-  info.GetReturnValue().Set((new Operation(result))->ToValue());
+  auto result = SoftmaxCrossEntropyWithLogits(scope, arg1, arg2);
+  info.GetReturnValue().Set((new Operation(result.loss))->ToValue()); // TODO: is only loss correct?
 }
 
 } // namespace addons

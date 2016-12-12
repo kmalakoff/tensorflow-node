@@ -81,10 +81,4 @@ TF_Operation* Graph::assign(TF_Graph *graph, TF_Operation* var, TF_Operation* va
   return result;
 }
 
-void Graph::run(std::vector<TF_Tensor*>& o_results, TF_Graph* graph, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs) {
-  TF_SessionWithGraph* session = Session::create(graph);
-  tf::Session::run(o_results, session, ops, input_pairs);
-  Session::destroy(session);
-}
-
 } // namespace tf

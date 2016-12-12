@@ -26,6 +26,8 @@ class Session: public Nan::ObjectWrap {
       return result;
     }
 
+    static void run(TF_SessionWithGraph* session, tensorflow::Scope& scope, const Nan::FunctionCallbackInfo<v8::Value>& info);
+
   private:
     TF_SessionWithGraph* m_ref;
     Graph* m_graph; // TODO: safe references

@@ -22,8 +22,8 @@ using namespace tensorflow::ops;
 using namespace v8;
 using namespace addons;
 
-Graph::Graph() : m_scope(tensorflow::Scope::NewRootScope()) { m_ref = tf::Graph::create(); }
-Graph::~Graph() { tf::Graph::destroy(m_ref); m_ref = nullptr; }
+Graph::Graph() : m_scope(tensorflow::Scope::NewRootScope()) {}
+Graph::~Graph() {}
 
 NAN_MODULE_INIT(Graph::Init) {
   Nan::HandleScope scope;
@@ -57,14 +57,13 @@ NAN_NEW(Graph::New) {
 NAN_METHOD(Graph::placeholder) {
   auto& scope = ObjectWrap::Unwrap<Graph>(info.Holder())->m_scope;
   TF_DataType arg0 = (info.Length() >= 1) ? (TF_DataType) info[0]->NumberValue() : TF_FLOAT;
-  std::vector<int64_t> arg1;
-  if (info.Length() >= 2) lib::ToShape(arg1, info[1]);
+  std::vector<int64_t> arg1; if (info.Length() >= 2) lib::ToShape(arg1, info[1]);
 
-  // TODO: wrap in a Cast function
-  const auto op_name = scope.GetUniqueNameForOp("Placeholder");
+  // TODO: wrap in a Placeholder function
   tensorflow::TensorShape shape(arg1);
+  const auto op_name = scope.GetUniqueNameForOp("Placeholder");
   auto builder = tensorflow::NodeBuilder(op_name, "Placeholder")
-    .Attr("dtype", DT_FLOAT)
+    .Attr("dtype", (DataType) arg0)
     .Attr("shape", shape);
   scope.UpdateBuilder(&builder);
   tensorflow::Node* ret;
@@ -74,21 +73,40 @@ NAN_METHOD(Graph::placeholder) {
 }
 
 NAN_METHOD(Graph::variable) {
-  TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
-  TF_Tensor* arg0 = lib::ToTensor(info[0]); 
-  std::vector<int64_t> arg1; lib::ToShape(arg1, arg0);
+  auto& scope = ObjectWrap::Unwrap<Graph>(info.Holder())->m_scope;
+  tensorflow::Tensor* arg0 = lib::ToTensor2(info[0]);
+  std::vector<int64_t> arg1; lib::ToShape(arg1, *arg0);
 
-  TF_Operation* result = tf::Graph::variable(graph, arg0->dtype, arg1);
+  // TODO: wrap in a Variable function
+  tensorflow::TensorShape shape(arg1);
+  const auto op_name = scope.GetUniqueNameForOp("Variable");
+  auto builder = tensorflow::NodeBuilder(op_name, "Variable")
+    .Attr("dtype", DT_FLOAT)
+    .Attr("shape", shape);
+  scope.UpdateBuilder(&builder);
+  tensorflow::Node* ret;
+  scope.UpdateStatus(builder.Finalize(scope.graph(), &ret));
+  auto result = Output(ret, 0);
 
   // https://www.tensorflow.org/versions/master/how_tos/variables/index.html
-  std::vector<TF_Operation*>& variable_initializers = ObjectWrap::Unwrap<Graph>(info.Holder())->m_variable_initializers;
-  variable_initializers.push_back(tf::Graph::variableInitializer(graph, result, arg0));
+  auto& variable_initializers = ObjectWrap::Unwrap<Graph>(info.Holder())->m_variable_initializers;
+  auto value = Const<float>(scope, *arg0); delete arg0;
+  const auto op_name1 = scope.GetUniqueNameForOp("Assign");
+  auto builder1 = tensorflow::NodeBuilder(op_name1, "Assign")
+    .Input(result.node())
+    .Input(value.node())
+    .Attr("use_locking", true);
+  scope.UpdateBuilder(&builder1);
+  tensorflow::Node* ret1;
+  scope.UpdateStatus(builder.Finalize(scope.graph(), &ret1));
+  auto assign = Output(ret1, 0);
+  variable_initializers.push_back(assign);
 
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
 NAN_METHOD(Graph::variable_initializers) {
-  std::vector<TF_Operation*>& variable_initializers = ObjectWrap::Unwrap<Graph>(info.Holder())->m_variable_initializers;
+  auto& variable_initializers = ObjectWrap::Unwrap<Graph>(info.Holder())->m_variable_initializers;
   Local<Array> results = Nan::New<v8::Array>((int) variable_initializers.size());
   for (size_t i = 0; i < variable_initializers.size(); i++)
     results->Set((int) i, (new Operation(variable_initializers[i]))->ToValue());
@@ -109,7 +127,7 @@ NAN_METHOD(Graph::run) {
 
   SessionOptions options;
   tensorflow::Session* session = NewSession(options);
-  Session::run(session, scope, info);
+  addons::Session::run(session, scope, info);
   TF_CHECK_OK(session->Close());
 }
 

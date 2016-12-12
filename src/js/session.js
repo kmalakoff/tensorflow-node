@@ -5,6 +5,5 @@ module.exports = class Session {
     this._ = new _tf.Session(graph._);
   }
 
-  run(ops, input_pairs) { return this._.run(ops, input_pairs); }
-  runNoOut(ops, input_pairs) { return this._.runNoOut(ops, input_pairs); }
+  run(...args) { return this._.run.apply(this._, args); }
 };

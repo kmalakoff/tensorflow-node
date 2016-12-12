@@ -22,6 +22,7 @@ tensorflow::Tensor* ToTensor2(int value);
 TF_Tensor* ToTensor(float value);
 tensorflow::Tensor* ToTensor2(float value);
 void ToShape(std::vector<int64_t>& o_dims, TF_Tensor* value);
+void ToShape(std::vector<int64_t>& o_dims, const tensorflow::Tensor& value);
 void ToShape(std::vector<int64_t>& o_dims, const Local<Value>& info);
 v8::Local<v8::Value> ToValue(TF_Tensor* value);
 v8::Local<v8::Value> ToArrayValue(const std::vector<TF_Tensor*>& value);

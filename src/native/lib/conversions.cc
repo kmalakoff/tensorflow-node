@@ -119,6 +119,11 @@ void ToShape(std::vector<int64_t>& o_dims, TF_Tensor* value) {
   for (size_t i = 0; i < dim_count; i++) o_dims.push_back(TF_Dim(value, (int) i));
 }
 
+void ToShape(std::vector<int64_t>& o_dims, const tensorflow::Tensor& value) {
+  size_t dim_count = value.dims();
+  for (size_t i = 0; i < dim_count; i++) o_dims.push_back(value.dim_size((int) i));
+}
+
 void ToShape(std::vector<int64_t>& o_dims, const Local<Value>& info) {
   Local<Array> jsArray = Handle<Array>::Cast(info);
   for (uint32_t i = 0; i < jsArray->Length(); i++) o_dims.push_back(jsArray->Get(i)->NumberValue());

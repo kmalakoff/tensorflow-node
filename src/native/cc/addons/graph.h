@@ -3,6 +3,7 @@
 
 #include "../../lib/nan.h"
 #include "tensorflow/cc/framework/scope.h"
+#include "tensorflow/cc/framework/ops.h"
 
 // forward declarations
 struct TF_Graph;
@@ -14,7 +15,6 @@ class Graph: public Nan::ObjectWrap {
   public:
     Graph();
     ~Graph();
-    TF_Graph* ref() { return m_ref; }
 
     v8::Local<v8::Value> ToValue() {
       // const int argc = 1;
@@ -26,9 +26,9 @@ class Graph: public Nan::ObjectWrap {
     }
 
     tensorflow::Scope m_scope;
+
   private:
-    TF_Graph* m_ref;
-    std::vector<TF_Operation*> m_variable_initializers;
+    std::vector<tensorflow::ops::Output> m_variable_initializers;
 
   public:
     static NAN_MODULE_INIT(Init);

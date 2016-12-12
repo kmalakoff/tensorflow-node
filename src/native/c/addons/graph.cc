@@ -2,6 +2,7 @@
 
 #include "graph.h"
 #include "operation.h"
+#include "session.h"
 #include "../tf/graph.h"
 #include "../tf/session.h"
 #include "../tf/tensor.h"
@@ -48,8 +49,7 @@ NAN_NEW(Graph::New) {
 NAN_METHOD(Graph::placeholder) {
   TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
   TF_DataType arg0 = (info.Length() >= 1) ? (TF_DataType) info[0]->NumberValue() : TF_FLOAT;
-  std::vector<int64_t> arg1;
-  if (info.Length() >= 2) lib::ToShape(arg1, info[1]);
+  std::vector<int64_t> arg1; if (info.Length() >= 2) lib::ToShape(arg1, info[1]);
 
   TF_Operation* result = tf::Graph::placeholder(graph, arg0, arg1);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
@@ -88,22 +88,9 @@ NAN_METHOD(Graph::constant) {
 
 NAN_METHOD(Graph::run) {
   TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
-
-  std::vector<TF_Operation*> arg0;
-  if (info[0]->IsArray()) {
-    Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
-    for (unsigned int i = 0; i < jsArray->Length(); i++) {
-      arg0.push_back(ObjectWrap::Unwrap<Operation>(jsArray->Get(i)->ToObject())->ref());
-    }
-  }
-  else {
-    arg0.push_back(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref());
-  }
-
-  std::vector<TF_Tensor*> results;
-  tf::Graph::run(results, graph, arg0, info[1]);
-
-  info.GetReturnValue().Set(info[0]->IsArray() ? lib::ToArrayValue(results) : lib::ToValue(results[0]));
+  TF_SessionWithGraph* session = Session::create(graph);
+  addons::Session::run(session, graph, info);
+  Session::destroy(session);
 }
 
 } // namespace addons

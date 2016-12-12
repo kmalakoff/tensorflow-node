@@ -22,7 +22,6 @@ class Graph {
     static TF_Operation* variableInitializer(TF_Graph *graph, TF_Operation* variable, TF_Tensor* value);
     static TF_Operation* constant(TF_Graph *graph, TF_Tensor* value);
     static TF_Operation* assign(TF_Graph *graph, TF_Operation* l, TF_Operation* r);
-    static void run(std::vector<TF_Tensor*>& o_results, TF_Graph* graph, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs);
 };
 
 } // namespace tf
