@@ -73,7 +73,12 @@ tensorflow::Tensor* ToTensor2(const Local<Value>& info) {
   // reduce memory copying
   TensorShape shape(data.dims);
   tensorflow::Tensor* result = new tensorflow::Tensor((DataType) data.dtype, shape);
-  jsCollectValues((float*) result->tensor_data().data(), Handle<Array>::Cast(info), 0);
+  
+  if (info->IsNumber())
+    *((float*) result->tensor_data().data()) = info->NumberValue();
+  else
+    jsCollectValues((float*) result->tensor_data().data(), Handle<Array>::Cast(info), 0);
+  
   return result;
 }
  
