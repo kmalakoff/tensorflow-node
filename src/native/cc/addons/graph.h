@@ -25,8 +25,8 @@ class Graph: public Nan::ObjectWrap {
       return result;
     }
 
-  private:
     tensorflow::Scope m_scope;
+  private:
     TF_Graph* m_ref;
     std::vector<TF_Operation*> m_variable_initializers;
 

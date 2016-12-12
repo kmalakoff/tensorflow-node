@@ -27,26 +27,26 @@ describe("Tensorflow MathOps", function() {
     //   assert.deepEqual(result, 5);
     // });
 
-    it("argmax matrix", function() {
-      const g = new tf.Graph();
-      const values = g.constant([
-        [0, 1, 2], 
-        [3, 4, 5]
-      ]);
-      const op = g.argmax(values, 0);
-      const result = g.run(op);
-      assert.deepEqual(result, [1, 1, 1]);
-    });
+    // it("argmax matrix", function() {
+    //   const g = new tf.Graph();
+    //   const values = g.constant([
+    //     [0, 1, 2], 
+    //     [3, 4, 5]
+    //   ]);
+    //   const op = g.argmax(values, 0);
+    //   const result = g.run(op);
+    //   assert.deepEqual(result, [1, 1, 1]);
+    // });
 
-    it("argmax matrix", function() {
-      const g = new tf.Graph();
-      const values = g.constant([
-        [0, 1, 2], 
-        [3, 4, 5]
-      ]);
-      const op = g.argmax(values, 1);
-      const result = g.run(op);
-      assert.deepEqual(result, [2, 2]);
-    });
+    // it("argmax matrix", function() {
+    //   const g = new tf.Graph();
+    //   const values = g.constant([
+    //     [0, 1, 2], 
+    //     [3, 4, 5]
+    //   ]);
+    //   const op = g.argmax(values, 1);
+    //   const result = g.run(op);
+    //   assert.deepEqual(result, [2, 2]);
+    // });
   });
 });

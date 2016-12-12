@@ -5,9 +5,13 @@
 #include "../../lib/conversions.h"
 #include "../tf/math_ops.h"
 
+#include "tensorflow/cc/ops/math_ops.h"
+
+
 namespace addons {
 
 using namespace v8;
+using namespace tensorflow::ops;
 
 NAN_MODULE_INIT(MathOps::Init) {
   Nan::Persistent<Object> inner;
@@ -63,21 +67,38 @@ NAN_METHOD(MathOps::reduce_mean) {
 }
 
 NAN_METHOD(MathOps::equal) {
-  TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
-  TF_Operation* arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref();
-  TF_Operation* arg2 = ObjectWrap::Unwrap<addons::Operation>(info[2]->ToObject())->ref(); 
+  auto& scope = ObjectWrap::Unwrap<Graph>(info[0]->ToObject())->m_scope;
+  auto& arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->m_output;
+  auto& arg2 = ObjectWrap::Unwrap<addons::Operation>(info[2]->ToObject())->m_output;
 
-  TF_Operation* result = tf::MathOps::equal(graph, arg1, arg2);
+  auto result = Equal(scope.WithOpName("Equal"), arg1, arg2);
+
+//  auto name = result.node()->name();
+  
   info.GetReturnValue().Set((new Operation(result))->ToValue());
+
+  // TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
+  // TF_Operation* arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref();
+  // TF_Operation* arg2 = ObjectWrap::Unwrap<addons::Operation>(info[2]->ToObject())->ref(); 
+
+  // TF_Operation* result = tf::MathOps::equal(graph, arg1, arg2);
+  // info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
 NAN_METHOD(MathOps::argmax) {
-  TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
-  TF_Operation* arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref();
+  auto& scope = ObjectWrap::Unwrap<Graph>(info[0]->ToObject())->m_scope;
+  auto& arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->m_output;
   int dim = (info.Length() >= 3) ? info[2]->NumberValue() : 0;
+  auto result = ArgMax(scope, arg1, dim);
 
-  TF_Operation* result = tf::MathOps::argmax(graph, arg1, dim);
   info.GetReturnValue().Set((new Operation(result))->ToValue());
+  
+  // TF_Graph* graph = ObjectWrap::Unwrap<addons::Graph>(info[0]->ToObject())->ref();
+  // TF_Operation* arg1 = ObjectWrap::Unwrap<addons::Operation>(info[1]->ToObject())->ref();
+  // int dim = (info.Length() >= 3) ? info[2]->NumberValue() : 0;
+
+  // TF_Operation* result = tf::MathOps::argmax(graph, arg1, dim);
+  // info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
 NAN_METHOD(MathOps::cast) {

@@ -4,6 +4,7 @@ namespace addons {
 
 using namespace v8;
 
+Operation::Operation(tensorflow::ops::Output output) : m_output(output) {};
 Operation::Operation(TF_Operation* operation) { m_ref = operation; };
 Operation::~Operation() { m_ref = nullptr; }
 

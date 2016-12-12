@@ -3,6 +3,7 @@
 
 #include <nan.h>
 #include "tensorflow/c/c_api.h"
+#include "tensorflow/core/framework/tensor.h"
 
 struct TF_Tensor;
 
@@ -21,6 +22,8 @@ void ToShape(std::vector<int64_t>& o_dims, TF_Tensor* value);
 void ToShape(std::vector<int64_t>& o_dims, const Local<Value>& info);
 v8::Local<v8::Value> ToValue(TF_Tensor* value);
 v8::Local<v8::Value> ToArrayValue(const std::vector<TF_Tensor*>& value);
+v8::Local<v8::Value> ToValue(const tensorflow::Tensor& value);
+v8::Local<v8::Value> ToArrayValue(const std::vector<tensorflow::Tensor>& value);
 v8::Local<v8::Value> ToBufferValue(TF_Tensor* value);
 
 } // namespace lib

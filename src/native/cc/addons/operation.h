@@ -2,6 +2,7 @@
 #define NAN_OPERATION_H
 
 #include "../../lib/nan.h"
+#include "tensorflow/cc/framework/ops.h"
 
 // forward declarations
 struct TF_Operation;
@@ -10,6 +11,7 @@ namespace addons {
 
 class Operation: public Nan::ObjectWrap {
   public:
+    Operation(tensorflow::ops::Output output);
     Operation(TF_Operation* operation);
     ~Operation();
     TF_Operation* ref() { return m_ref; }
@@ -23,6 +25,7 @@ class Operation: public Nan::ObjectWrap {
       return result;
     }
 
+    tensorflow::ops::Output m_output;
   private:
     TF_Operation* m_ref;
 

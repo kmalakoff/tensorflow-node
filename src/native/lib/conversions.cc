@@ -77,21 +77,21 @@ void ToShape(std::vector<int64_t>& o_dims, const Local<Value>& info) {
   for (uint32_t i = 0; i < jsArray->Length(); i++) o_dims.push_back(jsArray->Get(i)->NumberValue());
 }
 
-Local<Value> TensorValue(TF_Tensor* value, size_t offset) {
-  switch (TF_TensorType(value)) {
+Local<Value> TensorValue(TF_DataType dtype, void* data, size_t offset) {
+  switch (dtype) {
     // case DT_HALF: float16
-    case DT_FLOAT: return Nan::New(*((float*) TF_TensorData(value) + offset));
-    case DT_DOUBLE: return Nan::New(*((double*) TF_TensorData(value) + offset));
-    case DT_INT32: return Nan::New(*((uint32_t*) TF_TensorData(value) + offset));
-    case DT_UINT8: return Nan::New(*((uint8_t*) TF_TensorData(value) + offset));
-    case DT_UINT16: return Nan::New(*((uint16_t*) TF_TensorData(value) + offset));
-    case DT_INT16: return Nan::New(*((int16_t*) TF_TensorData(value) + offset));
-    case DT_INT8: return Nan::New(*((int8_t*) TF_TensorData(value) + offset));
-    case DT_STRING: return Nan::New(*((uint8_t**) TF_TensorData(value) + offset));
+    case DT_FLOAT: return Nan::New(*((float*) data + offset));
+    case DT_DOUBLE: return Nan::New(*((double*) data + offset));
+    case DT_INT32: return Nan::New(*((uint32_t*) data + offset));
+    case DT_UINT8: return Nan::New(*((uint8_t*) data + offset));
+    case DT_UINT16: return Nan::New(*((uint16_t*) data + offset));
+    case DT_INT16: return Nan::New(*((int16_t*) data + offset));
+    case DT_INT8: return Nan::New(*((int8_t*) data + offset));
+    case DT_STRING: return Nan::New(*((uint8_t**) data + offset));
     // case DT_COMPLEX64: complex64
     // case DT_COMPLEX128: complex128
-    case DT_INT64: return Nan::New(*((int32_t*) TF_TensorData(value) + 2 * offset)); // TODO: make sure not lossing presicsion from 64 bit to 32 bit
-    case DT_BOOL: return Nan::New(*((bool*) TF_TensorData(value) + offset));
+    case DT_INT64: return Nan::New(*((int32_t*) data + 2 * offset)); // TODO: make sure not lossing presicsion from 64 bit to 32 bit
+    case DT_BOOL: return Nan::New(*((bool*) data + offset));
     // case DT_QINT8: qint8
     // case DT_QUINT8: quint8
     // case DT_QINT16: qint16
@@ -118,7 +118,7 @@ Local<Value> TensorValue(TF_Tensor* value, size_t offset) {
     // case DT_QUINT16_REF: quint16_ref
     // case DT_QINT32_REF: qint32_ref
     // case DT_BFLOAT16_REF: bfloat16_ref
-    default: std::cout << "Cannot convert tensor value type: " << TF_TensorType(value); return Nan::Undefined();
+    default: std::cout << "Cannot convert tensor value type: " << dtype; return Nan::Undefined();
   }
 }
 
@@ -129,7 +129,7 @@ Local<Value> tfCollectValues(TF_Tensor* value, std::vector<int64_t>& dims, int d
   Local<Array> results = Nan::New<v8::Array>((int) dim);
   for (int64_t i = 0; i < dim; i++) {
     if (dim_index == dim_count - 1) {
-      results->Set((int) i, TensorValue(value, offset));
+      results->Set((int) i, TensorValue(TF_TensorType(value), TF_TensorData(value), offset));
       offset++;
     }
     else results->Set((int) i, tfCollectValues(value, dims, dim_index + 1, offset));
@@ -137,12 +137,26 @@ Local<Value> tfCollectValues(TF_Tensor* value, std::vector<int64_t>& dims, int d
   return results;
 }
 
+Local<Value> tfCollectValues(const tensorflow::Tensor& value, std::vector<int64_t>& dims, int dim_index, size_t& offset) {
+  int dim_count = (int) dims.size();
+  if (dim_index >= dim_count) return Nan::Undefined();
+  int64_t dim = value.dim_size(dim_index);
+  Local<Array> results = Nan::New<v8::Array>((int) dim);
+  for (int64_t i = 0; i < dim; i++) {
+    if (dim_index == dim_count - 1) {
+      results->Set((int) i, TensorValue((TF_DataType) value.dtype(), (void*) value.tensor_data().data(), offset));
+      offset++;
+    }
+    else results->Set((int) i, tfCollectValues(value, dims, dim_index + 1, offset));
+  }
+  return results;
+}
 
 Local<Value> ToValue(TF_Tensor* value) {
   if (!value) return Nan::Undefined(); // TODO: add warning for missing value
 
   size_t dim_count = TF_NumDims(value);
-  if (dim_count == 0) return TensorValue(value, 0);
+  if (dim_count == 0) return TensorValue(TF_TensorType(value), TF_TensorData(value), 0);
   
   std::vector<int64_t> dims;
   for (size_t i = 0; i < dim_count; i++) dims.push_back(TF_Dim(value, (int) i));
@@ -152,6 +166,23 @@ Local<Value> ToValue(TF_Tensor* value) {
 }
 
 Local<Value> ToArrayValue(const std::vector<TF_Tensor*>& value) {
+  Local<Array> results = Nan::New<v8::Array>((int) value.size());
+  for (size_t i = 0; i < value.size(); i++) results->Set((int) i, ToValue(value[i]));
+  return results;
+}
+
+Local<Value> ToValue(const tensorflow::Tensor& value) {
+  size_t dim_count = value.dims();
+  if (dim_count == 0) return TensorValue((TF_DataType) value.dtype(), (void*) value.tensor_data().data(), 0);
+  
+  std::vector<int64_t> dims;
+  for (size_t i = 0; i < dim_count; i++) dims.push_back(value.dim_size((int) i));
+
+  size_t offset = 0;
+  return tfCollectValues(value, dims, 0, offset);
+}
+
+Local<Value> ToArrayValue(const std::vector<tensorflow::Tensor>& value) {
   Local<Array> results = Nan::New<v8::Array>((int) value.size());
   for (size_t i = 0; i < value.size(); i++) results->Set((int) i, ToValue(value[i]));
   return results;

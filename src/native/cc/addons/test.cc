@@ -162,40 +162,6 @@ void ConcurrentSessions(const Options& opts) {
 }  // end namespace example
 }  // end namespace tensorflow
 
-namespace {
-
-bool ParseInt32Flag(tensorflow::StringPiece arg, tensorflow::StringPiece flag,
-                    int32* dst) {
-  if (arg.Consume(flag) && arg.Consume("=")) {
-    char extra;
-    return (sscanf(arg.data(), "%d%c", dst, &extra) == 1);
-  }
-
-  return false;
-}
-
-bool ParseBoolFlag(tensorflow::StringPiece arg, tensorflow::StringPiece flag,
-                   bool* dst) {
-  if (arg.Consume(flag)) {
-    if (arg.empty()) {
-      *dst = true;
-      return true;
-    }
-
-    if (arg == "=true") {
-      *dst = true;
-      return true;
-    } else if (arg == "=false") {
-      *dst = false;
-      return true;
-    }
-  }
-
-  return false;
-}
-
-}  // namespace
-
 namespace addons {
 
 using namespace v8;

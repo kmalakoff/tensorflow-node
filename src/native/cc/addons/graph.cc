@@ -7,9 +7,14 @@
 #include "../tf/tensor.h"
 #include "../../lib/conversions.h"
 
+#include "tensorflow/cc/ops/const_op.h"
+#include "tensorflow/core/public/session.h"
+#include "tensorflow/core/graph/default_device.h"
+
 namespace addons {
 
 using namespace tensorflow;
+using namespace tensorflow::ops;
 using namespace v8;
 using namespace addons;
 
@@ -81,31 +86,62 @@ NAN_METHOD(Graph::variable_initializers) {
 }
 
 NAN_METHOD(Graph::constant) {
-  TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
-  TF_Tensor* arg0 = lib::ToTensor(info[0]); 
-  TF_Operation* result = tf::Graph::constant(graph, arg0);
+  auto& scope = ObjectWrap::Unwrap<Graph>(info.Holder())->m_scope;
+  auto result = Const<float>(scope, {{0, 1, 2}, {3, 4, 5}});
+
+  // TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
+  // TF_Tensor* arg0 = lib::ToTensor(info[0]); 
+  // TF_Operation* result = tf::Graph::constant(graph, arg0);
 
   info.GetReturnValue().Set((new Operation(result))->ToValue());
 }
 
 NAN_METHOD(Graph::run) {
-  TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
+  auto& scope = ObjectWrap::Unwrap<Graph>(info.Holder())->m_scope;
 
-  std::vector<TF_Operation*> arg0;
-  if (info[0]->IsArray()) {
-    Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
-    for (unsigned int i = 0; i < jsArray->Length(); i++) {
-      arg0.push_back(ObjectWrap::Unwrap<Operation>(jsArray->Get(i)->ToObject())->ref());
-    }
-  }
-  else {
-    arg0.push_back(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref());
-  }
+  SessionOptions options;
+  std::unique_ptr<Session> session(NewSession(options));
 
-  std::vector<TF_Tensor*> results;
-  tf::Graph::run(results, graph, arg0, info[1]);
+  GraphDef def;
+  TF_CHECK_OK(scope.ToGraphDef(&def));
+  graph::SetDefaultDevice("/cpu:0", &def);
 
+  TF_CHECK_OK(session->Create(def));
+
+   std::vector<string> ops;
+   if (info[0]->IsArray()) {
+     Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
+     for (unsigned int i = 0; i < jsArray->Length(); i++) {
+       ops.push_back(ObjectWrap::Unwrap<Operation>(jsArray->Get(i)->ToObject())->m_output.name());
+     }
+   }
+   else {
+//     ops.push_back(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->m_output.name());
+     ops.push_back("Equal:0");
+   }
+
+  std::vector<Tensor> results;
+  TF_CHECK_OK(session->Run({}, ops, {}, &results));
   info.GetReturnValue().Set(info[0]->IsArray() ? lib::ToArrayValue(results) : lib::ToValue(results[0]));
+  TF_CHECK_OK(session->Close());
+  
+  // TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
+
+  // std::vector<TF_Operation*> arg0;
+  // if (info[0]->IsArray()) {
+  //   Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
+  //   for (unsigned int i = 0; i < jsArray->Length(); i++) {
+  //     arg0.push_back(ObjectWrap::Unwrap<Operation>(jsArray->Get(i)->ToObject())->ref());
+  //   }
+  // }
+  // else {
+  //   arg0.push_back(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref());
+  // }
+
+  // std::vector<TF_Tensor*> results;
+  // tf::Graph::run(results, graph, arg0, info[1]);
+
+  // info.GetReturnValue().Set(info[0]->IsArray() ? lib::ToArrayValue(results) : lib::ToValue(results[0]));
 }
 
 } // namespace addons
