@@ -37,6 +37,9 @@ describe("Tensorflow training", function() {
       // // train_step = g.train.GradientDescentOptimizer(0.5).minimize(loss);
       // train_step = g.train.GradientDescentOptimizer(0.5, loss);
 
+      correct_prediction_op = g.equal(g.argmax(y,1), g.argmax(y_,1));
+      accuracy_op = g.reduce_mean(g.cast(correct_prediction_op, tf.float32));
+
       sess = new tf.Session(g);
       sess.run(g.variable_initializers(), false);
 
@@ -44,8 +47,6 @@ describe("Tensorflow training", function() {
         // [batch_xs, batch_ys] = mnist.train.next_batch(100);
         // sess.run(train_step, [[x, batch_xs], [y_, batch_ys]]);
          
-        correct_prediction_op = g.equal(g.argmax(y,1), g.argmax(y_,1));
-        accuracy_op = g.reduce_mean(g.cast(correct_prediction_op, tf.float32));
         accuracy = sess.run(accuracy_op, [[x, mnist.test.images], [y_, mnist.test.labels]])
         console.log(accuracy);
       }
