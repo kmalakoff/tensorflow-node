@@ -83,17 +83,35 @@ tensorflow::Tensor* ToTensor2(const Local<Value>& info) {
 }
  
 TF_Tensor* ToTensor(int value) {
-  const int byte_count = 1 * sizeof(int);
-  int* values = reinterpret_cast<int*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, byte_count));
+  const int byte_count = 1 * sizeof(int32_t);
+  int32_t* values = reinterpret_cast<int32_t*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, byte_count));
   values[0] = value;
   return TF_NewTensor(TF_INT32, nullptr, 0, values, byte_count, &Deallocator, nullptr);
 }
- 
+
+tensorflow::Tensor* ToTensor2(int value) {
+  const int byte_count = 1 * sizeof(int);
+  
+  TensorShape shape({});
+  tensorflow::Tensor* result = new tensorflow::Tensor((DataType) DT_INT32, shape);
+  *((int32_t*) result->tensor_data().data()) = value;
+  return result;
+}
+
 TF_Tensor* ToTensor(float value) {
   const float byte_count = 1 * sizeof(float);
   float* values = reinterpret_cast<float*>(tensorflow::cpu_allocator()->AllocateRaw(EIGEN_MAX_ALIGN_BYTES, byte_count));
   values[0] = value;
   return TF_NewTensor(TF_FLOAT, nullptr, 0, values, byte_count, &Deallocator, nullptr);
+}
+
+tensorflow::Tensor* ToTensor2(float value) {
+  const int byte_count = 1 * sizeof(int);
+  
+  TensorShape shape({});
+  tensorflow::Tensor* result = new tensorflow::Tensor((DataType) DT_FLOAT, shape);
+  *((float*) result->tensor_data().data()) = value;
+  return result;
 }
 
 void ToShape(std::vector<int64_t>& o_dims, TF_Tensor* value) {

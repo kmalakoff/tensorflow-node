@@ -47,10 +47,8 @@ NAN_NEW(Graph::New) {
 
 NAN_METHOD(Graph::placeholder) {
   TF_Graph* graph = ObjectWrap::Unwrap<Graph>(info.Holder())->ref();
-  TF_DataType arg0 = TF_FLOAT;
+  TF_DataType arg0 = (info.Length() >= 1) ? (TF_DataType) info[0]->NumberValue() : TF_FLOAT;
   std::vector<int64_t> arg1;
-
-  if (info.Length() >= 1) arg0 = (TF_DataType) info[0]->NumberValue();
   if (info.Length() >= 2) lib::ToShape(arg1, info[1]);
 
   TF_Operation* result = tf::Graph::placeholder(graph, arg0, arg1);

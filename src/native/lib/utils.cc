@@ -28,6 +28,7 @@ void split(const std::string &s, char delim, std::vector<std::string> &elems) { 
 }
 
 std::string nodeName(const tensorflow::Node* node) { // TODO: remove after headers match for node name
+  if (!node) return "null";
   std::vector<std::string> parts;
   split(node->DebugString(), '\'', parts);
   return parts[1];

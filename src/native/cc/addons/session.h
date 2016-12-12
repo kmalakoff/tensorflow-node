@@ -36,7 +36,6 @@ class Session: public Nan::ObjectWrap {
     static NAN_CONSTRUCTOR(constructor);
     static NAN_NEW(New);
     static NAN_METHOD(run);
-    static NAN_METHOD(runNoOut);
 };
 
 } // namespace addons

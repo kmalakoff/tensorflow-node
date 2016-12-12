@@ -31,7 +31,6 @@ NAN_MODULE_INIT(Session::Init) {
 
   // Prototype
   Nan::SetPrototypeMethod(ctor, "run", run);
-  Nan::SetPrototypeMethod(ctor, "runNoOut", runNoOut);
 
   target->Set(Nan::New("Session").ToLocalChecked(), ctor->GetFunction());
 };
@@ -50,7 +49,9 @@ NAN_NEW(Session::New) {
 
 NAN_METHOD(Session::run) {
   Session* obj = ObjectWrap::Unwrap<Session>(info.Holder());
+  bool outputs = (info.Length() >= 2) ? info[1]->BooleanValue() : true; // TODO: infer the output instead of having a separate function
 
+  // operations
   std::vector<TF_Operation*> arg0;
   if (info[0]->IsArray()) {
     Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
@@ -67,23 +68,6 @@ NAN_METHOD(Session::run) {
 
   if (info[0]->IsArray()) info.GetReturnValue().Set(lib::ToArrayValue(results));
   else if (results.size()) info.GetReturnValue().Set(lib::ToValue(results[0]));
-}
-
-NAN_METHOD(Session::runNoOut) {
-  Session* obj = ObjectWrap::Unwrap<Session>(info.Holder());
-
-  std::vector<TF_Operation*> arg0;
-  if (info[0]->IsArray()) {
-    Handle<Array> jsArray = Handle<Array>::Cast(info[0]);
-    for (unsigned int i = 0; i < jsArray->Length(); i++) {
-      arg0.push_back(ObjectWrap::Unwrap<Operation>(jsArray->Get(i)->ToObject())->ref());
-    }
-  }
-  else {
-    arg0.push_back(ObjectWrap::Unwrap<Operation>(info[0]->ToObject())->ref());
-  }
-
-  tf::Session::runNoOut(obj->ref(), arg0, info[1]);
 }
 
 } // namespace addons

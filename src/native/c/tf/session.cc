@@ -28,7 +28,7 @@ void Session::destroy(TF_SessionWithGraph* session) {
   TF_DeleteStatus(s);
 }
 
-void Session::run(std::vector<TF_Tensor*>& o_results, TF_SessionWithGraph* session, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs) {
+void Session::run(std::vector<TF_Tensor*>& o_results, TF_SessionWithGraph* session, const std::vector<TF_Operation*>& ops, const v8::Local<v8::Value>& input_pairs, bool outputs=true) {
   std::vector<TF_Port> input_ports;
   std::vector<TF_Tensor*> input_tensors;
   if (input_pairs->IsArray()) {
